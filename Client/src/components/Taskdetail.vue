@@ -90,33 +90,28 @@
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 서버 </td>
           <td>
-            <select style="width : 99%;" v-model="tempec_id">
+            <select style="width : 99%;" v-model="tempec_id" disabled>
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
             </select>
           </td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 포트 </td>
-          <td> <input style="width : 95%;" type="text" v-model="templistening_port"></td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
-
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적 IP </td>
-          <td>
-            <select style="width : 99%;" v-model="temp_para[0]">
-              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-            </select>
-          </td>
+          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 전송 속도 </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[2]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[0]"></td>
         </tr>
       </table>
       <br> <br>
@@ -138,82 +133,48 @@
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 서버 </td>
           <td>
-            <select style="width : 99%;" v-model="tempec_id">
+            <select style="width : 99%;" v-model="tempec_id" disabled>
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
             </select>
           </td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 포트 </td>
-          <td> <input style="width : 95%;" type="text" v-model="templistening_port"></td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적 IP </td>
-          <td>
-            <select style="width : 99%;" v-model="temp_para[0]">
-              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-            </select>
-          </td>
+          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> Output 방식 </td>
           <td>
-            <!-- <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="so_out_type"> -->
-            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[2]">
+            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[0]">
               <option value = "0"> socket </option>
               <option value = "1"> db </option>
               <option value = "2"> file </option>
             </select>
           </td>
         </tr>
-
-        <!-- <tr v-if="so_out_type === '0'">
-          <td style="background:lightgrey;"> 출력 IP </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_ip"></td>
-        </tr>
-        <tr v-if="so_out_type === '0'">
-          <td style="background:lightgrey;"> 출력 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_port"></td>
-        </tr> -->
-
-        <!-- <tr v-if="so_out_type === '1'">
-          <td style="background:lightgrey;"> 출력 IP </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_ip"></td>
-        </tr>
-        <tr v-if="so_out_type === '1'">
-          <td style="background:lightgrey;"> 출력 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_port"></td>
-        </tr> -->
-        <tr v-if="temp_para[2] === '1'">
+        <tr v-if="temp_para[0] === '1'">
           <td style="background:lightgrey;"> DB </td>
-          <!-- <td> <input style="width : 95%;" type="text" v-model="so_type_1_db"></td> -->
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[3]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
         </tr>
-        <tr v-if="temp_para[2] === '1'">
+        <tr v-if="temp_para[0] === '1'">
           <td style="background:lightgrey;"> Table </td>
-          <!-- <td> <input style="width : 95%;" type="text" v-model="so_type_1_table"></td> -->
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[4]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[2]"></td>
         </tr>
 
-        <!-- <tr v-if="so_out_type === '2'">
-          <td style="background:lightgrey;"> 출력 IP </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_ip"></td>
-        </tr>
-        <tr v-if="so_out_type === '2'">
-          <td style="background:lightgrey;"> 출력 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="so_out_port"></td>
-        </tr> -->
-        <tr v-if="temp_para[2] === '2'">
+        <tr v-if="temp_para[0] === '2'">
           <td style="background:lightgrey;"> 파일명 </td>
-          <!-- <td> <input style="width : 95%;" type="text" v-model="so_type_2_filename"></td> -->
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[3]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
         </tr>
         
       </table>
@@ -236,35 +197,30 @@
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 서버 </td>
           <td>
-            <select style="width : 99%;" v-model="tempec_id">
+            <select style="width : 99%;" v-model="tempec_id" disabled>
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
             </select>
           </td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 포트 </td>
-          <td> <input style="width : 95%;" type="text" v-model="templistening_port"></td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적 IP </td>
-          <td>
-            <select style="width : 99%;" v-model="temp_para[0]">
-              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-            </select>
-          </td>
+          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
         </tr>
-
 
         <tr>
           <td style="width : 80px;" class="add_title"> 집계 기준 </td>
           <td>
-            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[2]">
+            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[0]">
               <option value = "0"> Time </option>
               <option value = "1"> Tuple </option>
             </select>
@@ -272,17 +228,17 @@
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 집계 단위 </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[3]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> Min Support </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[4]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[2]"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> Max Support </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[5]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[3]"></td>
         </tr>
         
       </table>
@@ -305,38 +261,33 @@
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 서버 </td>
           <td>
-            <select style="width : 99%;" v-model="tempec_id">
+            <select style="width : 99%;" v-model="tempec_id" disabled>
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
             </select>
           </td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 포트 </td>
-          <td> <input style="width : 95%;" type="text" v-model="templistening_port"></td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적 IP </td>
-          <td>
-            <select style="width : 99%;" v-model="temp_para[0]">
-              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-            </select>
-          </td>
+          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
         </tr>
-
         <tr>
           <td style="width : 80px;" class="add_title"> n item </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[2]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[0]"></td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 집계 기준 </td>
           <td>
-            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[3]">
+            <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="temp_para[1]">
               <option value = "0"> Time </option>
               <option value = "1"> Tuple </option>
             </select>
@@ -344,17 +295,17 @@
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 집계 단위 </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[4]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[2]"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> Min Support </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[5]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[3]"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> Max Support </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[6]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="temp_para[4]"></td>
         </tr>
       </table>
       <br> <br>
@@ -376,28 +327,24 @@
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 서버 </td>
           <td>
-            <select style="width : 99%;" v-model="tempec_id">
+            <select style="width : 99%;" v-model="tempec_id" disabled>
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
             </select>
           </td>
         </tr>
         <tr>
           <td style="width : 80px;" class="add_title"> 수행 포트 </td>
-          <td> <input style="width : 95%;" type="text" v-model="templistening_port"></td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적 IP </td>
-          <td>
-            <select style="width : 99%;" v-model="temp_para[0]">
-              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-            </select>
-          </td>
+          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="temp_para[1]"></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
         </tr>
       </table>
       <br> <br>
@@ -1000,9 +947,9 @@ function clearLine() {
 }
 function addLine(start, end) {
   console.log("ADD LINE");
-  console.log("job_id : " + jobID);
-  console.log("start : " + start);
-  console.log("end : " + end);
+  // console.log("job_id : " + jobID);
+  // console.log("start : " + start);
+  // console.log("end : " + end);
 
   var params = {
     job_id : jobID,
@@ -1012,7 +959,17 @@ function addLine(start, end) {
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/add";
   axios.post(api, params)
-  .then(response => {})
+  .then(response => {
+    params = {
+      start_id : start,
+      end_id : end
+    }
+    api = "http://" + serverADDR + ":3000/users/update_dest_info";
+    axios.post(api, params)
+    .then(response => {
+      // console.log("task information : ", response.data)
+    })
+  })
   .catch(err => {});
 }
 function createLine() {
@@ -1377,7 +1334,7 @@ export default {
 
       // temp_para[0] : next 목적지 IP
       // temp_para[1] : next 목적지 Port
-      
+
       test : [],
       schemaArray : [],
       taskListArray : [],
@@ -1422,6 +1379,8 @@ export default {
       tempposition_y : '',
       templinkto : '',
       templinkfrom : '',
+      tempdest_ip : '',
+      tempdest_port : '',
 
       tempParent : '',
       parent : [],
@@ -1501,9 +1460,6 @@ export default {
   },
   methods : {
     func_test() {
-      console.log("func test")
-      this.temp_para.push(1)
-      console.log(this.temp_para)
     },
     jobDistTotal() {
       console.log("jobDistTotal : ", this.jobId);
@@ -1863,7 +1819,9 @@ export default {
         position_x : 0,
         position_y : 0,
         linkto : null,
-        linkfrom : null
+        linkfrom : null,
+        dest_ip : null,
+        dest_port : null
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks/add";
@@ -1937,26 +1895,30 @@ export default {
       var config_data = new Object();
       this.tempconfig = ''
 
-      var send_ip = this.which_ip(this.temp_para[0])
-      config_data = {
-        send_ec : this.temp_para[0],    // 목적지 ec
-        send_ip : send_ip,              // 목적지 IP
-        send_port : this.temp_para[1],  // 목적지 Port
-      }
+      // var send_ip = this.which_ip(this.temp_para[0])
+      // config_data = {
+      //   send_ec : this.temp_para[0],    // 목적지 ec
+      //   send_ip : send_ip,              // 목적지 IP
+      //   send_port : this.temp_para[1],  // 목적지 Port
+      // }
 
       switch(index) {
         case 0 :    // basestream
-          config_data.send_speed = this.temp_para[2]
+          config_data = {
+            send_speed : this.temp_para[0]
+          }
           var str = JSON.stringify(config_data);
+
+          console.log("0000 : ", str)
           break;
         case 1 :    // Socket output
-          config_data.out_type = this.temp_para[2];
-          if(this.temp_para[2] == 1) {
-            config_data.db = this.temp_para[3];
-            config_data.table = this.temp_para[4];
+          config_data.out_type = this.temp_para[0];
+          if(this.temp_para[0] == 1) {
+            config_data.db = this.temp_para[1];
+            config_data.table = this.temp_para[2];
           }
-          if(this.temp_para[2] == 2) {
-            config_data.filename = this.temp_para[3];
+          if(this.temp_para[0] == 2) {
+            config_data.filename = this.temp_para[1];
           }
           var str = JSON.stringify(config_data);
           break;
@@ -1976,19 +1938,19 @@ export default {
           var str = JSON.stringify(this.HJQueryData);
           break;
         case 33 :   // 1 item fp
-          config_data.agg_type = this.temp_para[2];
-          config_data.agg_unit = this.temp_para[3];
-          config_data.min_support = this.temp_para[4];
-          config_data.max_support = this.temp_para[5];
+          config_data.agg_type = this.temp_para[0];
+          config_data.agg_unit = this.temp_para[1];
+          config_data.min_support = this.temp_para[2];
+          config_data.max_support = this.temp_para[3];
 
           var str = JSON.stringify(config_data);
           break;
         case 34 :   // n item fp
-          config_data.n_item = this.temp_para[2];
-          config_data.agg_type = this.temp_para[3];
-          config_data.agg_unit = this.temp_para[4];
-          config_data.min_support = this.temp_para[5];
-          config_data.max_support = this.temp_para[6];
+          config_data.n_item = this.temp_para[0];
+          config_data.agg_type = this.temp_para[1];
+          config_data.agg_unit = this.temp_para[2];
+          config_data.min_support = this.temp_para[3];
+          config_data.max_support = this.temp_para[4];
 
           var str = JSON.stringify(config_data);
           break;
@@ -1999,9 +1961,9 @@ export default {
 
       }
       this.tempconfig = JSON.stringify(str);
-      console.log(this.tempconfig);
+      console.log("temp config : ", this.tempconfig);
     },
-    
+
     loadModifyData(index) {
       var _this = this;
       var parent;
@@ -2024,78 +1986,87 @@ export default {
       });
 
       var output, arr;
-      arr = returnArray(index);
-
-      this.temptask_id = arr[2];
-      this.tempinput_schema = arr[3];
-      this.templistening_port = arr[4];
-      this.tempec_id = arr[5];
-      this.tempoutput_type = arr[6];
-      this.tempconfig = arr[7];
-      this.tempheartbeat_task = arr[8];
-      this.tempheartbeat_job = arr[9];
-      this.tempoutput_schema = arr[10];
-      this.tempposition_x = arr[11];
-      this.tempposition_y = arr[12];
-      this.templinkto = arr[13];
-      this.templinkfrom = arr[14];
-      this.temptask_name = arr[15];
-
-      var temp = JSON.parse(this.tempconfig)
-
-      this.temp_para[0] = temp.send_ec;
-      this.temp_para[1] = temp.send_port;
-
-      switch(arr[2]) {
-        case 0 :    // basestream
-          this.bs_send_ip = temp.send_ip;
-          this.temp_para[2] = temp.send_speed;
-          break;
-
-        case 1 :    // socket output
-          this.temp_para[2] = temp.out_type
-          
-          if(temp.out_type == 1) {
-            this.temp_para[3] = temp.db
-            this.temp_para[4] = temp.table
-          }
-          if(temp.out_type == 2) {
-            this.temp_para[3] = temp.filename
-          }
-          break;
-
-        case 4 :
-          // var temp = JSON.parse(this.tempconfig);
-          this.val_InputQueueSize = temp[0].inQSize;
-          this.val_WindowType = temp[0].winType;
-          this.val_WindowSize = temp[0].winSize;
-          this.val_NumberofPane = temp[0].numPane;
-          this.val_SlidingSize = temp[0].sldSize;
-          this.AggQuery = temp[0].aggQuery;
-          this.AggConfigTrans = JSON.parse(arr[7]);
-          break;
-        
-        case 33 :         // fp_1_item
-          this.temp_para[2] = temp.agg_type;
-          this.temp_para[3] = temp.agg_unit;
-          this.temp_para[4] = temp.min_support;
-          this.temp_para[5] = temp.max_support;
-          break;
-        
-        case 34 :         // fp_N_item
-          this.temp_para[2] = temp.n_item
-          this.temp_para[3] = temp.agg_type;
-          this.temp_para[4] = temp.agg_unit;
-          this.temp_para[5] = temp.min_support;
-          this.temp_para[6] = temp.max_support;
-          break;
-
-        case 35 :         // Transactionizer
-          break;
+      var params = {
+        id : index
       }
+      var api = "http://" + this.svrAddr + ":3000/users/get_taskinfo";
+
+      axios.post(api, params)
+      .then( response => {
+        arr = response.data[0]
+        // console.log("SDF : ", arr)
+        this.temptask_id = arr.task_id;
+        this.tempinput_schema = arr.input_schema_id;
+        this.templistening_port = arr.listening_port;
+        this.tempec_id = arr.ec_id;
+        this.tempoutput_type = arr.output_type;
+        this.tempconfig = arr.config;
+        this.tempheartbeat_task = arr.heartbeat_task_id;
+        this.tempheartbeat_job = arr.heartbeat_job_id;
+        this.tempoutput_schema = arr.output_schema_id;
+        this.tempposition_x = arr.position_x;
+        this.tempposition_y = arr.position_y;
+        this.templinkto = arr.linkto;
+        this.templinkfrom = arr.linkfrom;
+        this.temptask_name = arr.name;
+        this.tempdest_ip = arr.dest_ip;
+        this.tempdest_port = arr.dest_port;
+
+        var temp = JSON.parse(this.tempconfig)
+
+        switch(this.temptask_id) {
+          case 0 :    // basestream
+            this.temp_para[0] = temp.send_speed
+            break;
+
+          case 1 :    // socket output
+            this.temp_para[0] = temp.out_type
+            
+            if(temp.out_type == 1) {
+              this.temp_para[1] = temp.db
+              this.temp_para[2] = temp.table
+            }
+            if(temp.out_type == 2) {
+              this.temp_para[1] = temp.filename
+            }
+            break;
+
+          case 4 :
+            // var temp = JSON.parse(this.tempconfig);
+            this.val_InputQueueSize = temp[0].inQSize;
+            this.val_WindowType = temp[0].winType;
+            this.val_WindowSize = temp[0].winSize;
+            this.val_NumberofPane = temp[0].numPane;
+            this.val_SlidingSize = temp[0].sldSize;
+            this.AggQuery = temp[0].aggQuery;
+            this.AggConfigTrans = JSON.parse(arr[7]);
+            break;
+          
+          case 33 :         // fp_1_item
+            this.temp_para[0] = temp.agg_type;
+            this.temp_para[1] = temp.agg_unit;
+            this.temp_para[2] = temp.min_support;
+            this.temp_para[3] = temp.max_support;
+            break;
+          
+          case 34 :         // fp_N_item
+            this.temp_para[0] = temp.n_item
+            this.temp_para[1] = temp.agg_type;
+            this.temp_para[2] = temp.agg_unit;
+            this.temp_para[3] = temp.min_support;
+            this.temp_para[4] = temp.max_support;
+            break;
+
+          case 35 :         // Transactionizer
+            break;
+        }
+
+
+      })
+      .catch( response => {});
     },
     updateModifyTask() {
-      // console.log("updateModifyTask : ", this.tempconfig);
+      console.log("updateModifyTask : ", this.tempconfig);
       localStorage.removeItem("loglevel:webpack-dev-server");   // localstorage update를 위해 삭제
 
       var params = {
@@ -2112,8 +2083,12 @@ export default {
         position_x : this.tempposition_x - marginX,
         position_y : this.tempposition_y - marginY,
         linkto : this.templinkto,
-        linkfrom : this.templinkfrom
+        linkfrom : this.templinkfrom,
+        dest_ip : this.tempdest_ip,
+        dest_port : this.tempdest_port
       }
+
+      console.log("params : ", params)
 
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks/update";
 
@@ -2124,7 +2099,7 @@ export default {
       this.hideModifyMenu();      // modify 창 닫기
     },
     showModifyMenu(index, op_type) {
-      console.log("op type222 : ", op_type)
+      // console.log("op type222 : ", op_type)
       switch(op_type) {
         case 0:  modify_menu = modify_BS; break;
         case 1:  modify_menu = modify_SO; break;
@@ -2154,7 +2129,7 @@ export default {
 
       arr = returnArray(cntxtmenuID);
       op_type = arr[2];
-      console.log("op type : ", op_type)
+      // console.log("op type : ", op_type)
       this.showModifyMenu(cntxtmenuID, op_type);
     },
     modifyTask_reload() {
@@ -2353,12 +2328,14 @@ export default {
           taskArray[i].position_y,
           taskArray[i].linkto,
           taskArray[i].linkfrom,
-          taskArray[i].name
+          taskArray[i].name,
+          taskArray[i].dest_ip,
+          taskArray[i].dest_port
         );
       }
       this.taskcnt = 0;
     },
-    createDIV(index) {
+    createDIV(index) {      // box 생성
       var obj = document.getElementById("content");
       var newDIV = document.createElement("div");
       var id = taskArray[index].id;
@@ -2408,10 +2385,10 @@ export default {
       this.clearInput();
 
     },
-    localize(id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name) {
+    localize(id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name, dest_ip, dest_port) {
       localStorage.removeItem("loglevel:webpack-dev-server");
       var localLength = localStorage.length;
-      var arr = [id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name];
+      var arr = [id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name, dest_ip, dest_port];
       localStorage.setItem(localLength, JSON.stringify(arr));
       this.localcnt = localLength + 1;
     },

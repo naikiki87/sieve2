@@ -684,6 +684,32 @@ join program_types pt on t.program_type = pt.id where userid=0 or userid= ${curr
   res.json(tasks);
 }));
 
+router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("/get_taskinfo")
+  const id = req.body.id;
+  // const taskinfo = await db.doQuery(`SELECT * from job_tasks where id=${id}`);
+  const taskinfo = await db.doQuery(`SELECT jt.*, t.name FROM job_tasks jt, tasks t WHERE jt.id = ${id} AND jt.task_id = t.id`);
+  res.json(taskinfo);
+}));
+
+router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const start_id = req.body.start_id;
+  const end_id = req.body.end_id;
+  // const task_info = await db.doQuery(`SELECT * from job_tasks where id = ${end_id}`);
+  const dest_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
+WHERE jt.id = ${end_id} AND ec.id = jt.ec_id `);
+
+  // res.json(task_info);
+  const dest_ip = dest_info[0].ip_address;
+  const dest_port = dest_info[0].listening_port;
+  
+  console.log("dest info : ", dest_ip, dest_port)
+  // console.log("ip : ", dest_info.data.ip_address)
+  await db.doQuery(`UPDATE job_tasks SET dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id = ${start_id}`);
+  // res.json(dest_info)
+  res.json({success: true});
+}));
+
 router.post('/tasks/add',up, wrapper.asyncMiddleware(async (req, res, next) =>{
   const name = req.body.name;
   const program_type = req.body.program_type;
@@ -718,7 +744,7 @@ router.post('/job_tasks/update', wrapper.asyncMiddleware(async (req, res, next) 
   console.log(req.body)
 
   const id = req.body.id;
-  const job_id = req.body.job_id;
+  // const job_id = req.body.job_id;
   const task_id = req.body.task_id;
   const input_schema_id = req.body.input_schema_id;
   const listening_port = req.body.listening_port;
@@ -732,8 +758,11 @@ router.post('/job_tasks/update', wrapper.asyncMiddleware(async (req, res, next) 
   const position_y = req.body.position_y;
   const linkto = req.body.linkto;
   const linkfrom = req.body.linkfrom;
+  const dest_ip = req.body.dest_ip;
+  const dest_port = req.body.dest_port;
 
-  console.log(await db.doQuery(`UPDATE job_tasks SET task_id = ${task_id}, input_schema_id = ${input_schema_id}, listening_port = ${listening_port}, ec_id = ${ec_id}, output_type = ${output_type}, config = ${config}, heartbeat_task_id = ${heartbeat_task_id}, heartbeat_job_id = ${heartbeat_job_id}, output_schema_id = ${output_schema_id}, position_x = ${position_x}, position_y = ${position_y}, linkto = ${linkto}, linkfrom = ${linkfrom} WHERE id=${id}`));
+  // dest_ip = '${dest_ip}', dest_port = ${dest_port}
+  console.log(await db.doQuery(`UPDATE job_tasks SET task_id = ${task_id}, input_schema_id = ${input_schema_id}, listening_port = ${listening_port}, ec_id = ${ec_id}, output_type = ${output_type}, config = ${config}, heartbeat_task_id = ${heartbeat_task_id}, heartbeat_job_id = ${heartbeat_job_id}, output_schema_id = ${output_schema_id}, position_x = ${position_x}, position_y = ${position_y}, linkto = ${linkto}, linkfrom = ${linkfrom}, dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id=${id}`));
   res.json({success: true});
 }));
 router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -761,7 +790,9 @@ router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
 
   const position_x = req.body.position_x;
   const position_y = req.body.position_y;
-  console.log(await db.doQuery(`INSERT INTO job_tasks (job_id, task_id, input_schema_id, listening_port, ec_id, output_type, config, heartbeat_task_id, heartbeat_job_id, output_schema_id, position_x, position_y) values ('${job_id}','${task_id}','${input_schema_id}','${listening_port}','${ec_id}','${output_type}','${config}','${heartbeat_task_id}','${heartbeat_job_id}','${output_schema_id}','${position_x}','${position_y}')`));
+  const dest_ip = req.body.dest_ip;
+  const dest_port = req.body.dest_port;
+  console.log(await db.doQuery(`INSERT INTO job_tasks (job_id, task_id, input_schema_id, listening_port, ec_id, output_type, config, heartbeat_task_id, heartbeat_job_id, output_schema_id, position_x, position_y, dest_ip, dest_port) values ('${job_id}','${task_id}','${input_schema_id}','${listening_port}','${ec_id}','${output_type}','${config}','${heartbeat_task_id}','${heartbeat_job_id}','${output_schema_id}','${position_x}','${position_y}', '${dest_ip}', '${dest_port}')`));
   res.json({success: true});
 }));
 router.post('/job_tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
