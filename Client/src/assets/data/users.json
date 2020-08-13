@@ -1,0 +1,25 @@
+{
+  "hostserver" : "192.168.0.1",
+  "users" : [
+    {
+      "firstname" : "Ray",
+      "lastname" : "Villa"
+    },
+    {
+      "firstname" : "Rim",
+      "lastname" : "HHHH"
+    },
+    {
+      "firstname" : "Bruce",
+      "lastname" : "Lee"
+    },
+    {
+      "firstname" : "Cruise",
+      "lastname" : "tom"
+    },
+    {
+      "firstname" : "Brad",
+      "lastname" : "Pitt"
+    }
+  ]
+}

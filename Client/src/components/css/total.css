@@ -1,0 +1,141 @@
+body { text-align : center; background-color: #f6f6f8; }
+input { border-style: groove; width : 200px; }
+button { border-style: groove; }
+.shadow { box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03) }
+.tabmenu { float : left; padding : 0px; height : 48px; width : 105px; padding-top : 15px; color : white; font-size : 13px;}
+.active { font-size : 14px; font-weight:bold; color : gold; }
+.pageName { background : gold; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
+.pageName2 { margin-left : 5px; margin-right:5px; background : grey; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:3px; color:white}
+
+.tabcontent { width:98%; margin-left:1%; border : 1px solid grey; height:600px;}
+.addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:navy; color:white}
+
+.mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}
+.mainMngTable tr { margin:0px; padding:0px; height : 33px; padding : 0px; border : 1px solid blue; background : ; }
+.mainMngTable th { margin:0px; padding:0px;font-size : 15px; height : 33px; padding : 0px; border : 0px solid #d8d8d8; background : #bdbdbd; }
+.mainMngTable td { margin:0px; padding:0px;font-size : 15px; font-style:italic; border-top : 1px solid #d8d8d8; background : #fafafa }
+/* #d8d8d8 */
+
+.mainMngTable2 { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto; padding-top:5px; padding-bottom:5px;}
+.mainMngTable2 tr { height : 27px; padding : 0px; border : 0px solid; background : ; }
+.mainMngTable2 th { font-size : 14px; height : 27px; padding : 0px; border : 0px solid #d8d8d8; background : #bdbdbd; }
+.mainMngTable2 td { font-size : 14px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+.mainMngTable2 input { height : 25px; padding : 0px; margin:3px; border : 1px solid grey; font-size:16px; padding-left:5px; }
+.mainMngTable2 select { height : 27px; padding : 0px; margin:3px; border : 1px solid grey; font-size:16px; }
+
+.add_title { width : 120px; background:; font-weight:700;}
+
+.loginBtn { width:76px; height:30px; font-size:14px; font-weight:700; margin-left:10px; margin-right:30px; background:white; color:;}
+
+div { padding : 0px; margin : 0px; font-size: 12px; }
+
+#content {position:absolute; top:0px; left:0px; width: 850px; height : 850px; background:; margin : 0px; padding:0px; border : 1px solid;}
+#header {position:absolute; top : 0px; left:850px; width : 250px; height:280px; background : lightgrey ;border : 1px solid; }
+#job_notice {position:absolute; top : 0px; left:850px; width : 250px; height:100px; background : blue; border : 10px solid; }
+#content div:hover{ background:#a9e2f3; color:white; border : 1px solid blue; }
+#rightaside {position:absolute; top:280px; left: 850px; background : ; width:250px; height : 570px; border : 1px solid;}
+#arrowbg {position:absolute; top:0px; left:0px; width: 800px; height : 700px; background:; margin : 0px; padding:0px; border : ; background : }
+#parent { width : 900px; height : 666px; position: absolute; top : 82px; left : 204px; border: 0px; padding : 0px; margin : 0px; border : 0px solid blue; pointer-events:none; background : blue; }
+
+.linkline { stroke:black; stroke-width:1; pointer-events:auto; }
+.div-content { width: 90px; height: 90px; background-color:#f2f2f2; color:black; padding:0px; float:left; margin:0px; text-align:center; line-height: 10px; border:1px solid #a4a4a4; position:absolute; }
+.linkline:hover{ stroke : pink; stroke-width:12; stroke-dasharray : "10, 5"; }
+.no-drag { font-weight : 700; font-size : 15px; color : #0080ff;
+/* .no-drag { font-style : italic; font-weight : 700; font-size : 15px; color : RE; */
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+/* .no-drag2 { font-style : italic; font-weight : 700; font-size : 12px; color : darkblue; */
+.no-drag2 { font-weight : 700; font-size : 12px; color : darkblue; height:5px;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+.no-drag3 { font-weight : 2000; font-size : 12px; color : black;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+#aside_header { padding: 0px; margin : 0px; height : 30px; background-color: black; color : white;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+.context-menus { padding : 0px; position: absolute; display: none; border: ; width: 80px; text-align: center; background : white; height : 40px; padding : 0px; }
+.context-menus>p { width : 80px; height:25px; margin : 0px; border : 1px solid; padding-top : 5px; font-size : 13px;}
+.context-menus>p:hover { background-color: lightyellow; font-weight:700; font-size:}
+
+#modifyButton { width : 100px; height : 25px; }
+#modify_BS { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_1_itemFP { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_n_itemFP { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_Proj { background : white; border : 1px solid; width : 750px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_SO { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_Agg { background : white; border : 1px solid; width : 848px; height : 510px; border : 2px solid darkblue; display : none;}
+#modify_HJ { background : white; border : 1px solid; width : 848px; height : 550px; border : 2px solid darkblue; display : none;}
+#modify_BJ { background : white; border : 1px solid; width : 848px; height : 550px; border : 2px solid darkblue; display : none;}
+/* #modify_TR { background : white; border : 1px solid; width : 848px; height : 450px; border : 2px solid darkblue; display : none;} */
+#modify_TR { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+
+.modify_window_title { background:darkblue; height : 50px; margin : 0px; padding : 3px; color:white;}
+.proj_attr_box { width : 200px; height : 230px; border : 0px solid; }
+.proj_attr_btwbox {width : 50px; height : 230px; border : 0px solid; }
+.proj_attr_title { background:; height : 20px; border : 1px solid; }
+.proj_attr_list { width : 190px; height : 200px; border : 2px solid lightblue; overflow-y:hidden;}
+
+.agg_btwbox {width : 5px; height : 230px; border : 0px solid; }
+.aggtabcontent { width:510px; height:270px; border : 1px solid; margin : 0px;}
+.modify_window_op_title { color : black; }
+
+#AggConfig_title { height:20px; background : black; color : white; font-size:14px; font-weight : 600; margin-bottom : 5px;}
+#AggConfig_table { border : 1px solid; padding : 0px;}
+#AggConfig_table tr { height : 28px; padding : 0px; border : 0.1px solid #d8d8d8; background : #fafafa }
+#AggConfig_table th { font-size : 14px; height : 18px; padding : 0px; border : 1px solid #d8d8d8; background : lightgrey }
+#AggConfig_table td { font-size : 12px; padding : 0px; border : 0.1px solid #d8d8d8; background : #fafafa }
+
+#AggWindowType { height: 21px;width : 93%; border:1px solid; text-align:center;}
+
+#AggQuery_table {background:; width : 510px;}
+#frameHalfJoin { width:600px; height:420px; border : 1px solid; margin : 0px;}
+#frameBinJoin { width:600px; height:420px; border : 1px solid; margin : 0px;}
+#frameTransaction { width:600px; height:320px; border : 1px solid; margin : 0px;}
+
+#AggGroupBy_config_top { height : 45px; border : 0px solid; background: ;}
+#AggGroupBy_config_mid { height : 90px; border : 0px solid; background: ;}
+#AggGroupBy_config_bot { height : 45px; border : 0px solid; background: ;}
+#AggGroupByConfig_top_table { height:200px; border : 1px solid; padding : 0px; border : 1px solid grey; margin : auto; width:98%;}
+#AggButton { width : 60px; height : 25px; }
+#AggButton2Query { width : 80px; height : 25px; }
+
+.AggGeneralInput { text-align:center; width : 90%; }
+
+#loginTable { border : 1px solid lightgrey; padding : 0px; background: white;}
+#loginTable tr { height : 40px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+#loginTable input { height : 35px; padding : 0px; border : 1px solid #81BEF7; background : #fafafa; font-size:16px; }
+#loginTable th { font-size : 14px; height : 20px; padding : 0px; border : 0px solid #d8d8d8; background : lightgrey }
+#loginTable td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+
+#HJConfig_title { height:18px; background : black; color : white; font-size:14px; font-weight : 600; margin-bottom : 5px;}
+#HJConfig_table { border : 1px solid lightgrey; padding : 0px;}
+#HJConfig_table tr { height : 18px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+#HJConfig_table th { font-size : 14px; height : 20px; padding : 0px; border : 0px solid #d8d8d8; background : lightgrey }
+#HJConfig_table td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+
+#BJConfig_title { height:18px; background : black; color : white; font-size:14px; font-weight : 600; margin-bottom : 5px;}
+#BJConfig_table { border : 1px solid lightgrey; padding : 0px;}
+#BJConfig_table tr { height : 29px; padding : 0px; border : 1px solid #d8d8d8; background : #fafafa }
+#BJConfig_table th { font-size : 14px; height : 20px; padding : 0px; border : 1px solid #d8d8d8; background : lightgrey }
+#BJConfig_table td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+
+.mainTable { height:18px; background : black; color : white; font-size:14px; font-weight : 600; margin-bottom : 5px;}
+.mainTable { border : 1px solid lightgrey; padding : 0px;}
+.mainTable tr { height : 29px; padding : 0px; border : 1px solid #d8d8d8; background : #fafafa }
+.mainTable th { font-size : 14px; height : 20px; padding : 0px; border : 1px solid #d8d8d8; background : lightgrey }
+.mainTable td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+
+.HJrefreshTime { width : 50px; }
+.BJvalWinType { width : 91%; }
+.BJvalAttrIndex { width : 91%; }
+.BJbutton { width : 80px;}
+.JobDetailHeaderbutton { height:33px; width:218px; margin:1px; font-size:13px; font-weight:700}
+.JobDetailHeaderbutton2 { height:48px; width:100px; margin:5px; font-size:14px; font-weight:700; background:darkblue; color:white;}
+
+#TDHeader_table { border : 1px solid lightgrey; padding : 0px; font-weight:700}
+#TDHeader_table tr { height : 30px; padding : 0px; border : 1px solid #d8d8d8; background :  }
+#TDHeader_table td { font-size : 13px; padding : 0px; border : 0px solid #d8d8d8; background : }
+
+.TDrightTable { margin:auto; width:90%; align:center; background :;}
+.TDrightTable tr { height : 35px; padding : 0px; border : 1px solid #d8d8d8; background :  }
+.TDrightTable td { font-size : 13px; padding : 0px; border : 0px solid #d8d8d8; background : }
+
+#loadingBack{ position: absolute; z-index: 100; background-color: #000000; display:none; left:0; top:0; }
+#loadingBar{ position:absolute; left:50%; top: 40%; z-index:200; }

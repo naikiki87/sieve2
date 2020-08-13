@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : account.xml
+    Created on : 2009년 4월 30일 (목), 오전 1:33
+    Author     : nsh
+    Description:
+        Purpose of the document follows.
+-->
+
+<account-list>
+    <account use-name="nsh" password="123" permission ="MANAGER"/>
+    <account use-name="t1" password="123" permission ="NORMAL"/>
+    <account use-name="t2" password="123" permission ="NORMAL_DELETED"/>
+</account-list>

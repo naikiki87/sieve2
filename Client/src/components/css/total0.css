@@ -1,0 +1,68 @@
+.linkline { stroke:black; stroke-width:1; pointer-events:auto; }
+.div-content {
+  width: 90px;
+  height: 90px;
+  background-color:#f2f2f2;
+  color:black;
+  padding:0px;
+  float:left;
+  margin:0px;
+  text-align:center;
+  line-height: 10px;
+  border:1px solid #a4a4a4;
+  position : absolute;
+  top : 110px;
+  left : 210px;
+
+}
+.no-drag {
+  font-style : italic;
+  font-weight : 700;
+  font-size : 15px;
+  color : #0080ff;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+.no-drag2 {
+  font-style : italic;
+  font-weight : 700;
+  font-size : 12px;
+  color : #0080ff;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+.no-drag3 {
+  font-weight : 2000;
+  font-size : 12px;
+  color : black;
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none; pointer-events : none; }
+#contents div:hover{ background:#a9e2f3; color:white; border : 1px solid blue; }
+.linkline:hover{ stroke : pink; stroke-width:12; stroke-dasharray : "10, 5"; }
+div { padding : 0px; margin : 0px; font-size: 12px; }
+#wrap { width : 1100px;; height : 750px; border : 1px solid; padding-right : 2px;}
+#header { width : 1100px; height:80px; background : lightgrey; padding-left : 2px; border-bottom : 1px solid; }
+#aside { width:200px; height : 668px; border : 1px solid; }
+#container { width : 200px; height : 670px; border : 0px solid; float : left; }
+#contents { width : 900px; height : 666px; padding-left : 204px; padding-top : 2px;}
+#parent {
+
+  width : 900px;
+  height : 666px;
+  position: absolute;
+  top : 82px;
+  left : 204px;
+  border: 0px;
+  padding : 0px;
+  margin : 0px;
+  border : 0px solid blue;
+  pointer-events:none;
+}
+.tree_header {
+  padding: 0px;
+  margin : 0px;
+  height : 20px;
+  background-color: black;
+  color : white;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select:none;
+  pointer-events : none;
+}

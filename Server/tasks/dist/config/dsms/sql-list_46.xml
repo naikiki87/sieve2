@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<query-list>
+    <query id="Q1" type="WindowPerStream">
+        <sql>
+            <columns>
+                <column attribute="" stream="*"/>
+            </columns>
+            <sources>
+                <source data-definition-id="38" stream="센서데이터"
+                    type="Ranges" window="22"/>
+                <source data-definition-id="4" stream="sang-gi"
+                    type="Ranges" window="22"/>
+            </sources>
+            <conditions>
+                <selections/>
+                <joins>
+                    <join operation="eqaul">
+                        <operand attribute="tid" stream="센서데이터"/>
+                        <operand attribute="timestamp" stream="sang-gi"/>
+                    </join>
+                </joins>
+            </conditions>
+        </sql>
+        <SQLStatement/>
+        <Description/>
+        <ActuatorCondition/>
+    </query>
+</query-list>

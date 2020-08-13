@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<cost_catalog task_id="44">
+    <monitoring count="0"/>
+    <stream-list>
+        <stream m_rate="100" name="NetworkFlow" sd_rate="37"/>
+        <stream m_rate="223" name="fulld" sd_rate="14"/>
+        <stream m_rate="368" name="센서데이터" sd_rate="32"/>
+    </stream-list>
+    <attribute-list>
+        <attribute m_domain="41298" name="switch address" sd_domain="4402"/>
+        <attribute m_domain="43548" name="att1" sd_domain="1943"/>
+        <attribute m_domain="47821" name="tid" sd_domain="2449"/>
+        <attribute m_domain="22790" name="source IP" sd_domain="2516"/>
+    </attribute-list>
+    <join-list>
+        <join operation="eqaul" shared_count="1">
+            <operand attribute="switch address" stream="NetworkFlow"/>
+            <operand attribute="att1" stream="fulld"/>
+        </join>
+        <join operation="eqaul" shared_count="1">
+            <operand attribute="tid" stream="센서데이터"/>
+            <operand attribute="source IP" stream="NetworkFlow"/>
+        </join>
+    </join-list>
+    <history/>
+</cost_catalog>

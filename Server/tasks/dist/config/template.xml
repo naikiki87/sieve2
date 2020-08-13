@@ -1,0 +1,1048 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<template>
+    <ddl id="15">
+<title>CCTV_FrameID</title>
+<owner>dblab</owner>
+<creation-date>1458025739555</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>Timestamp</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>FrameID</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>CameraID</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>ObjectID</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>Size</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="6">
+<name>Speed</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="7">
+<name>CurrentZone</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="8">
+<name>AppearZone</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="9">
+<name>Black</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="10">
+<name>Brown</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="11">
+<name>grey</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="12">
+<name>Blue</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="13">
+<name>Green</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="14">
+<name>Cyan</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="15">
+<name>Red</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="16">
+<name>Magenta</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="17">
+<name>Yellow</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="18">
+<name>White</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="19">
+<name>pixelX</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="20">
+<name>pixelY</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+    <ddl id="6">
+<title>kinect</title>
+<owner>dblab</owner>
+<creation-date>1462777246970</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>Timestamp</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>ObjectID</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>ZoneID</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>posture</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>joint_ratio</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="6">
+<name>color_r</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="7">
+<name>color_g</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="8">
+<name>color_b</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+    <ddl id="5">
+<title>beacon</title>
+<owner>dblab</owner>
+<creation-date>1461473479467</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>Timestamp</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>ObjectID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>ZoneID</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+
+
+
+</attribute-list>
+</ddl>
+    <task id="4" mode="DataStreamMining">
+<name>test_sojong</name>
+<owner>dblab</owner>
+<creation-date>1459775223154</creation-date>
+<description> </description>
+<visible-other-user>true</visible-other-user>
+<schedule-list> </schedule-list>
+<preload-flag>false</preload-flag>
+
+<job-list>
+
+
+
+
+
+<job id="4002" identifier="1" pos_x="7.0" pos_y="37.0">
+<name>Beacon</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<data-definition-id>15</data-definition-id>
+<pipe-name>165.132.121.42:40144</pipe-name>
+<number-of-blank>0</number-of-blank>
+<ip-mapping-flag>false</ip-mapping-flag>
+<mapping-table-flag>false</mapping-table-flag>
+<delay>0</delay>
+<abnormal-tuple-policy>discard</abnormal-tuple-policy>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+<export-list/>
+</job>
+<job id="4000" identifier="14" pos_x="9.0" pos_y="145.0">
+<name>aag</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<memory-management-type>on-demand</memory-management-type>
+<memory-management-predefined>1000</memory-management-predefined>
+<estimationtype>0</estimationtype>
+<is-ms>false</is-ms>
+<default-flag>0</default-flag>
+<window-type>1</window-type>
+<window-size>1</window-size>
+<number-of-pane>1</number-of-pane>
+<sliding-size>1</sliding-size>
+<with-rownum>false</with-rownum>
+
+
+
+
+<query-string>Select MAX(Timestamp)
+, AVG(Size)
+, AVG(Speed)
+, MAX(CurrentZone)
+, MAX(Black)
+, MAX(Brown)
+, MAX(grey)
+, MAX(Blue)
+, MAX(Green)
+, MAX(Cyan)
+, MAX(Red)
+, MAX(Magenta)
+, MAX(Yellow)
+, MAX(White)
+, MAX(pixelX)
+, MAX(pixelY)
+From CCTV_FrameID
+Group by  ObjectID
+Having Count(FrameID) &gt;= 10
+</query-string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<group-by-list>
+<index>3</index>
+</group-by-list>
+<having-list>
+<having>
+<index>1</index>
+<aggregation-operator>5</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+<relation-operator>4</relation-operator>
+<constant-type>integer</constant-type>
+<constant>10</constant>
+</having>
+</having-list>
+<select-list>
+<select>
+<index>0</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>4</index>
+<aggregation-operator>4</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>5</index>
+<aggregation-operator>4</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>6</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>8</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>9</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>10</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>11</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>12</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>13</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>14</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>15</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>16</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>17</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>18</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>19</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+</select-list>
+<order-by-list>
+<output-top>-1</output-top>
+</order-by-list>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/result" identifier="1" line_export="false" name="result" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+
+<job id="4001" identifier="1" pos_x="250.0" pos_y="31.0">
+<name>키넥트</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<data-definition-id>6</data-definition-id>
+<pipe-name>165.132.121.42:40145</pipe-name>
+<number-of-blank>0</number-of-blank>
+<ip-mapping-flag>false</ip-mapping-flag>
+<mapping-table-flag>false</mapping-table-flag>
+<delay>0</delay>
+<abnormal-tuple-policy>discard</abnormal-tuple-policy>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+<export-list/>
+</job>
+<job id="4003" identifier="12" pos_x="121.0" pos_y="348.0">
+<name>join</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<not_matched>temp1:4008#p:4004</not_matched>
+<condition>(  )</condition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<join inner-buffer-size="1000" operation="equal">
+<operand attribute="GRP(Timestamp)" stream="temp1"/>
+<operand attribute="MAX(Timestamp)" stream="p"/>
+<operand attribute="MAX(ZoneID)" stream="temp1"/>
+<operand attribute="MAX(CurrentZone)" stream="p"/>
+</join>
+<sources>
+<source query="Q1" stream="temp1" type="Ranges" window="1"/>
+<source query="Q1" stream="p" type="Ranges" window="1"/>
+</sources>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<export-list/>
+</job>
+<job id="4004" identifier="7" pos_x="414.0" pos_y="142.0">
+<name>p</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	9	7	8	10	11	12	13	14	15	16	17	18	19	20	21</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+
+
+
+<export-list/>
+</job>
+<job id="4005" identifier="1" pos_x="539.0" pos_y="142.0">
+<name>beacon</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<data-definition-id>5</data-definition-id>
+<pipe-name>165.132.145.42:40149</pipe-name>
+<number-of-blank>0</number-of-blank>
+<ip-mapping-flag>false</ip-mapping-flag>
+<mapping-table-flag>false</mapping-table-flag>
+<delay>0</delay>
+<abnormal-tuple-policy>discard</abnormal-tuple-policy>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+<export-list/>
+</job>
+<job id="4006" identifier="12" pos_x="475.0" pos_y="287.0">
+<name>CCTV비콘</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+
+
+<not_matched>p:4009#beacon:4011</not_matched>
+<condition>(  )</condition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<join inner-buffer-size="1000" operation="equal">
+<operand attribute="GRP(Timestamp)" stream="p"/>
+<operand attribute="Timestamp" stream="beacon"/>
+<operand attribute="p.MAX(CurrentZone)" stream="p"/>
+<operand attribute="ZoneID" stream="beacon"/>
+</join>
+<sources>
+<source query="Q1" stream="p" type="Ranges" window="1"/>
+<source query="Q1" stream="beacon" type="Ranges" window="1"/>
+</sources>
+</parameter-list>
+
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+<export-list/>
+</job>
+
+<job id="4008" identifier="7" pos_x="174.0" pos_y="468.0">
+<name>키넥트Only</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/sojong/kinect_only" identifier="1" line_export="false" name="kinect_only" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+
+<job id="4007" identifier="7" pos_x="42.0" pos_y="465.0">
+<name>키_C</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	9	7	8	10	11	12	13	14	15	16	17	18	19	20	21	2	3	4	5	6</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/sojong/kinect_cctv" identifier="1" line_export="false" name="kinect_cctv" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+<job id="4009" identifier="7" pos_x="615.0" pos_y="471.0">
+<name>CCTV</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/sojong/cctv_only" identifier="1" line_export="false" name="cctv_only" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+<job id="4010" identifier="7" pos_x="334.0" pos_y="461.0">
+<name>C_비</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/sojong/beacon_cctv" identifier="1" line_export="false" name="beacon_cctv" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+<job id="4011" identifier="7" pos_x="472.0" pos_y="467.0">
+<name>비콘</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	17	16</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+
+
+
+
+<export-list>
+<export destination-path="/home/adag123/sojong/becon_only" identifier="1" line_export="false" name="beacon_only" type="mining-result" window-size="1"/>
+</export-list>
+</job>
+
+
+
+
+
+<job id="4012" identifier="35" pos_x="307.0" pos_y="690.0">
+<name>so</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<number-of-blank>0</number-of-blank>
+<data-definition-id>15</data-definition-id>
+<pipe-name>165.132.145.42:40150</pipe-name>
+<ip-mapping-flag>false</ip-mapping-flag>
+<mapping-table-flag>false</mapping-table-flag>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+<export-list/>
+</job>
+
+<job id="4014" identifier="7" pos_x="121.0" pos_y="151.0">
+<name>temp1</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+
+
+<export-list/>
+</job>
+
+
+<job id="4013" identifier="14" pos_x="251.0" pos_y="151.0">
+<name>kinect</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<memory-management-type>on-demand</memory-management-type>
+<memory-management-predefined>1000</memory-management-predefined>
+<estimationtype>0</estimationtype>
+<is-ms>false</is-ms>
+<default-flag>0</default-flag>
+<window-type>1</window-type>
+<window-size>1</window-size>
+<number-of-pane>1</number-of-pane>
+<sliding-size>1</sliding-size>
+<with-rownum>false</with-rownum>
+
+
+
+
+<query-string>Select Group(Timestamp)
+, MAX(ZoneID)
+, MAX(posture)
+, MAX(joint_ratio)
+, MAX(color_r)
+, MAX(color_g)
+, MAX(color_b)
+From kinect
+Group by  Timestamp
+, ObjectID
+</query-string>
+<group-by-list>
+<index>0</index>
+<index>1</index>
+</group-by-list>
+<having-list/>
+<select-list>
+<select>
+<index>0</index>
+<aggregation-operator>0</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>2</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>3</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>4</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>5</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>6</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+<select>
+<index>7</index>
+<aggregation-operator>1</aggregation-operator>
+<distinct-flag>0</distinct-flag>
+</select>
+</select-list>
+<order-by-list>
+<output-top>-1</output-top>
+</order-by-list>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+<export-list/>
+</job>
+<job id="4015" identifier="7" pos_x="9.0" pos_y="253.0">
+<name>p</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+<export-list/>
+</job>
+
+
+<job id="4016" identifier="7" pos_x="126.0" pos_y="33.0">
+<name>p</name>
+<description> </description>
+<input-queue-size>1</input-queue-size>
+<parameter-list>
+<selected-attribute>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19</selected-attribute>
+</parameter-list>
+<property-result-graph-setting-list/>
+
+<export-list/>
+</job>
+
+</job-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<job-mapping-list>
+<mapping parent-id="4010">
+<child-job id="4012"/>
+</mapping>
+<mapping parent-id="4007">
+<child-job id="4012"/>
+</mapping>
+<mapping parent-id="4011">
+<child-job id="4012"/>
+</mapping>
+<mapping parent-id="4004">
+<child-job id="4006"/>
+</mapping>
+<mapping parent-id="4005">
+<child-job id="4006"/>
+</mapping>
+<mapping parent-id="4006">
+<child-job id="4010"/>
+<child-job id="4011"/>
+<child-job id="4009"/>
+</mapping>
+<mapping parent-id="4008">
+<child-job id="4012"/>
+</mapping>
+<mapping parent-id="4009">
+<child-job id="4012"/>
+</mapping>
+<mapping parent-id="4003">
+<child-job id="4004"/>
+<child-job id="4008"/>
+<child-job id="4007"/>
+</mapping>
+<mapping parent-id="4000">
+<child-job id="4015"/>
+</mapping>
+<mapping parent-id="4015">
+<child-job id="4003"/>
+</mapping>
+<mapping parent-id="4002">
+<child-job id="4016"/>
+</mapping>
+<mapping parent-id="4016">
+<child-job id="4000"/>
+</mapping>
+<mapping parent-id="4014">
+<child-job id="4003"/>
+</mapping>
+<mapping parent-id="4013">
+<child-job id="4014"/>
+</mapping>
+<mapping parent-id="4001">
+<child-job id="4013"/>
+</mapping>
+</job-mapping-list>
+</task>
+</template>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ddl-list SYSTEM "DataDefinition.dtd">
+<ddl-list>
+
+<ddl id="0">
+<title>route</title>
+<owner>dblab</owner>
+<creation-date>1527567988842</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+
+
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>id</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>gridID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>patternID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>routeID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>profileID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="6">
+<name>cameraID</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="7">
+<name>objectType</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="8">
+<name>support</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="9">
+<name>length</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="10">
+<name>countAVG</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="11">
+<name>countSTD</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="12">
+<name>directionAVG</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="13">
+<name>directionSTD</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="14">
+<name>flag</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ddl id="1">
+<title>grid_statistic</title>
+<owner>dblab</owner>
+<creation-date>1534498429886</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+
+
+
+
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>timestamp</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>cameraid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>area_gridid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>route_gridid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>speed</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="6">
+<name>size</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="7">
+<name>direction</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="8">
+<name>c1</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="9">
+<name>c2</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="10">
+<name>c3</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="11">
+<name>c4</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="12">
+<name>c5</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="13">
+<name>c6</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="14">
+<name>c7</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="15">
+<name>c8</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="16">
+<name>c9</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="17">
+<name>c10</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="18">
+<name>count</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="19">
+<name>aspectRatio</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="20">
+<name>objectType</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="21">
+<name>width</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="22">
+<name>height</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="23">
+<name>directionX</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="24">
+<name>directionY</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+<ddl id="2">
+<title>videoLog_obj</title>
+<owner>dblab</owner>
+<creation-date>1534735146491</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="1">
+<name>timestamp</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>cameraid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>objectid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>area_gridid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>route_gridid</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="6">
+<name>objectType</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+</ddl-list>

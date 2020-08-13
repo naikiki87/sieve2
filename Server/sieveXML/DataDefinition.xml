@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ddl-list SYSTEM "DataDefinition.dtd">
+<ddl-list>
+<ddl id="1">
+<title> test1 </title>
+<owner>dblab</owner>
+<creation-date>1579168326196</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="0">
+<name>s2</name>
+<type>long</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="1">
+<name>s5</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+<ddl id="2">
+<title> tet2 </title>
+<owner>dblab</owner>
+<creation-date>1579168326196</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="0">
+<name>id</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="1">
+<name>val</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
+</ddl-list>

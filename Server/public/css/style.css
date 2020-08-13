@@ -1,0 +1,48 @@
+.eval_btn {
+    float: left;
+    width: 25%;
+    background-color: #fcf8e3;
+    height: 50px;
+    padding-top: 12.5px;
+    text-align: center;
+    font-weight: 800;
+    border: solid 1px #ccc;
+    cursor: pointer;
+}
+.category {
+	padding: 150px;
+}
+.eval_btn.active {
+    background-color: #98e2fe;
+}
+.input_form {
+	    width: 30%;
+    float: left;
+}
+.input_form label {
+	margin-right: 15px;
+	
+}
+.table td, .table th {
+	
+border: 1px solid #dee2e6;
+text-align:center;
+}
+h2 {
+	margin-bottom: 20px;
+}
+.console {
+	width: 80%;
+	height: 100px;
+	background-color:#222222;
+	color:#ffffff;
+	overflow-y:scroll;
+	font-size:15px;
+	margin-bottom: 30px;
+}
+.desc {
+	margin-top: 10px;
+	margin-bottom: 30px;
+	font-size:14px;
+	color: #123456;
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class = "category_con">
+	<div class = "eval_btn active" id = "c1"><a href="#">컴퓨22터 관리</a></div>
+	<div class = "eval_btn " id = "c2"><a href="#">스키마 관리</a></div>
+	<div class = "eval_btn" id = "c3"><a href="#">프로파일 관리</a></div>
+	<div class = "eval_btn" id = "c4"><a href="#">비정상 확인</a></div>
+</div>
+
+<div class = "category" id = "c1">
+
+	<div class = "console">
+	</div>
+	<table class = "table" style = "width:40%; height:200px; margin-bottom:30px;">
+		<thead>
+			<tr>
+				<th>role</th>
+				<th>역할</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>0</th>
+				<th>중앙서버</th>
+			</tr>
+			<tr>
+				<th>1</th>
+				<th>프로파일(학습)</th>
+			</tr>
+			<tr>
+				<th>2</th>
+				<th>패턴학습</th>
+			</tr>
+			<tr>
+				<th>3</th>
+				<th>모니터링</th>
+			</tr>
+		</tbody>
+
+	</table>
+	<button type="button" class="btn btn-primary submit" id = "copy">배포</button>
+	<button type="button" class="btn btn-primary submit" id = "run">실행</button>
+	<h2> 컴퓨터 목록 </h2>
+	<table class="table table-striped" id = "engine_computer" style = "width:40%; float: left; margin-right:8%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>ip_address</th>
+				<th>input_port</th>
+				<th>role</th>
+				<th>output_computer</th>
+				<th>module_name</th>
+				<th>description</th>
+				<th>삭제</th>
+				<th>실행</th>
+				<th>종료</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	<div class = "input_form">
+		<label>IP : </label><input type = "text" name = "ip_address"></input><br>
+		<label>Input Port : </label><input type = "text" name = "input_port"></input><br>
+		<label>Root ID : </label><input type = "text" name = "root_id"></input><br>
+		<label>PassWord : </label><input type = "text" name = "root_passwd"></input><br>
+		<label>Role : </label><input type = "text" name = "role"></input><br>
+		<label>Output_computer_id : </label><input type = "text" name = "output_computer_id"></input><br>
+		<label>Module_name : </label><input type = "text" name = "module_name"></input><br>
+		<label>description : </label><input type = "text" name = "description"></input><br>
+		<div class = "desc">
+			모니터링일 경우 description에 object 별 비정상 탐지일 경우 1 아닐 경우 0 을 넣음<br>
+			프로파일(학습) 일 경우 timewindow를 세팅하는데 초_횟수 로 입력. (1분 단위 통계를 1시간 단위로 저장하려면 60_60)
+		</div>
+		<button type="button" class="btn btn-primary submit" id = "add_computer">추가</button>
+	</div>
+</div>
+<div class = "category" id = "c2">
+	<h2> 스키마 목록 </h2>
+	<table class="table table-striped" id = "key_measure" style = "width:40%; float: left; margin-right:8%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>name</th>
+				<th>is_key</th>
+				<th>std_c</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	<div class = "input_form">
+		<label>name : </label><input type = "text" name = "name"></input><br>
+		<label>is key? : </label><input type = "text" name = "is_key"></input><br>
+		<label>min support : </label><input type = "text" name = "std_c"></input><br>
+		<button type="button" class="btn btn-primary submit" id = "add_km">추가</button>
+	</div>
+	<button type="button" class="btn btn-primary submit" id = "make_schema">확정 및 저장</button>
+
+	<div class = "input_form" id = "pattern_config_form" style = "width: 100%; margin-top:30px; border-top:solid 1px #000000; padding-top: 30px">
+		<h2> 빈발 패턴 학습 임계 설정 </h2>
+		<label>sensor_key_name : </label><input type = "text" name = "sensor_key_name"></input><br>
+		<label>pattern_key_name : </label><input type = "text" name = "pattern_key_name"></input><br>
+		<label>min support : </label><input type = "text" name = "min_support"></input><br>
+		<label>min_length : </label><input type = "text" name = "min_length"></input><br>
+		<label>group_support : </label><input type = "text" name = "group_support"></input><br>
+		<label>num_transaction : </label><input type = "text" name = "num_transaction"></input><br>
+		<button type="button" class="btn btn-primary submit" id = "pattern_config">저장</button>
+	</div>
+</div>
+
+<div class = "category" id = "c3">
+	<h2> 프로파일 </h2>
+	<table class="table table-striped" id = "profile_normal_statistics" style = "width:100%; ">
+		<thead>
+			<tr>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<div class = "category" id = "c4">
+	<h2> 비정상 </h2>
+	<div class="container">
+		<p style = "font-size:20px;">날짜 선택: <input type="text" id="datepicker"></p><br>
+		<p style = "font-size:20px;">최소 비정상도: <input type="text" name = "min_abnormal_value"> <button type="button" class="btn btn-primary submit min_abn" id = "min_abn">확인</button></p>
+	</div>
+	<table class="table table-striped" id = "profile_abnormal_results" style = "width:100%; ">
+		<thead>
+			<tr>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<script>
+
+    $(function() {
+		$("#datepicker").datepicker({
+			onSelect: function(dateText)
+			{
+				var rows = $("#c4 table tbody tr")
+				$.each(rows, function( index, value ) {
+					$(value).show()
+					var log_time = parseInt($(value).find("td[name='log_created_time']").text()) * 1000
+					var bl =new Date(log_time)
+					var bs = new Date(dateText)
+					if(! (bl.getDate() == bs.getDate() && bl.getMonth() == bs.getMonth() && bl.getYear() == bs.getYear()))
+						$(value).hide()
+
+				});
+				//display("Selected date: " + dateText + "; input's current value: " + this.value);
+			}
+		});
+
+		$(".submit").unbind("click").click(function(e){
+			var t = $(e.target);
+			var t_id = t.attr("id")
+			if(t_id == "add_computer")
+			{
+				var inputs = t.parents(".category").find("input");
+				var params = {}
+				$.each(inputs, function( index, value ) {
+				var name = $(value).attr("name")
+				params[name] = $(value).val()
+
+				});
+				$.ajax({
+					type: 'post',
+					url: '/users/engine_computer',
+					data: params,
+					success: function(data) {
+					  $("#c1").click()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			else if(t_id == "add_km")
+			{
+				var inputs = t.parents(".input_form").find("input");
+				var params = {}
+				$.each(inputs, function( index, value ) {
+				var name = $(value).attr("name")
+				params[name] = $(value).val()
+
+				});
+				$.ajax({
+					type: 'post',
+					url: '/users/key_measure',
+					data: params,
+					success: function(data) {
+					  $("#c2").click()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			else if(t_id == "pattern_config")
+			{
+				var inputs = t.parents(".input_form").find("input");
+				var params = {}
+				$.each(inputs, function( index, value ) {
+				var name = $(value).attr("name")
+				params[name] = $(value).val()
+
+				});
+				$.ajax({
+					type: 'post',
+					url: '/users/pattern_config',
+					data: params,
+					success: function(data) {
+					  $("#c2").click()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			else if(t_id == "copy")
+			{
+
+				$.ajax({
+					type: 'get',
+					url: '/users/move_files',
+					success: function(data) {
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			else if(t_id == "run")
+			{
+				$.ajax({
+					type: 'get',
+					url: '/users/run',
+					data: params,
+					success: function(data) {
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			else if(t_id == "make_schema")
+			{
+				$.ajax({
+					type: 'get',
+					url: '/users/make_schema',
+					data: params,
+					success: function(data) {
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+
+		});
+
+		function run_kill_btn_listener() {
+			$(".run_btn").unbind("click").click(function(e){
+				var t = $(e.target);
+				var t_id = $(t.parents("tr").find("td")[0]).text()
+				var c_id = t.parents(".category").attr("id")
+				var params = {}
+				if(c_id == "c1")
+				{
+					params["id"] = t_id
+					$.ajax({
+						type: 'post',
+						url: '/users/run',
+						data: params,
+						success: function(data) {
+						  $("#c1").click()
+						  },
+						error: function(err) {
+						  console.log(err);
+						}
+					  });
+				}
+
+			});
+			$(".kill_btn").unbind("click").click(function(e){
+				var t = $(e.target);
+				var t_id = $(t.parents("tr").find("td")[0]).text()
+				var c_id = t.parents(".category").attr("id")
+				var params = {}
+				if(c_id == "c1")
+				{
+					params["id"] = t_id
+					$.ajax({
+						type: 'post',
+						url: '/users/kill',
+						data: params,
+						success: function(data) {
+						  $("#c1").click()
+						  },
+						error: function(err) {
+						  console.log(err);
+						}
+					  });
+				}
+
+			});
+		}
+		function del_btn_listener() {
+			$(".del_btn").unbind("click").click(function(e){
+				var t = $(e.target);
+				var t_id = $(t.parents("tr").find("td")[0]).text()
+				var c_id = t.parents(".category").attr("id")
+				var params = {}
+				if(c_id == "c1")
+				{
+					params["id"] = t_id
+					$.ajax({
+						type: 'post',
+						url: '/users/engine_computer/delete',
+						data: params,
+						success: function(data) {
+						  $("#c1").click()
+						  },
+						error: function(err) {
+						  console.log(err);
+						}
+					  });
+				}
+				if(c_id == "c2")
+				{
+					params["id"] = t_id
+					$.ajax({
+						type: 'post',
+						url: '/users/key_measure/delete',
+						data: params,
+						success: function(data) {
+						  $("#c2").click()
+						  },
+						error: function(err) {
+						  console.log(err);
+						}
+					  });
+				}
+
+			});
+		}
+		$(".eval_btn").unbind("click").click(function(e)
+		{
+			var t = $(e.target);
+			var evals = t.parents(".category_con").find(".eval_btn")
+			$.each(evals, function( index, value ) {
+				$(value).removeClass("active")
+			});
+
+			if(!t.hasClass("eval_btn"))
+				t = t.parents(".eval_btn")
+			t.addClass("active")
+
+			var this_id = t.attr("id")
+
+			var categorys = $(".category")
+			$.each(categorys, function( index, value ) {
+				$(value).hide()
+			});
+
+			if(this_id == "c1") {
+					$.ajax({
+					type: 'get',
+					url: '/users/engine_computer',
+					success: function(data) {
+					  insertToTable($('#engine_computer tbody'), data, ['id', 'ip_address', 'input_port', 'role', 'output_computer_id','module_name', 'description'], 0)
+					  del_btn_listener()
+					  run_kill_btn_listener();
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			if(this_id == "c2") {
+					$.ajax({
+					type: 'get',
+					url: '/users/key_measure',
+					success: function(data) {
+					  insertToTable($('#key_measure tbody'), data, ['id', 'name', 'is_key', 'std_c'], 1)
+					  del_btn_listener()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+				  $.ajax({
+					type: 'get',
+					url: '/users/pattern_config',
+					success: function(data) {
+					  if (data.length==0)
+						return
+					  $("#c2 #pattern_config_form [name = sensor_key_name]").val(data[0].sensor_key_name)
+					  $("#c2 #pattern_config_form [name = pattern_key_name]").val(data[0].pattern_key_name)
+					  $("#c2 #pattern_config_form [name = num_transaction]").val(data[0].num_transaction)
+					  $("#c2 #pattern_config_form [name = min_length]").val(data[0].min_length)
+					  $("#c2 #pattern_config_form [name = group_support]").val(data[0].group_support)
+					  $("#c2 #pattern_config_form [name = min_support]").val(data[0].min_support)
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			if(this_id == "c3") {
+					$.ajax({
+					type: 'get',
+					url: '/users/profile_normal_statistics',
+					success: function(data) {
+					  if(typeof data == "undefined" || data.length == 0 )
+						return;
+					  var col_list = Object.keys(data[0])
+					  insertToHeader($('#profile_normal_statistics thead tr'), col_list, true)
+					  insertToTable($('#profile_normal_statistics tbody'), data, col_list, 2)
+					  del_btn_listener()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+			if(this_id == "c4") {
+					$.ajax({
+					type: 'get',
+					url: '/users/profile_abnormal_results',
+					success: function(data) {
+					  if(typeof data == "undefined" || data.length == 0 )
+						return;
+					  var col_list = Object.keys(data[0])
+					  insertToHeader($('#profile_abnormal_results thead tr'), col_list, true)
+					  insertToTable($('#profile_abnormal_results tbody'), data, col_list, 2)
+					  del_btn_listener()
+					  },
+					error: function(err) {
+					  console.log(err);
+					}
+				  });
+			}
+
+			$(".category#" + this_id).show()
+
+
+
+		})
+	$("#c4 .min_abn").click(function(e){
+			var t = $(e.target).parents("p").find("[name = min_abnormal_value]").val()
+			var rows = $("#c4 table tbody tr")
+			$.each(rows, function( index, value ) {
+				$(value).show()
+				var abnormal_value = parseFloat($(value).find("td[name='abnormal_value']").text())
+
+				if(abnormal_value < t)
+					$(value).hide()
+
+			});
+		})
+	function insertToTable(dom, arr, cols, clean_flag)
+	{
+
+		dom.html('')
+		 var bodyString = '';
+		$.each(arr, function(index, ctry)
+		{
+			bodyString += '<tr>'
+			$.each(cols, function(c_index, c_ctry)
+			{
+				bodyString += '<td name = "'+c_ctry+'">' + ctry[c_ctry] + '</td>'
+			});
+			if(clean_flag == 1 || clean_flag == 0)
+				bodyString += '<td name = "del"><button type="button" class="btn btn-danger del_btn">삭제</button></td>'
+			if(clean_flag == 0)
+			{
+				bodyString += '<td name = "run"><button type="button" class="btn btn-primary run_btn">실행</button></td>'
+				bodyString += '<td name = "kill"><button type="button" class="btn btn-danger kill_btn">종료</button></td>'
+			}
+			bodyString += '</tr>'
+		});
+		dom.append($(bodyString));
+	}
+	function insertToHeader(dom, arr, clean_flag)
+	{
+
+		dom.html('')
+		 var bodyString = '';
+		$.each(arr, function(index, ctry)
+		{
+			bodyString += '<th>' + ctry + '</th>'
+		});
+		dom.append($(bodyString));
+	}
+
+	  $("#c1").click()
+
+
+    });
+</script>
+</body>
+</html>

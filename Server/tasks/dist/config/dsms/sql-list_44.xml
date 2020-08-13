@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<query-list>
+    <query id="Q1" type="WindowPerStream">
+        <sql>
+            <columns>
+                <column attribute="tid" stream="센서데이터"/>
+            </columns>
+            <sources>
+                <source data-definition-id="38" stream="센서데이터"
+                    type="Ranges" window="22"/>
+            </sources>
+            <conditions>
+                <selections>
+                    <selection attribute="tid" operation="eqaul"
+                        stream="센서데이터" var="32"/>
+                </selections>
+                <joins/>
+            </conditions>
+        </sql>
+        <SQLStatement/>
+        <Description/>
+        <ActuatorCondition/>
+    </query>
+    <query id="Q2" type="WindowPerStream">
+        <sql>
+            <columns>
+                <column attribute="source IP" stream="NetworkFlow"/>
+                <column attribute="source port" stream="NetworkFlow"/>
+                <column attribute="destination IP address" stream="NetworkFlow"/>
+                <column attribute="destination Port" stream="NetworkFlow"/>
+            </columns>
+            <sources>
+                <source data-definition-id="46" stream="NetworkFlow"
+                    type="Ranges" window="20"/>
+                <source data-definition-id="45" stream="fulld"
+                    type="Ranges" window="20"/>
+            </sources>
+            <conditions>
+                <selections/>
+                <joins>
+                    <join operation="eqaul">
+                        <operand attribute="switch address" stream="NetworkFlow"/>
+                        <operand attribute="att1" stream="fulld"/>
+                    </join>
+                </joins>
+            </conditions>
+        </sql>
+        <SQLStatement/>
+        <Description/>
+        <ActuatorCondition/>
+    </query>
+    <query id="Q3" type="WindowPerStream">
+        <sql>
+            <columns>
+                <column attribute="tid" stream="센서데이터"/>
+                <column attribute="source IP" stream="NetworkFlow"/>
+                <column attribute="source port" stream="NetworkFlow"/>
+            </columns>
+            <sources>
+                <source data-definition-id="38" stream="센서데이터"
+                    type="Ranges" window="22"/>
+                <source data-definition-id="46" stream="NetworkFlow"
+                    type="Ranges" window="22"/>
+            </sources>
+            <conditions>
+                <selections/>
+                <joins>
+                    <join operation="eqaul">
+                        <operand attribute="tid" stream="센서데이터"/>
+                        <operand attribute="source IP" stream="NetworkFlow"/>
+                    </join>
+                </joins>
+            </conditions>
+        </sql>
+        <SQLStatement/>
+        <Description/>
+        <ActuatorCondition/>
+    </query>
+</query-list>

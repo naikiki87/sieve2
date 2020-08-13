@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : jopType.xml
+    Created on : 2009년 1월 18일 (일), 오전 12:27
+    Author     : nsh
+    Description:
+        Purpose of the document follows.
+-->
+
+<job-mapping>
+    <config>
+        <description></description>
+        <visiability>
+            <data-mining>true</data-mining>
+            <query-processing>true</query-processing>
+            <loap>false</loap>
+        </visiability>
+    </config>
+
+    <job-type-list>
+        <job-type>
+            <brief-name>B</brief-name>
+            <full-name>Basestream</full-name>
+            <description></description>
+            <algorithm-identifer-list>
+                <algorithm identifier="1" is-static-output-data-definition="yes" bypass="no"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+           <brief-name>TK</brief-name>
+           <full-name>TopK</full-name>
+           <algorithm-identifer-list>
+            <algorithm identifier="22"/>
+           </algorithm-identifer-list>
+         </job-type>
+		<job-type>
+            <brief-name>OL</brief-name>
+            <full-name>Real-time OLAP</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="20"/>
+            </algorithm-identifer-list>
+        </job-type>
+        <job-type>
+            <brief-name>F</brief-name>
+            <full-name>Frequent Itemset</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="3" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>SP</brief-name>
+            <full-name>Sequence Pattern</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="4" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+		 <job-type>
+            <brief-name>CS</brief-name>
+            <full-name>Context Sequence</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="26" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>A</brief-name>
+            <full-name>Association Rule</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="5" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+		 <job-type>
+            <brief-name>CR</brief-name>
+            <full-name>Context Rule</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="25" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+
+            <job-type>
+            <brief-name>U</brief-name>
+            <full-name>Union</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="24" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+            <job-type>
+            <brief-name>T</brief-name>
+            <full-name>Transactionalizer</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="6" is-static-output-data-definition="yes" bypass="yes">
+           <attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>INTEGER</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+            </algorithm-identifer-list>
+        </job-type>
+		<job-type>
+            <brief-name>S</brief-name>
+            <full-name>Selection</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="2" is-static-output-data-definition="yes" bypass="no"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+		<job-type>
+            <brief-name>P</brief-name>
+            <full-name>Projection</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="7"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>Sp</brief-name>
+            <full-name>Split</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="8"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+		<job-type>
+            <brief-name>C</brief-name>
+            <full-name>Clustering</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="9" is-static-output-data-definition="yes" bypass="yes"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+		<job-type>
+            <brief-name>C</brief-name>
+            <full-name>Clustering</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="10" is-static-output-data-definition="yes" bypass="yes"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>S</brief-name>
+            <full-name>Bit selection</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="11" is-static-output-data-definition="yes" bypass="no"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>BJ</brief-name>
+            <full-name>Binary Join</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="12"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>MJ</brief-name>
+            <full-name>M-Join</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="13"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>AG</brief-name>
+            <full-name>Aggregation</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="14"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>Q</brief-name>
+            <full-name>Final</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="15"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+        <job-type>
+            <brief-name>AN</brief-name>
+            <full-name>Analysis</full-name>
+            <algorithm-identifer-list>
+                <algorithm identifier="16"/>
+            </algorithm-identifer-list>
+        </job-type>
+
+		<job-type>
+            <brief-name>C</brief-name>
+            <full-name>Clustering</full-name>
+            <algorithm-identifer-list>
+				<algorithm identifier="101" is-static-output-data-definition="yes" bypass="yes">
+					<attribute-list-output-data-defintion>
+						<attribute id="1">
+							<name>tid</name>
+							<type>LONG</type>
+						</attribute>
+						<attribute id="2">
+							<name>itemset</name>
+							<type>INTEGER</type>
+						</attribute>
+					</attribute-list-output-data-defintion>
+				</algorithm>
+	        </algorithm-identifer-list>
+        </job-type>
+    </job-type-list>
+</job-mapping>

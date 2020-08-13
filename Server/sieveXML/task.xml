@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE task-list SYSTEM "task.dtd">
+<task-list>
+<algorithm-definition>
+<algorithm-identifier id="1" mode="common" name="dblab.common.job.basestream.DefaultBasestream"/>
+<algorithm-identifier id="2" mode="common" name="dblab.common.job.selectio.DefaultSelection"/>
+<algorithm-identifier id="3" mode="mining" name="dblab.dsmm.job.estDec.EstDec"/>
+<algorithm-identifier id="4" mode="mining" name="Sequence"/>
+<algorithm-identifier id="5" mode="mining" name="Association"/>
+<algorithm-identifier id="6" mode="common" name="dblab.common.job.Transactionalizer.Transactionalizer"/>
+<algorithm-identifier id="7" mode="common" name="dblab.common.job.projection.Projection"/>
+<algorithm-identifier id="8" mode="common" name="dblab.common.job.split.Split"/>
+<algorithm-identifier id="9" mode="mining" name="dblab.dsmm.job.siblinglist.ClusteringOneDimension"/>
+<algorithm-identifier id="10" mode="mining" name="dblab.dsmm.job.cstree.ClusteringFullDimension"/>
+<algorithm-identifier id="101" mode="mining" name="dblab.dsmm.job.sttree.ClusteringSubDimension"/>
+<algorithm-identifier id="11" mode="common" name="dblab.dsms.job.selection.BitSelection"/>
+<algorithm-identifier id="12" mode="common" name="dblab.common.job.join.Bjoin"/>
+<algorithm-identifier id="13" mode="common" name="dblab.common.job.join.MJoin"/>
+<algorithm-identifier id="14" mode="common" name="dblab.common.job.alisa[pane]"/>
+<algorithm-identifier id="15" mode="query processing" name="dblab.dsms.job.finaljob.Final"/>
+<algorithm-identifier id="16" mode="query processing" name="dblab.dsms.job.analysis.Analysis"/>
+<algorithm-identifier id="20" mode="olap" name="dblab.olap.job.myOlap.MyOlap"/>
+<algorithm-identifier id="21" mode="common" name="dblab.common.job.alisa[multiplepane]"/>
+<algorithm-identifier id="22" mode="mining" name="dblab.dsmm.job.topk.TopK"/>
+<algorithm-identifier id="23" mode="mining" name="dblab.dsmm.job.estDec.EstDec64"/>
+<algorithm-identifier id="24" mode="common" name="dblab.common.job.Union.Union"/>
+<algorithm-identifier id="25" mode="mining" name="dblab.dsmm.job.ctxrule.ContextRule"/>
+<algorithm-identifier id="26" mode="mining" name="dblab.dsmm.job.ctxseq.ContextSeq"/>
+<algorithm-identifier id="27" mode="common" name="dblab.dsmm.job.velocity.Velocity"/>
+<algorithm-identifier id="28" mode="common" name="dblab.common.job.mergeJob.MergeJob"/>
+<algorithm-identifier id="29" mode="common" name="dblab.common.job.expression.ExpressionJob"/>
+<algorithm-identifier id="30" mode="common" name="dblab.common.job.mjoin.TwoPhaseJoin"/>
+<algorithm-identifier id="31" mode="common" name="dblab.common.job.join.HalfJoinPlus"/>
+<algorithm-identifier id="32" mode="common" name="dblab.dsmm.job.estDec.EstMax"/>
+<algorithm-identifier id="33" mode="common" name="dblab.common.job.period.Period"/>
+<algorithm-identifier id="34" mode="common" name="dblab.dsmm.job.oneitemfrequent.OneItemFrequent"/>
+<algorithm-identifier id="35" mode="common" name="dblab.dsmm.job.socketoutput.SocketOutput"/>
+<algorithm-identifier id="36" mode="mining" name="dblab.dsmm.job.ctx.Context"/>
+<algorithm-identifier id="1001" mode="common" name="dblab.common.job.join.KospiIndex"/>
+</algorithm-definition>
+
+
+</task-list>

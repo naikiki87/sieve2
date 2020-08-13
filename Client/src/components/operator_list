@@ -1,0 +1,28 @@
+/*
+"0"> Transactionalizer                - TR
+<option value = "1">Selection         - SE
+<option value = "2">Basestream        - BS
+<option value = "3">Binary Join       - BX
+<option value = "4">Aggregation       - AG
+<option value = "5">Expression        - EX
+<option value = "6">Projection        - PJ
+<option value = "7">Union             - UN
+<option value = "8">Socket Output     - SO
+<option value = "9">Half Join Plus    - HX+
+<option value = "10">Split            - SPL
+<option value = "11">Final            - FI
+<option value = "12">M-Join           - MX
+<option value = "13">Merge Job        - MJ
+<option value = "14">Kospi Index      - IDX
+<option value = "15">Period           - P
+<option value = "16">Velocity         - VE
+<option value = "17">TopK             - TK
+<option value = "18">OneItem Frequent - OIF
+<option value = "19">Frequent Itemset - FIS
+<option value = "20">Context          - CT
+<option value = "21">Clustering       - CL
+<option value = "22">Association Rule - AR
+<option value = "23">Sequence Pattern - SP
+<option value = "24">Context Rule     - CR
+<option value = "25">Context Sequence - CS
+*/

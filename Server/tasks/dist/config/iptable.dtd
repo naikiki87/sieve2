@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	To change this template, choose Tools | Templates
+	and open the template in the editor.
+-->
+
+<!--
+	TODO define vocabulary identification data
+	PUBLIC ID  : -//vendor//vocabulary//EN
+	SYSTEM ID  : http://server/path/__NAME__
+-->
+
+<!-- TODO define your own vocabulary/syntax. Example follows:  -->
+<!ELEMENT task-list (task*)>
+    <!ELEMENT task (id,name,ip-address,rmi-suffix,heartbeat-port,input-ports,worker,status)>
+        <!ELEMENT id (#PCDATA)>
+        <!ELEMENT name (#PCDATA)>
+        <!ELEMENT ip-address (#PCDATA)>
+        <!ELEMENT rmi-suffix (#PCDATA)>
+        <!ELEMENT heartbeat-port (#PCDATA)>
+        <!ELEMENT input-ports (#PCDATA)>
+        <!ELEMENT worker (#PCDATA)>
+        <!ELEMENT status (#PCDATA)>
+

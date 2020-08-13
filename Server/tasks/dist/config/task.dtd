@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/task.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE task-list SYSTEM "task.dtd">
+
+    <task-list>
+    ...
+    </task-list>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT task-list (task|algorithm-definition)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT algorithm-definition (algorithm-identifier)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT algorithm-identifier EMPTY>
+<!ATTLIST algorithm-identifier
+    name CDATA #IMPLIED
+    mode CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT task (job-mapping-list|job-list|cost_catalog|query-list|visible-other-user|description|creation-date|owner|name)*>
+<!ATTLIST task
+    mode CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT owner (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT creation-date (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT visible-other-user (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT query-list (query)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT query (ActuatorCondition|Description|SQLStatement|sql)*>
+<!ATTLIST query
+    type CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sql (conditions|sources|columns)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT columns (column)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT column EMPTY>
+<!ATTLIST column
+    query CDATA #IMPLIED
+    stream CDATA #IMPLIED
+    attribute CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sources (source)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT source EMPTY>
+<!ATTLIST source
+    query CDATA #IMPLIED
+    window CDATA #IMPLIED
+    type CDATA #IMPLIED
+    stream CDATA #IMPLIED
+    data-definition-id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT conditions (joins|selections)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT selections (selection)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT selection EMPTY>
+<!ATTLIST selection
+    query CDATA #IMPLIED
+    var CDATA #IMPLIED
+    stream CDATA #IMPLIED
+    operation CDATA #IMPLIED
+    attribute CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT joins EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT SQLStatement (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Description EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ActuatorCondition EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT cost_catalog (history|join-list|attribute-list|stream-list|monitoring)*>
+<!ATTLIST cost_catalog
+    task_id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT monitoring EMPTY>
+<!ATTLIST monitoring
+    count CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT stream-list EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT attribute-list EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT join-list EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT history EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT job-list (job)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT job (export-list|property-result-graph-setting-list|parameter-list|input-queue-size|description|name)*>
+<!ATTLIST job
+    pos_y CDATA #IMPLIED
+    pos_x CDATA #IMPLIED
+    pos_index CDATA #IMPLIED
+    identifier CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT input-queue-size (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT parameter-list (column|condition|output-queue-list|selection|number-of-blank|pipe-name|data-definition-id|source)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT data-definition-id (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT pipe-name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT number-of-blank (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT property-result-graph-setting-list EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT export-list EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT output-queue-list (queue)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT queue EMPTY>
+<!ATTLIST queue
+    id CDATA #IMPLIED
+    bitmap CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT condition (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT job-mapping-list (mapping)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT mapping (child-job)*>
+<!ATTLIST mapping
+    parent-id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT child-job EMPTY>
+<!ATTLIST child-job
+    id CDATA #IMPLIED
+  >

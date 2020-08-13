@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created on : 2019. 09. 04. (수) 02:41:21 KST -->
+<server_info>
+  <server_ip>165.132.145.41</server_ip>
+  <accounter>accounter</accounter>
+  <deployer>deployermonitoring_sieve_user_0</deployer>
+  <descriptor>descriptormonitoring_sieve_user_0</descriptor>
+  <plandescriptor>planDescriptormonitoring_sieve_user_0</plandescriptor>
+  <querydescriptor>queryDescriptormonitoring_sieve_user_0</querydescriptor>
+</server_info>

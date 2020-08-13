@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : OutputFunction.xml
+    Created on : 2009년 2월 1일 (일), 오후 9:26
+    Author     : nsh
+    Description:
+        Purpose of the document follows.
+-->
+
+<algorithm-function>
+    <algorithm identifier="3"><!-- 3번은 EstDec이다 -->
+        <matching-function-list>
+            <matching-function >
+                <identifer>0</identifer>
+                <subject>Average support within the band</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>1</identifer>
+                <subject>Average support of leaf nodes</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>2</identifer>
+                <subject>Count of matched items </subject>
+            </matching-function>
+        </matching-function-list>
+        
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched nid</subject>
+                <description>노드 리스트를 출력한다</description>
+            </output-function>
+
+            <output-function>
+                <identifer>10001</identifer>
+                <subject>matched leaf_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+			<output-function>
+                <identifer>10002</identifer>
+                <subject>longest path nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+			<output-function>
+                <identifer>10003</identifer>
+                <subject>matched item</subject>
+                <description>matchinf function의 결과를 그대kkkk로 출력한다</description>
+            </output-function>
+            
+            <output-function>
+                <identifer>10004</identifer>
+                <subject>filtered transaction</subject>
+                <description>필터링된 트랜잭션을 매칭 결과와 함께 출력한다</description>
+            </output-function>
+
+        </output-function-list>
+    </algorithm>
+	<algorithm identifier="4"><!-- 4번은 EISequence다 -->
+        <matching-function-list>
+            <matching-function >
+                <identifer>0</identifer>
+                <subject>Average support within the band</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>1</identifer>
+                <subject>Average support of leaf nodes</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>2</identifer>
+                <subject>Count of matched items </subject>
+            </matching-function>
+        </matching-function-list>
+        
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched nid</subject>
+                <description>노드 리스트를 출력한다</description>
+            </output-function>
+
+            <output-function>
+                <identifer>10001</identifer>
+                <subject>matched_leaf_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+			<output-function>
+                <identifer>10002</identifer>
+                <subject>longest_path_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+        </output-function-list>
+    </algorithm>
+	<algorithm identifier="5"><!-- 5번은 Assocall -->
+        <matching-function-list>
+            <matching-function >
+                <identifer>0</identifer>
+                <subject>Average support within the band</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>1</identifer>
+                <subject>Average support of leaf nodes</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>2</identifer>
+                <subject>Count of matched items </subject>
+            </matching-function>
+        </matching-function-list>
+        
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched nid</subject>
+                <description>노드 리스트를 출력한다</description>
+            </output-function>
+
+            <output-function>
+                <identifer>10001</identifer>
+                <subject>matched leaf_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+			<output-function>
+                <identifer>10002</identifer>
+                <subject>longest path nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+			<output-function>
+                <identifer>10003</identifer>
+                <subject>matched item</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+        </output-function-list>
+    </algorithm>
+
+    <algorithm identifier="9"><!-- 9번은 dblab.dsmm.job.siblinglist.ClusteringOneDimension-->
+        <matching-function-list>
+            <matching-function >
+                <identifer>0</identifer>
+                <subject>Average support within the band</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>1</identifer>
+                <subject>Average support of leaf nodes</subject>
+            </matching-function>
+        </matching-function-list>
+
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched nid</subject>
+                <description>노드 리스트를 출력한다</description>
+            </output-function>
+
+            <output-function>
+                <identifer>10001</identifer>
+                <subject>matched leaf_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+
+        </output-function-list>
+    </algorithm>
+
+     <algorithm identifier="10"><!-- 9번은 dblab.dsmm.job.cstree.ClusteringFullDimension-->
+        <matching-function-list>
+            <matching-function >
+                <identifer>0</identifer>
+                <subject>Average support within the band</subject>
+            </matching-function>
+
+			<matching-function >
+                <identifer>1</identifer>
+                <subject>Average support of leaf nodes</subject>
+            </matching-function>
+
+        </matching-function-list>
+
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched nid</subject>
+                <description>노드 리스트를 출력한다</description>
+            </output-function>
+
+            <output-function>
+                <identifer>10001</identifer>
+                <subject>matched leaf_nid</subject>
+                <description>matchinf function의 결과를 그대로 출력한다</description>
+            </output-function>
+        </output-function-list>
+    </algorithm>
+	<algorithm identifier="34"><!-- 34번은 dblab.dsmm.job.oneitemfrequent.OneItemFrequent-->
+		<matching-function-list>
+			<matching-function >
+	        	<identifer>0</identifer>
+	            	<subject>Average support within the band</subject>
+	        </matching-function>
+	 
+	        <matching-function >
+	        	<identifer>1</identifer>
+	                 <subject>Average support of leaf nodes</subject>
+	        </matching-function>
+	 
+	    </matching-function-list>
+	 
+	    <output-function-list>
+	    	<output-function>
+	    		<identifer>10000</identifer>
+	            	<subject>matched transaction</subject>
+	                <description>리스트내에 있는 아이템과 매치된 트랜잭션을 출력한다</description>
+	        </output-function>
+	    </output-function-list>
+
+		 <output-function-list>
+	    	<output-function>
+	    		<identifer>10001</identifer>
+	            	<subject>not matched transaction</subject>
+	                <description>리스트내에 있는 아이템과 매치되지 않은 트랜잭션을 출력한다</description>
+	        </output-function>
+	    </output-function-list>
+	</algorithm>
+    <algorithm identifier="36"><!-- Context -->
+        <output-function-list>
+            <output-function>
+                <identifer>10000</identifer>
+                <subject>matched context</subject>
+                <description>탐지된 상황을 출력한다.</description>
+            </output-function>
+        </output-function-list>
+    </algorithm>
+
+</algorithm-function>

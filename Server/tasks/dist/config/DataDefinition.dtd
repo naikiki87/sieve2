@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/DataDefinition.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE ddl-list SYSTEM "DataDefinition.dtd">
+
+    <ddl-list>
+    ...
+    </ddl-list>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ddl-list (ddl)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ddl (attribute-list|attribute-format|comments|creation-date|owner|title)*>
+<!ATTLIST ddl
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT title (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT owner (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT creation-date (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT comments (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT attribute-format (itemset|record-delimeter|field-delimeter)*>
+<!ATTLIST attribute-format
+    type CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT field-delimeter (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT record-delimeter (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT itemset (item-index|tid-index)*>
+<!ATTLIST itemset
+    is-itemset-data CDATA #IMPLIED
+    itemset-delimeter CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tid-index (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT item-index (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT attribute-list (attribute)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT attribute (allow-null|type|name)*>
+<!ATTLIST attribute
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT type (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT allow-null (#PCDATA)>
