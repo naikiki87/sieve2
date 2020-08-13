@@ -687,7 +687,6 @@ join program_types pt on t.program_type = pt.id where userid=0 or userid= ${curr
 router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("/get_taskinfo")
   const id = req.body.id;
-  // const taskinfo = await db.doQuery(`SELECT * from job_tasks where id=${id}`);
   const taskinfo = await db.doQuery(`SELECT jt.*, t.name FROM job_tasks jt, tasks t WHERE jt.id = ${id} AND jt.task_id = t.id`);
   res.json(taskinfo);
 }));
@@ -695,18 +694,23 @@ router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
 router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) =>{
   const start_id = req.body.start_id;
   const end_id = req.body.end_id;
-  // const task_info = await db.doQuery(`SELECT * from job_tasks where id = ${end_id}`);
   const dest_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
 WHERE jt.id = ${end_id} AND ec.id = jt.ec_id `);
 
-  // res.json(task_info);
   const dest_ip = dest_info[0].ip_address;
   const dest_port = dest_info[0].listening_port;
   
   console.log("dest info : ", dest_ip, dest_port)
-  // console.log("ip : ", dest_info.data.ip_address)
   await db.doQuery(`UPDATE job_tasks SET dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id = ${start_id}`);
-  // res.json(dest_info)
+  res.json({success: true});
+}));
+
+router.post('/update_task_pos', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const id = req.body.id
+  const pos_x = req.body.pos_x
+  const pos_y = req.body.pos_y
+
+  await db.doQuery(`UPDATE job_tasks SET position_x = ${pos_x}, position_y = ${pos_y} WHERE id=${id}`);
   res.json({success: true});
 }));
 

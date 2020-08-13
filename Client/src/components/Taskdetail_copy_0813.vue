@@ -25,7 +25,7 @@
 
       <table id="TDHeader_table" style=" margin : auto; width:97%;">
         <tr>
-          <!-- <td colspan="2"> <button style="background:lightblue;" class="JobDetailHeaderbutton" v-on:click="boxPositionSave"> TASK SHAPE 저장 </button> </td> -->
+          <td colspan="2"> <button style="background:lightblue;" class="JobDetailHeaderbutton" v-on:click="boxPositionSave"> TASK SHAPE 저장 </button> </td>
         </tr>
         <br>
         <tr>
@@ -902,7 +902,6 @@ function returnArray(index) {
   return returnArr;
 }
 function addLine_reload(start, end) {
-  console.log("addLine_reload")
   new Promise(function(resolve, reject){
     addLine(start, end);
     setTimeout(function() {
@@ -935,8 +934,8 @@ function getParameterByName(name) {
   results = regex.exec(location.search);
   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-function clearLine() {    // canvas의 line을 지움
-
+function clearLine() {
+  console.log("func clear LINE");
   var select = 0;
   var arrowbg = document.getElementById("arrowbg");
   var arrowbgNodeLength = arrowbg.childNodes.length;
@@ -948,6 +947,9 @@ function clearLine() {    // canvas의 line을 지움
 }
 function addLine(start, end) {
   console.log("ADD LINE");
+  // console.log("job_id : " + jobID);
+  // console.log("start : " + start);
+  // console.log("end : " + end);
 
   var params = {
     job_id : jobID,
@@ -965,47 +967,41 @@ function addLine(start, end) {
     api = "http://" + serverADDR + ":3000/users/update_dest_info";
     axios.post(api, params)
     .then(response => {
+      // console.log("task information : ", response.data)
     })
   })
   .catch(err => {});
 }
-async function createLine() {
+function createLine() {
   var output, arr;
   var start_x, start_y, end_x, end_y;
   var id;
-  var from_id, to_id;
-  var start, end
 
   for(var i=0; i<lineArray.length; i++) {
     id = lineArray[i].id;
-    from_id = lineArray[i].from_id
-    to_id = lineArray[i].to_id
-
-    start = (await get_iteminfo(from_id)).data[0]
-    end = (await get_iteminfo(to_id)).data[0]
 
     if(call == 0) {
-      start_x = start.position_x
-      start_y = start.position_y
-      end_x = end.position_x
-      end_y = end.position_y
+      start_x = get_position_x(lineArray[i].from_id);
+      start_y = get_position_y(lineArray[i].from_id);
+      end_x = get_position_x(lineArray[i].to_id);
+      end_y = get_position_y(lineArray[i].to_id);
     }
     else {
-      start_x = start.position_x - marginX
-      start_y = start.position_y - marginY
-      end_x = end.position_x + marginX
-      end_y = end.position_y + marginY
+      start_x = get_position_x(lineArray[i].from_id) - marginX;
+      start_y = get_position_y(lineArray[i].from_id) - marginY;
+      end_x = get_position_x(lineArray[i].to_id) + marginX;
+      end_y = get_position_y(lineArray[i].to_id) + marginY;
     }
+
+    // console.log(" ---- " + i + " ---- ");
+    // console.log("staX : " + start_x);
+    // console.log("staY : " + start_y);
+    // console.log("endX : " + start_x);
+    // console.log("endY : " + start_y);
 
     drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
   call = 1;
-}
-function get_iteminfo(index) {
-  var res;
-  var params = { id : index }
-  var api = "http://" + serverADDR + ":3000/users/get_taskinfo";
-  return axios.post(api, params)
 }
 function deleteLine(index) {
   console.log("DEL LINE");
@@ -1018,6 +1014,38 @@ function deleteLine(index) {
   axios.post(api, params)
   .then(response => { })
   .catch(err => { });
+}
+function get_position_x(index) {
+  var output, arr;
+  var localkey;
+  var position;
+
+  localStorage.removeItem("loglevel:webpack-dev-server");
+
+  for(var i=0; i<localStorage.length; i++) {
+    output = localStorage.getItem(i);
+    arr = JSON.parse(output);
+    if(arr[0] == index) {
+      position = arr[11];
+    }
+  }
+  return position;
+}
+function get_position_y(index) {
+  var output, arr;
+  var localkey;
+  var position;
+
+  localStorage.removeItem("loglevel:webpack-dev-server");
+
+  for(var i=0; i<localStorage.length; i++) {
+    output = localStorage.getItem(i);
+    arr = JSON.parse(output);
+    if(arr[0] == index) {
+      position = arr[12];
+    }
+  }
+  return position;
 }
 function drawLine(start_x, start_y, dest_x, dest_y, w1, h1, w2, h2, lineID) {  // drawing line
   //console.log("Draw Line222");
@@ -1174,19 +1202,6 @@ function hideMenu() {
   event.stopPropagation();
   cntxtmenu.style.display = 'none';
 }
-function box_position_update(id, pos_x, pos_y) {
-
-  var params = {
-    id : id,
-    pos_x : pos_x,
-    pos_y : pos_y
-  }
-  var api = "http://" + serverADDR + ":3000/users/update_task_pos";
-  axios.post(api, params)
-  .then( res => {
-    console.log("result : ", res.data.success)
-  })
-}
 $(function() {
   cntxtmenu = document.getElementById("context-menus");
   modify_BS = document.getElementById("modify_BS");
@@ -1240,19 +1255,26 @@ $(function() {
       var divclass = $(event.target).attr('class');
       startid = $(event.target).attr('id');
 
-      event.stopPropagation();
-      divE1 = $(event.target);
+      //if(divclass == "div-content") {
+        event.stopPropagation();
+        divE1 = $(event.target);
 
-      var divx = divE1.offset().left;
-      var divy = divE1.offset().top;
+        //var divclass = $(event.target).attr('class');
+        var divx = divE1.offset().left;
+        var divy = divE1.offset().top;
 
-      divwid1 = divE1.width();
-      divhei1 = divE1.height();
-      if(drag_flag == 1) {}
-      else {
-        x1 = divx-marginX;
-        y1 = divy-marginY;
-      }
+        // console.log("*** M Down *** ");
+        // console.log("X : " + divx);
+        // console.log("Y : " + divy);
+
+        divwid1 = divE1.width();
+        divhei1 = divE1.height();
+        if(drag_flag == 1) {}
+        else {
+          x1 = divx-marginX;
+          y1 = divy-marginY;
+        }
+      //}
     },
     mouseup : function(event) {
       event.stopPropagation();
@@ -1262,20 +1284,35 @@ $(function() {
       }
 
       divE2 = $(event.target);
+      var localKey;
+      var output, arr, arr2;
       destid = $(event.target).attr('id');
-      var dest_class = divE2[0].className
-      var divx = divE2.offset().left - 9;
-      var divy = divE2.offset().top - 11;
+      var divx = divE2.offset().left -9;
+      var divy = divE2.offset().top -11;
 
       divwid2 = divE2.width();
       divhei2 = divE2.height();
 
-      if (dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-dragging") {
-        box_position_update(destid, divx, divy)   // box 위치 db update
+      localStorage.removeItem("loglevel:webpack-dev-server");
+
+      for(var i=0; i<localStorage.length; i++) {
+        output = localStorage.getItem(i);
+        arr = JSON.parse(output);
+        if(arr[0] == destid) {
+          localKey = i;
+        }
+      }
+
+      output = localStorage.getItem(localKey);
+      arr = JSON.parse(output);
+      if(arr == null) {}    // box가 아닌 다른 공간에 mouseup 할 때
+      else {                // box에 mouseup 할 때
+        var arr2 = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9], arr[10], divx, divy, arr[13], arr[14], arr[15]];
+        localStorage.setItem(localKey, JSON.stringify(arr2));
       }
 
       if(drag_flag == 1) {  // drag 상태
-        clearLine();        // line redraw를 위해 line delete
+        clearLine();
         createLine();
       }
 
@@ -1294,7 +1331,6 @@ export default {
   data() {
     return {
       temp_para : [],
-      link_lines : [],
 
       // temp_para[0] : next 목적지 IP
       // temp_para[1] : next 목적지 Port
@@ -1408,6 +1444,7 @@ export default {
     this.loadTask(id);
     localStorage.clear();
     this.loadSvr();
+    // this.loadSvrPost();
     this.loadSchema();
     this.loadTaskList();
   },
@@ -1423,26 +1460,6 @@ export default {
   },
   methods : {
     func_test() {
-      console.log("func test")
-      var _this = this;
-      var temp = 0;
-      new Promise(function(resolve, reject){
-        var params = { id : 455 }
-        var api = "http://" + _this.svrAddr + ":3000/users/get_taskinfo";
-        axios.post(api, params)
-        .then(res => {
-          console.log("res1 : ", res.data)
-        })
-        resolve(1)
-      })
-      .then(function(result) {
-        var params = { id : 458 }
-        var api = "http://" + _this.svrAddr + ":3000/users/get_taskinfo";
-        axios.post(api, params)
-        .then(res => {
-          console.log("res2 : ", res.data)
-        })
-      });
     },
     jobDistTotal() {
       console.log("jobDistTotal : ", this.jobId);
@@ -1636,6 +1653,10 @@ export default {
 
       this.aggOBItems = message;
     },
+    abcd2() {
+      console.log("abcd2");
+      console.log(this.AggQuery);
+    },
     aggQueryInput(message) {
       this.AggQuery = this.AggQuery + message;
     },
@@ -1753,6 +1774,20 @@ export default {
         }
       }
     },
+    abcd() {
+      this.jobId = 6;
+      this.task_id = 3;
+      this.input_schema = 53;
+      this.listening_port = 1000;
+      this.ec_id = 278;
+      this.output_type = 0;
+      this.config = 1;
+      this.heartbeat_task = 0;
+      this.heartbeat_job = 0;
+      this.output_schema = 54;
+
+      this.addTask_reload();
+    },
     addTask_reload(){
       console.log("add task reload")
       var id = this.jobId;
@@ -1773,9 +1808,9 @@ export default {
         _this.loadTask(id);
         return ;
       });
+
     },
     addTask() {
-      console.log("addTask")
       var params = {
         job_id: this.jobId,
         task_id : this.task_id,
@@ -1785,8 +1820,8 @@ export default {
         position_y : 0,
         linkto : null,
         linkfrom : null,
-        dest_ip : "",
-        dest_port : 0
+        dest_ip : null,
+        dest_port : null
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks/add";
@@ -1835,6 +1870,25 @@ export default {
       axios.post(api, params)
       .then( response => {})
       .catch( response => { console.log(response) } );
+    },
+    boxPositionSave() {
+      console.log("final save");
+      var id = this.jobId;
+      var _this = this;
+      new Promise(function(resolve, reject){
+        _this.updateTask();
+        setTimeout(function() {
+          resolve(1);
+        }, 200);
+      })
+      .then(function(result) {
+        _this.clearBG();
+        return result + 10;
+      })
+      .then(function(result) {
+        _this.loadTask(id);
+        return ;
+      });
     },
     make_parameter(index) {
       console.log("make parameter  : ", index);
@@ -2200,9 +2254,50 @@ export default {
       .then( response => { })
       .catch( response => { console.log(response) } );
     },
-    
+    updateTask() {
+      localStorage.removeItem("loglevel:webpack-dev-server");
+      for(var i=0; i<localStorage.length; i++) {
+        var output = localStorage.getItem(i);
+        var arr = JSON.parse(output);
+        var params = {
+          id : arr[0],
+          job_id : arr[1],
+          task_id : arr[2],
+          input_schema_id : arr[3],
+          listening_port : arr[4],
+          ec_id : arr[5],
+          output_type : arr[6],
+          config : arr[7],
+          heartbeat_task_id : arr[8],
+          heartbeat_job_id : arr[9],
+          output_schema_id : arr[10],
+          position_x : arr[11],
+          position_y : arr[12],
+          linkto : arr[13],
+          linkfrom : arr[14]
+        }
+
+        var api = "http://" + this.svrAddr + ":3000/users/job_tasks/update";
+
+        axios.post(api, params)
+        .then( response => { })
+        .catch( response => { console.log(response) } );
+      }
+      alert("Saved");
+    },
+    loadLine(index) {
+      console.log("load Line calle2");
+      var params = { job_id: index }
+      var api = "http://" + this.svrAddr + ":3000/users/task_lines";
+
+      axios.post(api, params)
+      .then( response => {
+        lineArray = response.data;
+        createLine();
+      })
+      .catch( response => { console.log(response) } );
+    },
     loadTask(index) {
-      console.log("loadTask")
       var params = { job_id: index }
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
       axios.post(api, params)
@@ -2215,9 +2310,28 @@ export default {
       .catch( response => { console.log(response) } );
     },
     initDIV() {
-      console.log("initDIV")
       for(var i=0; i<this.taskcnt; i++) {
         this.createDIV(i);
+        this.localize(
+          taskArray[i].id,
+          taskArray[i].job_id,
+          taskArray[i].task_id,
+          taskArray[i].input_schema_id,
+          taskArray[i].listening_port,
+          taskArray[i].ec_id,
+          taskArray[i].output_type,
+          taskArray[i].config,
+          taskArray[i].heartbeat_task_id,
+          taskArray[i].heartbeat_job_id,
+          taskArray[i].output_schema_id,
+          taskArray[i].position_x,
+          taskArray[i].position_y,
+          taskArray[i].linkto,
+          taskArray[i].linkfrom,
+          taskArray[i].name,
+          taskArray[i].dest_ip,
+          taskArray[i].dest_port
+        );
       }
       this.taskcnt = 0;
     },
@@ -2237,6 +2351,46 @@ export default {
       newDIV.innerHTML = "<table> <tr> <p class='no-drag'>" + name + "</p> </tr> <tr> <p class='no-drag2'> TID : " + id + "</p> </tr> <tr> <p class='no-drag2'> Eng : " + ec + "</p> </tr> <tr> <p class='no-drag2'> Port :" + port + "</p> </tr> </table>";
       newDIV.setAttribute("style", position);
       obj.appendChild(newDIV);
+    },
+    createDIV2() {
+      var id = this.tempID;
+      var name;
+      var obj = document.getElementById("content");
+      var newDIV = document.createElement("div");
+
+      newDIV.setAttribute("id", id);
+      newDIV.setAttribute('class', "div-content");
+      newDIV.innerHTML = "<table> <tr> <p class='no-drag'> " + name + " </p> </tr> <tr> <p class='no-drag2'> " + id + " </p> </tr> </table>";
+
+      obj.appendChild(newDIV);
+      this.localize(
+        id,
+        this.jobId,
+        this.task_id,
+        this.input_schema,
+        this.listening_port,
+        this.ec_id,
+        this.output_type,
+        this.config,
+        this.heartbeat_task,
+        this.heartbeat_job,
+        this.output_schema,
+        0,
+        0,
+        null,
+        null,
+        name
+      );
+      this.tempID += 1;
+      this.clearInput();
+
+    },
+    localize(id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name, dest_ip, dest_port) {
+      localStorage.removeItem("loglevel:webpack-dev-server");
+      var localLength = localStorage.length;
+      var arr = [id, job_id, task_id, input_schema, listening_port, ec_id, output_type, config, heartbeat_task, heartbeat_job, output_schema, position_x, position_y, linkto, linkfrom, name, dest_ip, dest_port];
+      localStorage.setItem(localLength, JSON.stringify(arr));
+      this.localcnt = localLength + 1;
     },
     clearInput() {
       this.task_id = '',
@@ -2295,6 +2449,20 @@ export default {
         this.svrArray = response.data;
       })
       .catch(err => { console.log(err); });
+    },
+    loadSvrPost() {
+      var api = "http://" + this.svrAddr + ":3000/users/engine_computer2";
+      var params = {
+        searchTarget : this.currentuserid
+      }
+
+      axios
+      .post(api, params)
+      .then( response => {
+        // this.pageArray = response.data;
+        this.svrArray = response.data
+      })
+      .catch( response => { console.log(response) } );
     },
     loadSchema() {
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
