@@ -12,9 +12,7 @@ var xml2js = require('xml2js');
 var mime = require('mime');
 const session = require('express-session');
 const app = express();
-// var pyrun2 = require('./pyrun2.js')
-// var pyrun = require('./pyrun.js')
-var pyrun = require('../tasks/pyrun.js')
+// var pyrun = require('../tasks/pyrun.js')
 
 
 // import pyrun2 from './pyrun2'
@@ -216,7 +214,8 @@ function runModules2(user, db_info)
       if (user.program_type == 0) // python
       {
         var execarr = [];
-        execarr.push('python /home/sieve_input_' + user.listening_port + '/' + user.program_name+'.py')
+        console.log("user : ", user)
+        execarr.push('python3.6 /home/sieve_input_' + user.listening_port + '/' + user.program_name+'.py')
       }
       if (user.program_type == 1) // java
       {
@@ -257,9 +256,14 @@ function runModules2(user, db_info)
         return
       }
       
+      execarr.push(user.ip_address)         // args[1]
+      execarr.push(user.listening_port)     // args[2]
+      execarr.push(user.dest_ip)            // args[3]
+      execarr.push(user.dest_port)          // args[4]
       var exe = execarr.join(' ')
       console.log("exe : ", exe)
-      userSSH.execCommand(exe)
+      // userSSH.execCommand(exe)
+      userSSH.execCommand(execarr.join(" ") + " & ")
       .then((result) => {
         console.log(exe, "started")
       })
@@ -281,12 +285,12 @@ function killModules(user, db_info)
 	});
 }
 
-router.get('/pyrun', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("BE pyrun")  
-  pyrun.pyrun();
-  // pyrun();
-  res.json({success: true});
-}));
+// router.get('/pyrun', wrapper.asyncMiddleware(async (req, res, next) =>{
+//   console.log("BE pyrun")  
+//   pyrun.pyrun();
+//   // pyrun();
+//   res.json({success: true});
+// }));
 
 router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
   res.redirect('http://localhost:8080/');

@@ -145,12 +145,12 @@
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적지 IP </td>
-          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port"></td>
         </tr>
 
         <tr>
@@ -209,12 +209,12 @@
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적지 IP </td>
-          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip"></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
-          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port"></td>
         </tr>
 
         <tr>
@@ -951,7 +951,6 @@ function clearLine() {    // canvas의 line을 지움
   }
 }
 async function clearLine2(lines) {    // canvas의 related line 만 지우고 redraw
-  console.log("clearlines2 : ", lines)
   var id, from_id, to_id;
   var start, end;
   var start_x, start_y, end_x, end_y;
@@ -1224,7 +1223,7 @@ function box_position_update(id, pos_x, pos_y) {
   var api = "http://" + serverADDR + ":3000/users/update_task_pos";
   axios.post(api, params)
   .then( res => {
-    console.log("result : ", res.data.success)
+    // console.log("result : ", res.data.success)
   })
 }
 $(function() {
@@ -1324,7 +1323,6 @@ $(function() {
         var api = "http://" + serverADDR + ":3000/users/rel_lines";
         axios.post(api, params)
         .then(res => {
-          console.log("rel lines : ", res.data)
           clearLine2(res.data)
         })
         
@@ -1494,22 +1492,25 @@ export default {
         })
       });
     },
-    jobDistTotal() {
+    async jobDistTotal() {
       console.log("jobDistTotal : ", this.jobId);
-      var res;
-      var _this = this;
-      new Promise(function(resolve, reject){
-        _this.setDistTasks();
-        // _this.jobDistTotal_SetTasks();
-        setTimeout(function() {
-          resolve(1);
-        }, 200);
-      })
-      .then(function(result) {
-        _this.jobDistribute();
-        // _this.jobDistTotal_DivTasksAndDist();
-        return ;
-      });
+      // var res;
+      // var _this = this;
+      // new Promise(function(resolve, reject){
+      //   _this.setDistTasks();
+      //   // _this.jobDistTotal_SetTasks();
+      //   setTimeout(function() {
+      //     resolve(1);
+      //   }, 200);
+      // })
+      // .then(function(result) {
+      //   _this.jobDistribute();
+      //   // _this.jobDistTotal_DivTasksAndDist();
+      //   return ;
+      // });
+
+      await this.setDistTasks();
+      await this.jobDistribute();
     },
     setDistTasks() {
       console.log("set Dist Tasks")
@@ -1594,7 +1595,7 @@ export default {
       console.log(this.TRData);
     },
     jobRUN() {
-      console.log("funcDrafg");
+      console.log("jobRUN");
       console.log(this.jobId);
 
       var params = {
@@ -1964,22 +1965,22 @@ export default {
       var _this = this;
       var parent;
 
-      new Promise(function(resolve, reject){
-        _this.findParent(index);
-        setTimeout(function() {
-          resolve(1);
-        }, 200);
-      })
-      .then(function(result) {
-        if(_this.parent.length == 1) {
-          _this.parentOutSchema(1, _this.parent);
-        }
-        // for Half-Join
-        else if(_this.parent.length == 2) {
-          _this.parentOutSchema(2, _this.parent);
-        }
-        return;
-      });
+      // new Promise(function(resolve, reject){
+      //   _this.findParent(index);
+      //   setTimeout(function() {
+      //     resolve(1);
+      //   }, 200);
+      // })
+      // .then(function(result) {
+      //   if(_this.parent.length == 1) {
+      //     _this.parentOutSchema(1, _this.parent);
+      //   }
+      //   // for Half-Join
+      //   else if(_this.parent.length == 2) {
+      //     _this.parentOutSchema(2, _this.parent);
+      //   }
+      //   return;
+      // });
 
       var output, arr;
       var params = {
@@ -2117,15 +2118,10 @@ export default {
 
       this.loadModifyData(index);
     },
-    openTaskModify() {
-      var output, arr, op_type;
+    async openTaskModify() {      // open task modify window
       this.taskID = cntxtmenuID;
-
-      console.log("open Task");
-
-      arr = returnArray(cntxtmenuID);
-      op_type = arr[2];
-      // console.log("op type : ", op_type)
+      var res = (await get_iteminfo(cntxtmenuID)).data[0]
+      var op_type = res.task_id
       this.showModifyMenu(cntxtmenuID, op_type);
     },
     modifyTask_reload() {
