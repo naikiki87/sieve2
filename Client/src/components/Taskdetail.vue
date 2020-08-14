@@ -942,8 +942,43 @@ function clearLine() {    // canvas의 line을 지움
   var arrowbgNodeLength = arrowbg.childNodes.length;
 
   while(arrowbgNodeLength > 0) {
+    console.log("clearLine : ", arrowbg.firstChild)
+    console.log("clearLine2 : ", arrowbg)
+    console.log("clearLine3 : ", arrowbg.children)
+    console.log("clearLine4 : ", arrowbg.children.length)
     arrowbg.removeChild(arrowbg.firstChild);
     arrowbgNodeLength = arrowbgNodeLength - 1;
+  }
+}
+async function clearLine2(lines) {    // canvas의 related line 만 지우고 redraw
+  console.log("clearlines2 : ", lines)
+  var id, from_id, to_id;
+  var start, end;
+  var start_x, start_y, end_x, end_y;
+
+  for(var i in lines) {
+    id = lines[i].id
+    for(var j=0; j<arrowbg.children.length; j++) {
+      if(id == arrowbg.children[j].id) {
+        arrowbg.removeChild(arrowbg.children[j])     // line delete
+      }
+    }
+  }
+
+  for(var i in lines) {
+    id = lines[i].id
+    from_id = lines[i].from_id
+    to_id = lines[i].to_id
+
+    start = (await get_iteminfo(from_id)).data[0]
+    end = (await get_iteminfo(to_id)).data[0]
+
+    start_x = start.position_x
+    start_y = start.position_y
+    end_x = end.position_x
+    end_y = end.position_y
+
+    drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
 }
 function addLine(start, end) {
@@ -984,22 +1019,27 @@ async function createLine() {
     start = (await get_iteminfo(from_id)).data[0]
     end = (await get_iteminfo(to_id)).data[0]
 
-    if(call == 0) {
-      start_x = start.position_x
-      start_y = start.position_y
-      end_x = end.position_x
-      end_y = end.position_y
-    }
-    else {
-      start_x = start.position_x - marginX
-      start_y = start.position_y - marginY
-      end_x = end.position_x + marginX
-      end_y = end.position_y + marginY
-    }
+    start_x = start.position_x
+    start_y = start.position_y
+    end_x = end.position_x
+    end_y = end.position_y
+
+    // if(call == 0) {
+    //   start_x = start.position_x
+    //   start_y = start.position_y
+    //   end_x = end.position_x
+    //   end_y = end.position_y
+    // }
+    // else {
+    //   start_x = start.position_x - marginX
+    //   start_y = start.position_y - marginY
+    //   end_x = end.position_x + marginX
+    //   end_y = end.position_y + marginY
+    // }`
 
     drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
-  call = 1;
+  // call = 1;
 }
 function get_iteminfo(index) {
   var res;
@@ -1211,6 +1251,9 @@ $(function() {
   })
   $(document).on("click",".linkline",function(){
     console.log("delete line");
+    var line = $(event.target)
+    console.log("line : ", line)
+    console.log
     var id = $(event.target).attr('id');
     console.log(id);
 
@@ -1275,8 +1318,18 @@ $(function() {
       }
 
       if(drag_flag == 1) {  // drag 상태
-        clearLine();        // line redraw를 위해 line delete
-        createLine();
+        var params = {
+          id : destid
+        }
+        var api = "http://" + serverADDR + ":3000/users/rel_lines";
+        axios.post(api, params)
+        .then(res => {
+          console.log("rel lines : ", res.data)
+          clearLine2(res.data)
+        })
+        
+        // clearLine();        // line redraw를 위해 line delete
+        // createLine();
       }
 
       else {  // create or draw line 상태
@@ -1295,9 +1348,6 @@ export default {
     return {
       temp_para : [],
       link_lines : [],
-
-      // temp_para[0] : next 목적지 IP
-      // temp_para[1] : next 목적지 Port
 
       test : [],
       schemaArray : [],

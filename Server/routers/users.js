@@ -1316,6 +1316,11 @@ router.post('/task_lines', wrapper.asyncMiddleware(async (req, res, next) => {
   const task_lines = await db.doQuery(`SELECT * FROM task_lines where job_id = ${job_id}`);
   res.json(task_lines);
 }));
+router.post('/rel_lines', wrapper.asyncMiddleware(async (req, res, next) => {
+  const id = req.body.id;
+  const rel_lines = await db.doQuery(`SELECT * FROM task_lines where from_id = ${id} or to_id = ${id}`);
+  res.json(rel_lines);
+}));
 router.post('/task_lines/findparent', wrapper.asyncMiddleware(async (req, res, next) => {
   const to_id = req.body.to_id;
   const task_lines = await db.doQuery(`SELECT * FROM task_lines where to_id = ${to_id}`);
