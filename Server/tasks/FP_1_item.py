@@ -126,9 +126,8 @@ while True :
             print(i, "FP")
             print(globals()['item_{}_fp'.format(i)])
 
-        send_data = pickle.dumps(item_1_fp)     ## 1 항목 빈발
-
         try :
+            send_data = pickle.dumps(item_1_fp)     ## 1 항목 빈발
             client_next.sendall(send_data)
         except :
             print("error")

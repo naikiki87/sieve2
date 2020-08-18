@@ -989,6 +989,8 @@ function addLine(start, end) {
     to_id : end
   }
 
+  console.log("add : ", params)
+
   var api = "http://" + serverADDR + ":3000/users/task_lines/add";
   axios.post(api, params)
   .then(response => {
@@ -1451,19 +1453,20 @@ export default {
   },
   created() {
     this.svrAddr = this.svrConfig.hostserver;
-    // var id = request.getParameter(id)
     // var id = this.getParameterByName('jobID');
     var en_C = this.getParameterByName('job');
     var d_add_add = en_C[0]+en_C[2]+en_C[4]+en_C[6]+en_C[8]
     var d_add = parseInt(d_add_add, 16) - 5555
     var real_add = en_C[9]+en_C[7]+en_C[5]+en_C[3]+en_C[1]
     var id = parseInt(real_add, 16) - d_add
+    jobID = id;
     this.jobId = id;
     this.loadTask(id);
     localStorage.clear();
     this.loadSvr();
     this.loadSchema();
     this.loadTaskList();
+    this.func_test()
   },
   computed: {
     animatedNumber: function() {
@@ -1475,63 +1478,31 @@ export default {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue });
     }
   },
+  mounted() {
+    // this.func_test()
+  },
   methods : {
-    async func_test() {
+    func_test() {
       console.log("func test")
-
+      var repeat = setInterval(this.health_check, 5000)
+    },
+    async health_check() {
+      console.log("health check")
       for(var i=0; i<taskArray.length; i++) {
         var params = {
           task_id : taskArray[i].id
         }
         var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
         var res = await axios.post(api, params)
-        console.log("res : ", res)
+        console.log(taskArray[i].id, ' : ', res.data.alive)
+        var target = document.getElementById(taskArray[i].id)
         if(res.data.alive == 1) {
-          var target = document.getElementById(taskArray[i].id)
           target.style.background = "#2efe2e"
         }
+        else if(res.data.alive == 0) {
+          target.style.background = "#e6e6e6"
+        }
       }
-
-      // var params = { 
-      //   job_id : this.jobId,
-      //   tasks : taskArray
-      // }
-      // var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
-      // axios.post(api, params)
-      // .then( response => {
-      //   console.log("res : ", response.data)
-        
-      // })
-      // console.log(document.getElementByClass("div-content"))
-      // var content = document.getElementById("content").children
-      // console.log("content : ", content)
-      // console.log("length : ", content.length)
-      
-      // console.log("1 : ", content[0].className)
-      // console.log("2 : ", content[1].className)
-      // console.log("3 : ", content[2].className)
-
-      // for(var i=0; i<content.length; i++) {
-      //   if(content[i].className == "div-content") {
-      //     console.log(i, " : ", content[i].id)
-      //   }
-      // }
-
-      // var target = document.getElementById("469")
-      // console.log("target : ", target)
-      // // target.style.color = "red"
-      // // target.style.fontSize = '25px'
-      // target.style.background = "#2efe2e"
-
-
-
-    },
-    gen_random(min, max) {
-      // var list = ['a','b','c','d','e','f','g','h','i','j',h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,]
-      // var list = [1,2,3,4,5,6,7,8,9,10]
-      var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
-      // return list[ranNum];
-      return ranNum;
     },
     async jobDistTotal() {
       console.log("jobDistTotal : ", this.jobId);
@@ -1651,7 +1622,7 @@ export default {
       })
       .then( response => {
         if(response == 1) {
-          this.func_test()
+          this.health_check()
           alert("***** JOB 실행 완료 *****");
         }
         else {
@@ -2002,7 +1973,6 @@ export default {
       this.tempconfig = JSON.stringify(str);
       console.log("temp config : ", this.tempconfig);
     },
-
     loadModifyData(index) {
       var _this = this;
       var parent;
@@ -2288,7 +2258,6 @@ export default {
       .then( response => { })
       .catch( response => { console.log(response) } );
     },
-    
     loadTask(index) {
       console.log("loadTask")
       var params = { job_id: index }

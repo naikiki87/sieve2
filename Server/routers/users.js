@@ -49,7 +49,6 @@ var upload = multer({storage: storage});
 const up = upload.fields([{name: 'myFile', maxCount: 1}]);
 
 function connectUser (user, callback) {
-  console.log("connectUser")
   var userSSH = new node_ssh();
   // 해당 연산서버의 유저에 접속
   userSSH.connect({
@@ -299,7 +298,6 @@ function runModules2(user, db_info)
 }
 
 async function healthcheck(user, db_info, callback) {
-  console.log("Health Checking : ")
   var res = 2;
   connectUser(user, (user, userSSH) =>
   {
@@ -310,25 +308,16 @@ async function healthcheck(user, db_info, callback) {
 
     userSSH.execCommand(exe)
     .then((result) => {
-      console.log("res : ", result.stdout)
       var text = `${name}.py`
       if(result.stdout.indexOf(text) != -1) {
-        console.log("it's alive")
         res = 1
-        callback(res)
       }
       else {
-        console.log("not alive")
         res = 0
-        callback(res)
       }
+      callback(res)
     })
   });
-}
-
-function healthcheck2(index, callback) {
-
-  callback(100)
 }
 
 // 매개변수로 받은 유저의 모듈들 종료
@@ -427,68 +416,17 @@ router.get('/download/:fildid', function(req, res) {
   filestream.pipe(res);
 })
 router.post('/healthcheck', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("api healthcheck")
   const task_id = req.body.task_id
   const db_info =  await db.doQuery("select * from db_info")
-
-  // res.json({success: true});
 
   const user = (await db.doQuery(`SELECT jt.*, ec.*, t.name FROM job_tasks jt, engine_computer ec, tasks t
   WHERE jt.id = ${task_id} AND jt.ec_id = ec.id AND jt.task_id = t.id`))[0]
 
   healthcheck(user, db_info, function(response) {
-    var alive = response
-    res.json({alive : alive})
+    res.json({alive : response})
   })
-
-  // var alive = healthcheck2(10, function(res) {
-  //   console.log("res : ", res)
-  // })
-  
-
-  // await db.doQuery(select * from ?)
-  // const job_id = req.body.job_id;
-  // const tasks = req.body.tasks;
-  // const db_info =  await db.doQuery("select * from db_info")
-  // const engine_computer = await db.doQuery(`select *, t.name as program_name from job_tasks jt
-  //   join jobs j on j.id = jt.job_id
-  //   join tasks t on t.id = jt.task_id
-  //   join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${job_id}`);
-
-  // console.log("-------------- Hel check -----------------")
-  // for (var i =0; i <engine_computer.length; i++){
-  //   var user = engine_computer[i]
-  //   // runModules(user,db_info)
-  //   healthcheck(user, db_info)
-  // };
-  // healthcheck0(engine_computer, db_info)
-  // .then((result) => {
-  //   console.log("finish")
-  // })
-
-  // new Promise(function(resolve, reject){
-  //   setTimeout(function() {
-  //     resolve(1);
-  //   }, 2000);
-  // })
-  // .then(function(result) {
-  //   console.log("result1 : ", result)
-  //   healthcheck0(engine_computer, db_info)
-  // })
-  // .then(function(result) {
-  //   console.log("finish")
-  // })
-
-
-  // const user =  (await db.doQuery(`select * FROM users_test where id = ${id}`));
-  // res.json(user[0].userID);
 }));
-function healthcheck0(engine_computer, db_info) {
-  for (var i =0; i <engine_computer.length; i++){
-    var user = engine_computer[i]
-    healthcheck(user, db_info)
-  };
-}
+
 router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
 
@@ -1454,6 +1392,7 @@ router.post('/task_lines/findparent', wrapper.asyncMiddleware(async (req, res, n
   res.json(task_lines);
 }));
 router.post('/task_lines/add', wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("api tasklines add")
 	console.log(req.body)
   const job_id = req.body.job_id;
   const from_id = req.body.from_id;

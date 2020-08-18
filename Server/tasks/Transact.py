@@ -29,7 +29,7 @@ while True :
     data = clientSocket.recv(65535)
     data = data.decode()        ## bytes -> string
     if data != "" :
-        data = data.split('\n')
+        data = data.split('\r\n')
         row = data[0].split('\t')
         print("data : ", row)
 
