@@ -7,7 +7,7 @@
       <table valign="middle" align="left" style="height:70px;margin:auto; width:250px; padding-top : 5px; background:;">
         <tr>
           <td v-model="jobId" style="font-size:22px; font-weight:700;"> job : #{{ jobId }} </td>
-          <td v-model="localcnt" style="font-size:14px;"> 연산자 수 : {{ localcnt }} </td>
+          <td v-model="localcnt" style="font-size:14px;"> # Tasks : {{ localcnt }} </td>
         </tr>
       </table>
 
@@ -29,21 +29,21 @@
         </tr>
         <br>
         <tr>
-          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal"> TASK 배포 </button> </td>
-          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobRUN"> JOB 실행 </button> </td>
+          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal"> DISTRIBUTE </button> </td>
+          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobRUN"> RUN </button> </td>
         </tr>
       </table>
     </div>
     <div id="rightaside">
       <table class="TDrightTable" style="height:30px; width:100%; border:0px; color:white;">
         <tr>
-          <td style="background:black; font-size:14px; font-weight:700;"> ---- 연산자 추가 ---- </td>
+          <td style="background:black; font-size:14px; font-weight:700;"> Add Task </td>
         </tr>
       </table>
       <br>
       <table class="TDrightTable">
         <tr>
-          <td style="width : 80px;" class="add_title"> 연산자 </td>
+          <td style="width : 80px;" class="add_title"> Task </td>
           <td>
             <select style="width : 99%;" v-model="task_id">
               <option v-for="(item, index) in taskListArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
@@ -52,7 +52,7 @@
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 수행 서버 </td>
+          <td style="width : 80px;" class="add_title"> Edge </td>
           <td>
             <select style="width : 99%;" v-model="ec_id">
               <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{ item.ip_address }} </option>
@@ -61,14 +61,14 @@
         </tr>
 
         <tr>
-          <td style="width : 80px;" class="add_title"> 리스닝 포트 </td>
+          <td style="width : 80px;" class="add_title"> Port </td>
           <td> <input style="width : 95%;" type="text" v-model="listening_port"></td>
         </tr>
       </table>
       <br>
       <br>
-      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="addTask_reload"> 연산자 추가 </button>
-      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> ㅅㄷㄴㅅ </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="addTask_reload"> ADD </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> TEST </button>
     </div>
     <div id="context-menus" class="context-menus">
       <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p>
@@ -1462,7 +1462,7 @@ export default {
     jobID = id;
     this.jobId = id;
     this.loadTask(id);
-    localStorage.clear();
+    // localStorage.clear();
     this.loadSvr();
     this.loadSchema();
     this.loadTaskList();

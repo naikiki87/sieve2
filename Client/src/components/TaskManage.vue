@@ -2,7 +2,7 @@
   <div>
     <div>
       <div style="width:48%; height:500px; float:left;">
-        <div class="pageName" style="margin-right:3px;"> 기본 연산자 </div>
+        <div class="pageName" style="margin-right:3px;"> Common Tasks </div>
         <div style="height:465px; background">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
@@ -14,9 +14,9 @@
               </colgroup>
               <tr>
                 <th>ID</th>
-                <th>연산자 명</th>
-                <th>실행언어</th>
-                <th>연산자 개요</th>
+                <th>Task Name</th>
+                <th>Language</th>
+                <th>Description</th>
               </tr>
               <tr v-for="p in taskArrayS1" :key="p.id">
                 <td>{{ p.id }}</td>
@@ -30,7 +30,7 @@
       </div>
 
       <div style="width:52%; height:500px; float:left;">
-        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> 개별 연산자 </div>
+        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Custom Tasks </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
@@ -43,17 +43,17 @@
               </colgroup>
               <tr>
                 <th>ID</th>
-                <th>연산자 명</th>
-                <th>실행언어</th>
-                <th>연산자 개요</th>
-                <th>삭제</th>
+                <th>Task Name</th>
+                <th>Language</th>
+                <th>Description</th>
+                <th>Delete</th>
               </tr>
               <tr v-for="p in taskArrayS2" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px;" v-on:click="removeTask(p.id)"> 삭제 </button> </td>
+                <td> <button style="width:50px;" v-on:click="removeTask(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -61,9 +61,9 @@
         <form action="http://localhost:3000/users/tasks/add" method="post" enctype="multipart/form-data">
           <table class="mainMngTable2" style="margin:auto; width:95%;">
             <tr>
-              <td class="add_title"> 연산자 명 </td>
+              <td class="add_title"> Task Name </td>
               <td> <input style="width : 95%;" name="name" type="text" v-model="addTName"> </td>
-              <td class="add_title"> 실행언어 </td>
+              <td class="add_title"> Language </td>
               <td>
                 <select name="program_type" style="height:27px; width : 96%; border:1px solid;" v-model="addProType">
                   <option value = "0"> Python </option>
@@ -73,13 +73,13 @@
                 </select>
               </td>
               <td rowspan="2" style="width:3%;"> </td>
-              <td rowspan="2"> <button class="addButton" type="submit"> 추가 </button> </td>
+              <td rowspan="2"> <button class="addButton" type="submit"> ADD </button> </td>
               <td rowspan="2" style="width:3%;"> </td>
             </tr>
             <tr>
-              <td class="add_title"> 연산자 개요 </td>
+              <td class="add_title"> Description </td>
               <td> <input style="width:95%;" type="text" name="comment" v-model="addComment"/> </td>
-              <td class="add_title"> 파일 업로드 </td>
+              <td class="add_title"> File Upload </td>
               <td> <input style="width:94%; font-size:14px;" type="file" name="myFile"/> </td>
               <td style="display:none;"> <input style="width:95%;" type="text" name="currentuserid" v-model="currentuserid"/> </td>
             </tr>

@@ -2,7 +2,8 @@
   <div>
     <div>
       <div style="width:48%; height:500px; float:left;">
-        <div class="pageName" style="margin-right:3px;"> 스키마 목록 </div>
+        <!-- <div class="pageName" style="margin-right:3px;"> 스키마 목록 </div> -->
+        <div class="pageName" style="margin-right:3px;"> Schema List </div>
         <div style="height:465px; background">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
@@ -14,18 +15,23 @@
                 <col style="width: 50px"> <!-- root ID -->
               </colgroup>
               <tr>
-                <th class="svrMngColName">ID</th>
+                <!-- <th class="svrMngColName">ID</th>
                 <th class="svrMngColName">스키마명</th>
                 <th class="svrMngColName">설명</th>
                 <th class="svrMngColName">삭제</th>
-                <th class="svrMngColName">컬럼</th>
+                <th class="svrMngColName">컬럼</th> -->
+                <th class="svrMngColName">ID</th>
+                <th class="svrMngColName">Schema</th>
+                <th class="svrMngColName">Description</th>
+                <th class="svrMngColName">Delete</th>
+                <th class="svrMngColName">Columns</th>
               </tr>
               <tr v-for="p in schemaArray" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px;" v-on:click="removeSchema(p.id)"> 삭제 </button> </td>
-                <td> <button style="width:50px;" v-on:click="loadSchemaColumn(p.id)"> 상세 </button> </td>
+                <td> <button style="width:50px;" v-on:click="removeSchema(p.id)"> DEL </button> </td>
+                <td> <button style="width:100px;" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
               </tr>
             </table>
           </div>
@@ -33,9 +39,9 @@
         <div>
           <table class="mainMngTable2" style="margin:auto; width:97%;">
             <tr>
-              <td class="add_title"> 스키마 명 </td>
+              <td class="add_title"> Schema Name </td>
               <td> <input style="width : 95%;" type="text" v-model="add_schemaName" v-on:keyup.enter="addSchema"> </td>
-              <td rowspan="2"> <button class="addButton" v-on:click = "addSchema" > 추가 </button> </td>
+              <td rowspan="2"> <button class="addButton" v-on:click = "addSchema" > ADD </button> </td>
             </tr>
             <tr>
               <td class="add_title"> Comment </td>
@@ -46,7 +52,8 @@
       </div>
       
       <div style="width:52%; height:500px; float:left;" margin="auto">
-        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> 컬럼 목록 </div>
+        <!-- <div class="pageName" style="margin-left:3px; background:brown; color:white;"> 컬럼 목록 </div> -->
+        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Column List </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
@@ -58,18 +65,23 @@
                 <col style="width: 50px"> <!-- del -->
               </colgroup>
               <tr>
-                <th class="svrMngColName">ID</th>
+                <!-- <th class="svrMngColName">ID</th>
                 <th class="svrMngColName">스키마</th>
                 <th class="svrMngColName">컬럼명</th>
                 <th class="svrMngColName">자료형</th>
-                <th class="svrMngColName">삭제</th>
+                <th class="svrMngColName">삭제</th> -->
+                <th class="svrMngColName">ID</th>
+                <th class="svrMngColName">Schema</th>
+                <th class="svrMngColName">Column</th>
+                <th class="svrMngColName">Data Type</th>
+                <th class="svrMngColName">Delete</th>
               </tr>
               <tr v-for="p in columnArray" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.schema_id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
-                <td> <button style="width:50px;" v-on:click="removeColumn2(p.id, p.schema_id)"> 삭제 </button> </td>
+                <td> <button style="width:50px;" v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -78,12 +90,12 @@
           <table class="mainMngTable2" style="margin:auto; width:97%;" v-if="ok">
             <tr>
               <td style="width:50px;" rowspan="2"> ID : <a style="font-size:16px; font-weight:700; color:red;" v-model="add_ColSchema"> {{ add_ColSchema }} </a> </td>
-              <td class="add_title"> 컬럼 명 </td>
+              <td class="add_title"> Column Name </td>
               <td> <input style="width : 95%;" type="text" v-model="add_ColName" v-on:keyup.enter="addSchema"> </td>
-              <td rowspan="2"> <button class="addButton" v-on:click = "addColumn2" > 추가 </button> </td>
+              <td rowspan="2"> <button class="addButton" v-on:click = "addColumn2" > ADD </button> </td>
             </tr>
             <tr>
-              <td class="add_title"> 자료형 </td>
+              <td class="add_title"> Data Type </td>
               <td>
                 <select style="width:96%;" v-model="add_ColType">
                   <option value = "1"> string </option>

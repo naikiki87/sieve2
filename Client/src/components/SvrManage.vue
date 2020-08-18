@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="height:500px;">
-      <div class="pageName"> - 연산서버 관리 - </div>
+      <div class="pageName"> Edge Server List </div>
       <!-- <button v-on:click="setCookie"> click </button>
       <button v-on:click="dataTEST"> TEST </button>
       <button v-on:click="dataTEST2"> TEST2 </button> -->
@@ -10,38 +10,38 @@
           <colgroup>
             <col style="width: 50px"> <!-- ID -->
             <col style="width: 120px"> <!-- IP -->
-          	<col style="width: 120px"> <!-- root ID -->
-          	<col style="width: 120px"> <!-- root password -->
-          	<col style="width: 120px"> <!-- sieve key -->
+          	<!-- <col style="width: 120px">
+          	<col style="width: 120px">
+          	<col style="width: 120px"> -->
             <col style="width: 80px"> <!-- delete -->
           </colgroup>
           <tr>
             <th>ID</th>
-            <th>IP 주소</th>
-            <th>Root ID</th>
+            <th>IP Address</th>
+            <!-- <th>Root ID</th>
             <th>Root PW</th>
-            <th>SIEVE KEY</th>
-            <th>삭제</th>
+            <th>SIEVE KEY</th> -->
+            <th>Delete</th>
           </tr>
           <tr v-for="p in pageArray" :key="p.id">
             <td>{{ p.id }}</td>
             <td>{{ p.ip_address }}</td>
-            <td>{{ p.root_id }}</td>
-            <td>{{ p.root_passwd }}</td>
-            <td>{{ p.sieve_key }}</td>
-            <td> <button style="width:50px;" v-on:click="removeSvr(p.id)"> 삭제 </button> </td>
+            <!-- <td>{{ p.root_id }}</td>
+            <td type="password">{{ p.root_passwd }}</td>
+            <td>{{ p.sieve_key }}</td> -->
+            <td> <button style="width:50px;" v-on:click="removeSvr(p.id)"> DEL </button> </td>
           </tr>
         </table>
       </div>
     </div>
     <table class="mainMngTable2" style="margin:auto; width:800px;">
       <tr>
-        <td class="add_title"> IP 주소 </td>
+        <td class="add_title"> IP Address </td>
         <td> <input style="width : 95%;" type="text" v-model="add_ip" v-on:keyup.enter="addSvr"> </td>
         <td class="add_title"> Root ID </td>
         <td> <input style="width : 95%;" type="text" v-model="add_id" v-on:keyup.enter="addSvr"> </td>
         <td rowspan="2" style="width:20px;"> </td>
-        <td rowspan="2"> <button class="addButton" v-on:click = "addSvr" > 추가 </button> </td>
+        <td rowspan="2"> <button class="addButton" v-on:click = "addSvr" > ADD </button> </td>
         <td rowspan="2" style="width:10px;"> </td>
         <!-- <td rowspan="2"> <button class="addButton" v-on:click = "clearSvr" > 전체 삭제 </button> </td> -->
         <!-- <td rowspan="2" style="width:10px;"> </td> -->

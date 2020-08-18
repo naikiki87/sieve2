@@ -2,10 +2,10 @@
   <div id = "app">
     <Header v-bind:currentuserid="currentuserid"> </Header>
     <div id="tab-list" style="background : #0a1b2a; height : 50px; padding : 0px; margin:8px; margin-bottom : 20px;">
-      <div id="tb_1" class="tabmenu active" v-on:click="tabChange('tb_1', 'svrManage')"> 연산서버 관리 </div>
-      <div id="tb_2" class="tabmenu" v-on:click="tabChange('tb_2', 'schemaManage')"> 데이터스키마 </div>
-      <div id="tb_3" class="tabmenu" v-on:click="tabChange('tb_3', 'taskManage')"> 연산자 관리 </div>
-      <div id="tb_4" class="tabmenu" v-on:click="tabChange('tb_4', 'jobManage')"> JOB 관리 </div>
+      <div id="tb_1" class="tabmenu active" v-on:click="tabChange('tb_1', 'svrManage')"> EDGE </div>
+      <div id="tb_2" class="tabmenu" v-on:click="tabChange('tb_2', 'schemaManage')"> SCHEMA </div>
+      <div id="tb_3" class="tabmenu" v-on:click="tabChange('tb_3', 'taskManage')"> TASK </div>
+      <div id="tb_4" class="tabmenu" v-on:click="tabChange('tb_4', 'jobManage')"> JOB </div>
     </div>
     <div id="svrManage" class="tabcontent" style="display:;">
       <SvrManage v-bind:currentuserid="currentuserid"> </SvrManage>
