@@ -528,7 +528,12 @@ router.post('/make_new_schema', wrapper.asyncMiddleware(async (req, res, next) =
   for(var i=0; i<attrs.length; i++) {
     col_name = attrs[i].name
     type_id = attrs[i].type_id
-    await db.doQuery(`INSERT INTO cell_columns(NAME, schema_id, type_id) VALUES('${col_name}', ${s_id}, ${type_id})`)
+    await db.doQuery(`INSERT INTO cell_columns (name, schema_id, type_id)
+  SELECT * FROM (SELECT '${col_name}', ${s_id}, ${type_id}) AS tmp
+  WHERE NOT EXISTS (
+      SELECT name FROM cell_columns WHERE NAME = '${col_name}' and schema_id = ${s_id}
+  ) LIMIT 1;`)
+    // await db.doQuery(`INSERT INTO cell_columns(NAME, schema_id, type_id) VALUES('${col_name}', ${s_id}, ${type_id})`)
   }
   res.json({new_sid : s_id})
 }));
@@ -539,6 +544,17 @@ router.post('/cell_schemas/add', wrapper.asyncMiddleware(async (req, res, next) 
   const currentuserid = req.body.currentuserid;
 
   console.log(await db.doQuery(`INSERT INTO cell_schemas (name, comment, userid) values ('${name}','${comment}','${currentuserid}')`));
+  res.json({success: true});
+}));
+router.post('/cell_schemas/del_taskschema', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const tid = req.body.id;
+  var name = tid + 'out'
+  var s_id = (await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`))[0].id
+
+  console.log("sid : ", s_id)
+
+  await db.doQuery(`DELETE from cell_columns WHERE schema_id = ${s_id}`)
+  await db.doQuery(`DELETE from cell_schemas WHERE name = '${name}'`)
   res.json({success: true});
 }));
 router.post('/cell_schemas/xml2', wrapper.asyncMiddleware(async (req, res, next) => {

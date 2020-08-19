@@ -1941,46 +1941,59 @@ export default {
       .then( response => {})
       .catch( response => { console.log(response) } );
     },
-    deleteTask_reload() {
-      console.log("D Reload");
+    async deleteTask_reload() {
+      console.log("deleteTask_reload");
 
       var id = this.jobId;
 
       console.log("id : " + id);
       console.log("id : " + cntxtmenuID);
       var _this = this;
-      new Promise(function(resolve, reject){
-        _this.deleteTask(cntxtmenuID);
-        setTimeout(function() {
-          resolve(1);
-        }, 200);
-      })
-      .then(function(result) {
-        _this.clearBG();
-        return result + 10;
-      })
-      .then(function(result) {
-        _this.loadTask(id);
-        return ;
-      });
+      await this.deleteTask(cntxtmenuID)
+      await this.clearBG()
+      await this.loadTask(id)
+      // new Promise(function(resolve, reject){
+      //   _this.deleteTask(cntxtmenuID);
+      //   setTimeout(function() {
+      //     resolve(1);
+      //   }, 200);
+      // })
+      // .then(function(result) {
+      //   _this.clearBG();
+      //   return result + 10;
+      // })
+      // .then(function(result) {
+      //   _this.loadTask(id);
+      //   return ;
+      // });
     },
-    deleteTask(index) {
+    async deleteTask(index) {
       console.log("DEL TASK");
 
       for(var i=0; i<lineArray.length; i++) {
         if(lineArray[i].from_id == index || lineArray[i].to_id == index) {
           console.log(i + " : " + lineArray[i].id);
-          deleteLine(lineArray[i].id);
+          await deleteLine(lineArray[i].id);
         }
       }
 
       var params = { id : index }
-
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks/delete";
+      await axios.post(api, params)
+
+      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/del_taskschema";
+      await axios.post(api, params)
+    },
+
+    deleteTaskSchema(index) {
+      console.log("DEL task schema")
+      var params = { tid : index }
+      var api = "http://" + this.svrAddr + ":3000/users/cell_schamas/del_taskschema";
 
       axios.post(api, params)
-      .then( response => {})
-      .catch( response => { console.log(response) } );
+      .then( response => {
+        console.log("res : ", response.data)
+      })
     },
     make_parameter(index) {               // data update를 위한 parameter 데이터 세팅
       console.log("make parameter  : ", index);
@@ -2215,12 +2228,10 @@ export default {
 
       switch(this.temptask_id) {
         case 0 :      // basestream
-          console.log("swtich 0000")
           this.tempoutput_schema = this.tempinput_schema  
           break
 
         case 2 :      // projection
-          console.log("id : ", this.taskID)
           this.tempoutput_schema = await this.make_new_schema(this.taskID, this.selected_attrs) 
           break
       }
