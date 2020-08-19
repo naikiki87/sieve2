@@ -1317,8 +1317,10 @@ $(function() {
   })
   $('div').bind({
     contextmenu : function(event) {
-      var divclass = $(event.target).attr('class');
-      if(divclass == "div-content")
+      divE2 = $(event.target);
+      var dest_class = divE2[0].className
+      // var divclass = $(event.target).attr('class');
+      if(dest_class == "div-content" || dest_class == "div-content ui-draggable ui-draggable-handle")
       {
         event.stopPropagation();
         event.preventDefault();
@@ -1371,7 +1373,6 @@ $(function() {
       }
 
       if(drag_flag == 1 && dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-dragging") {  // drag 상태
-        console.log("class : ", dest_class)
         var params = {
           id : destid
         }
@@ -1943,29 +1944,10 @@ export default {
     },
     async deleteTask_reload() {
       console.log("deleteTask_reload");
-
       var id = this.jobId;
-
-      console.log("id : " + id);
-      console.log("id : " + cntxtmenuID);
-      var _this = this;
       await this.deleteTask(cntxtmenuID)
       await this.clearBG()
       await this.loadTask(id)
-      // new Promise(function(resolve, reject){
-      //   _this.deleteTask(cntxtmenuID);
-      //   setTimeout(function() {
-      //     resolve(1);
-      //   }, 200);
-      // })
-      // .then(function(result) {
-      //   _this.clearBG();
-      //   return result + 10;
-      // })
-      // .then(function(result) {
-      //   _this.loadTask(id);
-      //   return ;
-      // });
     },
     async deleteTask(index) {
       console.log("DEL TASK");
@@ -1983,17 +1965,6 @@ export default {
 
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/del_taskschema";
       await axios.post(api, params)
-    },
-
-    deleteTaskSchema(index) {
-      console.log("DEL task schema")
-      var params = { tid : index }
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schamas/del_taskschema";
-
-      axios.post(api, params)
-      .then( response => {
-        console.log("res : ", response.data)
-      })
     },
     make_parameter(index) {               // data update를 위한 parameter 데이터 세팅
       console.log("make parameter  : ", index);
@@ -2353,7 +2324,6 @@ export default {
       .catch( response => { console.log(response) } );
     },
     loadTask(index) {
-      console.log("loadTask")
       var params = { job_id: index }
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
       axios.post(api, params)
@@ -2366,7 +2336,6 @@ export default {
       .catch( response => { console.log(response) } );
     },
     initDIV() {
-      console.log("initDIV")
       for(var i=0; i<this.taskcnt; i++) {
         this.createDIV(i);
       }
@@ -2401,7 +2370,6 @@ export default {
       this.output_schema = ''
     },
     changeMode() {
-      console.log("change Mode")
       if(this.mode == "DRAG" ) {
         this.mode = "CREATE / LINK";
       }
