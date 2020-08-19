@@ -29,7 +29,7 @@
             <!-- <td>{{ p.root_id }}</td>
             <td type="password">{{ p.root_passwd }}</td>
             <td>{{ p.sieve_key }}</td> -->
-            <td> <button style="width:50px;" v-on:click="removeSvr(p.id)"> DEL </button> </td>
+            <td> <button style="width:50px; cursor:pointer;" v-on:click="removeSvr(p.id)"> DEL </button> </td>
           </tr>
         </table>
       </div>

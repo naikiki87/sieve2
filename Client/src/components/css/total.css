@@ -2,13 +2,13 @@ body { text-align : center; background-color: #f6f6f8; }
 input { border-style: groove; width : 200px; }
 button { border-style: groove; }
 .shadow { box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03) }
-.tabmenu { float : left; padding : 0px; height : 48px; width : 105px; padding-top : 15px; color : white; font-size : 13px;}
+.tabmenu { float : left; padding : 0px; height : 48px; width : 105px; padding-top : 15px; color : white; font-size : 13px; cursor:pointer;}
 .active { font-size : 14px; font-weight:bold; color : gold; }
 .pageName { background : gold; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
 .pageName2 { margin-left : 5px; margin-right:5px; background : grey; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:3px; color:white}
 
 .tabcontent { width:98%; margin-left:1%; border : 1px solid grey; height:600px;}
-.addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:navy; color:white}
+.addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:navy; color:white; cursor:pointer;}
 
 .mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}
 .mainMngTable tr { margin:0px; padding:0px; height : 33px; padding : 0px; border : 1px solid blue; background : ; }
@@ -37,8 +37,8 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 #arrowbg {position:absolute; top:0px; left:0px; width: 800px; height : 700px; background:; margin : 0px; padding:0px; border : ; background : }
 #parent { width : 900px; height : 666px; position: absolute; top : 82px; left : 204px; border: 0px; padding : 0px; margin : 0px; border : 0px solid blue; pointer-events:none; background : blue; }
 
-.linkline { stroke:black; stroke-width:1; pointer-events:auto; }
-.div-content { width: 90px; height: 90px; background-color:#f2f2f2; color:black; padding:0px; float:left; margin:0px; text-align:center; line-height: 10px; border:1px solid #a4a4a4; position:absolute; }
+.linkline { stroke:black; stroke-width:1; pointer-events:auto; cursor:pointer; }
+.div-content { width: 90px; height: 90px; background-color:#f2f2f2; color:black; padding:0px; float:left; margin:0px; text-align:center; line-height: 10px; border:1px solid #a4a4a4; position:absolute; cursor:pointer;}
 .linkline:hover{ stroke : pink; stroke-width:12; stroke-dasharray : "10, 5"; }
 .no-drag { font-weight : 700; font-size : 15px; color : #0080ff;
 /* .no-drag { font-style : italic; font-weight : 700; font-size : 15px; color : RE; */
@@ -65,6 +65,7 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 #modify_BJ { background : white; border : 1px solid; width : 848px; height : 550px; border : 2px solid darkblue; display : none;}
 /* #modify_TR { background : white; border : 1px solid; width : 848px; height : 450px; border : 2px solid darkblue; display : none;} */
 #modify_TR { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_RD_1 { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
 
 .modify_window_title { background:darkblue; height : 50px; margin : 0px; padding : 3px; color:white;}
 .proj_attr_box { width : 200px; height : 230px; border : 0px solid; }
@@ -126,8 +127,8 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 .BJvalWinType { width : 91%; }
 .BJvalAttrIndex { width : 91%; }
 .BJbutton { width : 80px;}
-.JobDetailHeaderbutton { height:33px; width:218px; margin:1px; font-size:13px; font-weight:700}
-.JobDetailHeaderbutton2 { height:48px; width:100px; margin:5px; font-size:14px; font-weight:700; background:darkblue; color:white;}
+.JobDetailHeaderbutton { height:33px; width:218px; margin:1px; font-size:13px; font-weight:700; cursor:pointer;}
+.JobDetailHeaderbutton2 { height:48px; width:100px; margin:5px; font-size:14px; font-weight:700; background:darkblue; color:white; cursor:pointer;}
 
 #TDHeader_table { border : 1px solid lightgrey; padding : 0px; font-weight:700}
 #TDHeader_table tr { height : 30px; padding : 0px; border : 1px solid #d8d8d8; background :  }

@@ -29,7 +29,7 @@
         </tr>
         <br>
         <tr>
-          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal"> DISTRIBUTE </button> </td>
+          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal"> DISPATCH </button> </td>
           <td> <button class="JobDetailHeaderbutton2" v-on:click="jobRUN"> RUN </button> </td>
         </tr>
       </table>
@@ -68,7 +68,7 @@
       <br>
       <br>
       <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="addTask_reload"> ADD </button>
-      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> TEST </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="RT_health_check"> TEST </button>
     </div>
     <div id="context-menus" class="context-menus">
       <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p>
@@ -100,13 +100,22 @@
           <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
         </tr>
         <tr>
-          <td style="width : 80px;" class="add_title"> 목적지 IP </td>
+          <td style="width : 80px;" class="add_title"> 목적 IP </td>
           <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
         </tr>
 
         <tr>
           <td style="width : 80px;" class="add_title"> 목적 Port </td>
           <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
+        </tr>
+
+        <tr>
+          <td style="width : 80px;" class="add_title"> 입력 스키마 </td>
+          <td>
+            <select style="width : 99%;" v-model="tempinput_schema">
+              <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
         </tr>
 
         <tr>
@@ -386,28 +395,6 @@
               </td>
             </tr>
             <tr>
-              <td style="width : 80px;" class="add_title"> 출력 타입 </td>
-              <td>
-                <select id="taskSelect" style="width : 99%; border:1px solid;" v-model="tempoutput_type">
-                  <option value = "0"> Socket Output </option>
-                  <option value = "1"> File Output </option>
-                  <option value = "2"> DB Output </option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td style="width : 80px;" class="add_title"> CONFIG </td>
-              <td> <input style="width : 95%;" type="text" v-model="tempconfig"> </td>
-            </tr>
-            <tr>
-              <td style="width : 80px;" class="add_title"> HB TASK </td>
-              <td> <input style="width : 95%;" type="text" v-model="tempheartbeat_task"></td>
-            </tr>
-            <tr>
-              <td style="width : 80px;" class="add_title"> HB JOB </td>
-              <td> <input style="width : 95%;" type="text" v-model="tempheartbeat_job"></td>
-            </tr>
-            <tr>
               <td style="width : 80px;" class="add_title"> 출력 스키마 </td>
               <td>
                 <select style="width : 99%;" v-model="tempoutput_schema">
@@ -416,20 +403,22 @@
               </td>
             </tr>
           </td>
+
           <td> <div class="proj_attr_btwbox"> </div> </td>
+          
           <td>
             <div class="proj_attr_box">
               <div> <h3 class="proj_attr_title"> 속성 </h3> </div>
               <div>
                 <select class="proj_attr_list" id="projection_sel_box" size=4>
-                  <option v-for="(item, index) in parentAttrs" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+                  <option v-for="(item, index) in prev_attrs" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
                 </select>
               </div>
             </div>
           </td>
           <td>
             <div class="proj_attr_btwbox">
-              <button style="margin-top : 120px; width : 50px;" v-on:click="projAddAttr"> 추가 </button>
+              <button style="margin-top : 120px; width : 50px;" v-on:click="proj_add_attr"> add </button>
             </div>
           </td>
           <td>
@@ -437,7 +426,7 @@
               <div> <h3 class="proj_attr_title"> 선택 속성 </h3> </div>
               <div>
                 <select class="proj_attr_list" id="projection_selected_box" size=4>
-                  <option v-for="(item, index) in myAttrs" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+                  <option v-for="(item, index) in selected_attrs" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
                 </select>
               </div>
             </div>
@@ -772,6 +761,62 @@
       <button id="modifyButton" v-on:click="modifyTask_reload"> SAVE </button>
       <button id="modifyButton" v-on:click="hideModifyMenu"> CLOSE </button>
     </div>
+    <div id="modify_RD_1">
+      <div class="modify_window_title">
+        <h2 v-model="taskID"> Task ID : {{ taskID }} </h2>
+      </div>
+      <br>
+      <table style="margin:auto; align:center;">
+        <tr>
+          <td style="width : 80px;" class="add_title"> 연산자 </td>
+          <td>
+            <h3 v-model="temptask_name" class="modify_window_op_title"> {{ temptask_name }} </h3>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" class="add_title"> 수행 서버 </td>
+          <td>
+            <select style="width : 99%;" v-model="tempec_id" disabled>
+              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" class="add_title"> 수행 포트 </td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" class="add_title"> 목적 IP </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
+        </tr>
+
+        <tr>
+          <td style="width : 80px;" class="add_title"> 목적 Port </td>
+          <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
+        </tr>
+
+        <tr>
+          <td style="width : 80px;" class="add_title"> 입력 스키마 </td>
+          <td>
+            <select style="width : 99%;" v-model="tempinput_schema">
+              <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="width : 80px;" class="add_title"> 출력 스키마 </td>
+          <td>
+            <select style="width : 99%;" v-model="tempoutput_schema">
+              <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <br> <br>
+      <button id="modifyButton" v-on:click="modifyTask_reload"> SAVE </button>
+      <button id="modifyButton" v-on:click="hideModifyMenu"> CLOSE </button>
+    </div>
     <!-- <div id="modify_TR">
       <div class="modify_window_title">
         <h2 v-model="taskID"> Task ID : {{ taskID }} </h2>
@@ -867,6 +912,7 @@ import Transaction from '../components/configWindow/Transaction'
 var serverADDR = serverConfig.hostserver;
 var jobID = getParameterByName('jobID');
 
+var rt_check;
 var drag_flag=0;
 var src;
 var dest;
@@ -879,7 +925,7 @@ var marginX=0;
 var marginY=0;
 var cntxtmenu;
 var modify_menu;
-var modify_BS, modify_Proj, modify_SO, modify_Agg, modify_HJ, modify_BJ, modify_TR, modify_1_itemFP, modify_n_itemFP;
+var modify_BS, modify_Proj, modify_SO, modify_Agg, modify_HJ, modify_BJ, modify_TR, modify_1_itemFP, modify_n_itemFP, modify_RD_1;
 var cntxtmenuID;
 var t;
 var taskArray = [];
@@ -980,7 +1026,7 @@ async function clearLine2(lines) {    // canvas의 related line 만 지우고 re
     drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
 }
-function addLine(start, end) {
+async function addLine(start, end) {
   console.log("ADD LINE");
 
   var params = {
@@ -992,18 +1038,23 @@ function addLine(start, end) {
   console.log("add : ", params)
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/add";
-  axios.post(api, params)
-  .then(response => {
-    params = {
-      start_id : start,
-      end_id : end
-    }
-    api = "http://" + serverADDR + ":3000/users/update_dest_info";
-    axios.post(api, params)
-    .then(response => {
-    })
-  })
-  .catch(err => {});
+  await axios.post(api, params)
+  console.log("addline 2")
+  api = "http://" + serverADDR + ":3000/users/update_dest_info";
+  await axios.post(api, params)
+
+  // axios.post(api, params)
+  // .then(response => {
+  //   params = {
+  //     // _id : start,
+  //     to_id : end
+  //   }
+  //   api = "http://" + serverADDR + ":3000/users/update_dest_info";
+  //   axios.post(api, params)
+  //   .then(response => {
+  //   })
+  // })
+  // .catch(err => {});
 }
 async function createLine() {
   var output, arr;
@@ -1239,6 +1290,7 @@ $(function() {
   modify_HJ = document.getElementById("modify_HJ");
   modify_BJ = document.getElementById("modify_BJ");
   modify_TR = document.getElementById("modify_TR");
+  modify_RD_1 = document.getElementById("modify_RD_1");
 
   $("#modeChanger").click(function(){
       if(drag_flag == 0) {
@@ -1318,7 +1370,8 @@ $(function() {
         box_position_update(destid, divx, divy)   // box 위치 db update
       }
 
-      if(drag_flag == 1) {  // drag 상태
+      if(drag_flag == 1 && dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-dragging") {  // drag 상태
+        console.log("class : ", dest_class)
         var params = {
           id : destid
         }
@@ -1346,6 +1399,9 @@ $(function() {
 export default {
   data() {
     return {
+      prev_attrs : [],
+      selected_attrs : [],
+      rt_h_check : '',
       temp_para : [],
       link_lines : [],
 
@@ -1399,7 +1455,7 @@ export default {
       tempParent : '',
       parent : [],
       parentAttrs : [],
-      myAttrs : [],
+      proj_selected_attr : [],
       tempArr : [],
 
       AggQuery : `Select * From `,
@@ -1466,7 +1522,7 @@ export default {
     this.loadSvr();
     this.loadSchema();
     this.loadTaskList();
-    this.func_test()
+    // this.RT_health_check()
   },
   computed: {
     animatedNumber: function() {
@@ -1478,13 +1534,11 @@ export default {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue });
     }
   },
-  mounted() {
-    // this.func_test()
-  },
   methods : {
-    func_test() {
-      console.log("func test")
-      var repeat = setInterval(this.health_check, 5000)
+    RT_health_check() {
+      console.log("RT_health_check")
+      // var repeat = setInterval(this.health_check, 5000)
+      rt_check = setInterval(this.health_check, 5000)
     },
     async health_check() {
       console.log("health check")
@@ -1805,38 +1859,66 @@ export default {
       this.AggTOTALQueryData[3] = this.AggSELECTQueryData;
       this.AggTOTALQueryData[4] = this.AggOBQueryData;
     },
-    projAddAttr() {
+    proj_add_attr() {
+      console.log("proj att attrs")
       var s = document.getElementById("projection_sel_box");
       var data = s.options[s.selectedIndex].value;
+      var temp_selected = [];
 
-      for(var i=0; i<this.parentAttrs.length; i++) {
-        console.log(this.parentAttrs[i].id);
-        if(data == this.parentAttrs[i].id) {
-          this.myAttrs.push(this.parentAttrs[i]); // showing
-          this.tempArr.push(i-1);   // to sieve1
+      for(var i=0; i<this.prev_attrs.length; i++) {
+        console.log(i, ' : ', this.prev_attrs[i].id)
+        if(data == this.prev_attrs[i].id) {
+          this.selected_attrs.push(this.prev_attrs[i])
+          this.prev_attrs.splice(i, 1)                  // 선택된 attr을 temp attr에서 삭제
         }
       }
     },
-    addTask_reload(){
+    async addTask_reload(){
       console.log("add task reload")
       var id = this.jobId;
       var _this = this;
 
-      console.log("id : ", id)
-      new Promise(function(resolve, reject){
-        _this.addTask();
-        setTimeout(function() {
-          resolve(1);
-        }, 200);
+      var port_using = await this.port_using_check(this.ec_id, this.listening_port, function(port_using) {
+        if(port_using == 1) {
+          alert("Port Duplicate")
+        }
+        else {
+          console.log("port is not using")
+          new Promise(function(resolve, reject){
+            _this.addTask();
+            setTimeout(function() {
+              resolve(1);
+            }, 200);
+          })
+          .then(function(result) {
+            _this.clearBG();
+            return result + 10;
+          })
+          .then(function(result) {
+            _this.loadTask(id);
+            return ;
+          });
+        }
       })
-      .then(function(result) {
-        _this.clearBG();
-        return result + 10;
+    },
+    port_using_check(ec_id, lis_port, callback) {
+      console.log("port using check : ", ec_id, lis_port)
+      var res;
+      var params = {
+        ec_id : ec_id,
+        lis_port : lis_port
+      }
+      var api = "http://" + this.svrAddr + ":3000/users/port_use_check";
+      axios.post(api, params)
+      .then((res) => {
+        if(res.data.use == 1) {
+          res = 1
+        }
+        else {
+          res = 0
+        }
+        callback(res)
       })
-      .then(function(result) {
-        _this.loadTask(id);
-        return ;
-      });
     },
     addTask() {
       console.log("addTask")
@@ -1900,7 +1982,7 @@ export default {
       .then( response => {})
       .catch( response => { console.log(response) } );
     },
-    make_parameter(index) {
+    make_parameter(index) {               // data update를 위한 parameter 데이터 세팅
       console.log("make parameter  : ", index);
       var config_data = new Object();
       this.tempconfig = ''
@@ -1973,37 +2055,21 @@ export default {
       this.tempconfig = JSON.stringify(str);
       console.log("temp config : ", this.tempconfig);
     },
-    loadModifyData(index) {
+    async loadModifyData(index) {           // modify 창의 data load
+      console.log("loadModifyData : ", index)
       var _this = this;
-      var parent;
-
-      // new Promise(function(resolve, reject){
-      //   _this.findParent(index);
-      //   setTimeout(function() {
-      //     resolve(1);
-      //   }, 200);
-      // })
-      // .then(function(result) {
-      //   if(_this.parent.length == 1) {
-      //     _this.parentOutSchema(1, _this.parent);
-      //   }
-      //   // for Half-Join
-      //   else if(_this.parent.length == 2) {
-      //     _this.parentOutSchema(2, _this.parent);
-      //   }
-      //   return;
-      // });
-
       var output, arr;
       var params = {
         id : index
       }
-      var api = "http://" + this.svrAddr + ":3000/users/get_taskinfo";
 
+      var api = "http://" + this.svrAddr + ":3000/users/get_prev_attrs";
+      var prev_attrs = (await axios.post(api, params)).data
+
+      var api = "http://" + this.svrAddr + ":3000/users/get_taskinfo";
       axios.post(api, params)
       .then( response => {
         arr = response.data[0]
-        // console.log("SDF : ", arr)
         this.temptask_id = arr.task_id;
         this.tempinput_schema = arr.input_schema_id;
         this.templistening_port = arr.listening_port;
@@ -2040,6 +2106,10 @@ export default {
             }
             break;
 
+          case 2 :      // projection
+            this.prev_attrs = prev_attrs
+            break;
+
           case 4 :
             // var temp = JSON.parse(this.tempconfig);
             this.val_InputQueueSize = temp[0].inQSize;
@@ -2068,6 +2138,9 @@ export default {
 
           case 35 :         // Transactionizer
             break;
+          
+          case 36 :         // receive_data_1
+            break;
         }
 
 
@@ -2076,7 +2149,7 @@ export default {
     },
     updateModifyTask() {
       console.log("updateModifyTask : ", this.tempconfig);
-      localStorage.removeItem("loglevel:webpack-dev-server");   // localstorage update를 위해 삭제
+      // localStorage.removeItem("loglevel:webpack-dev-server");   // localstorage update를 위해 삭제
 
       var params = {
         id : this.taskID,
@@ -2120,6 +2193,7 @@ export default {
         case 33:  modify_menu = modify_1_itemFP; break;
         case 34:  modify_menu = modify_n_itemFP; break;
         case 35:  modify_menu = modify_TR; break;
+        case 36:  modify_menu = modify_RD_1; break;
         default : modify_menu = modify_BS; break;
        }
 
@@ -2136,25 +2210,34 @@ export default {
       var op_type = res.task_id
       this.showModifyMenu(cntxtmenuID, op_type);
     },
-    modifyTask_reload() {
-      console.log("modifyTask called : ", this.temptask_id)
-      var id = this.jobId;
-      var _this = this;
-      new Promise(function(resolve, reject){
-        _this.make_parameter(_this.temptask_id)       // config에 parameter 값 json 형태로 저장
-        _this.updateModifyTask();
-        setTimeout(function() {
-          resolve(1);
-        }, 200);
-      })
-      .then(function(result) {
-        _this.clearBG();
-        return result + 10;
-      })
-      .then(function(result) {
-        _this.loadTask(id);
-        return ;
-      });
+    async modifyTask_reload() {
+      console.log("modifyTask_reload : ", this.temptask_id)
+
+      switch(this.temptask_id) {
+        case 0 :      // basestream
+          console.log("swtich 0000")
+          this.tempoutput_schema = this.tempinput_schema  
+          break
+
+        case 2 :      // projection
+          console.log("id : ", this.taskID)
+          this.tempoutput_schema = await this.make_new_schema(this.taskID, this.selected_attrs) 
+          break
+      }
+
+      await this.make_parameter(this.temptask_id)
+      await this.updateModifyTask()
+      await this.clearBG()
+      await this.loadTask(this.jobId)
+    },
+    async make_new_schema(tid, attrs) {
+      console.log("make new schema")
+      var params = {
+        tid : tid,
+        attrs : attrs
+      }
+      var api = "http://" + this.svrAddr + ":3000/users/make_new_schema";
+      return (await axios.post(api, params)).data.new_sid
     },
     which_ip(index) {
       for(var i in this.svrArray) {
@@ -2307,6 +2390,7 @@ export default {
       this.output_schema = ''
     },
     changeMode() {
+      console.log("change Mode")
       if(this.mode == "DRAG" ) {
         this.mode = "CREATE / LINK";
       }

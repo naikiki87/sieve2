@@ -53,7 +53,7 @@
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px;" v-on:click="removeTask(p.id)"> DEL </button> </td>
+                <td> <button style="width:50px; cursor:pointer;" v-on:click="removeTask(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>

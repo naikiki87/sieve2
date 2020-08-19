@@ -30,8 +30,8 @@
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px;" v-on:click="removeSchema(p.id)"> DEL </button> </td>
-                <td> <button style="width:100px;" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
+                <td> <button style="width:50px; cursor:pointer;" v-on:click="removeSchema(p.id)"> DEL </button> </td>
+                <td> <button style="width:100px; cursor:pointer;" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
               </tr>
             </table>
           </div>
@@ -40,7 +40,7 @@
           <table class="mainMngTable2" style="margin:auto; width:97%;">
             <tr>
               <td class="add_title"> Schema Name </td>
-              <td> <input style="width : 95%;" type="text" v-model="add_schemaName" v-on:keyup.enter="addSchema"> </td>
+              <td> <input style="width : 95%; cursor:pointer;" type="text" v-model="add_schemaName" v-on:keyup.enter="addSchema"> </td>
               <td rowspan="2"> <button class="addButton" v-on:click = "addSchema" > ADD </button> </td>
             </tr>
             <tr>
@@ -81,7 +81,7 @@
                 <td>{{ p.schema_id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
-                <td> <button style="width:50px;" v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
+                <td> <button style="width:50px; cursor : pointer; " v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
               </tr>
             </table>
           </div>

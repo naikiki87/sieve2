@@ -426,6 +426,26 @@ router.post('/healthcheck', wrapper.asyncMiddleware(async (req, res, next) =>{
     res.json({alive : response})
   })
 }));
+router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const ec_id = req.body.ec_id
+  const lis_port = req.body.lis_port
+
+  console.log("use port : ", ec_id, lis_port)
+
+  const tasks = (await db.doQuery(`SELECT jt.*, ec.*  FROM job_tasks jt, engine_computer ec
+  WHERE ec.id = ${ec_id} AND jt.ec_id = ec.id`))
+
+  var check = 0
+  for(var i=0; i<tasks.length; i++) {
+    if(tasks[i].listening_port == lis_port) {
+      check = 1
+      break
+    }
+  }
+  console.log("check result : ", check)
+
+  res.json({use : check})
+}));
 
 router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
@@ -484,6 +504,33 @@ router.post('/cell_schemas2', wrapper.asyncMiddleware(async (req, res, next) =>{
 
   const cell_schemas =  (await db.doQuery(`select * FROM cell_schemas where userid = ${currentuserid}`));
   res.json(cell_schemas);
+}));
+router.post('/make_new_schema', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const tid = req.body.tid
+  const attrs = req.body.attrs
+  console.log("make new schema")
+  console.log("attr : ", attrs)
+
+  var name = tid + 'out'
+
+  console.log("name : ", name)
+  
+  // make new schema in cell_schema
+  await db.doQuery(`INSERT INTO cell_schemas (name, tid)
+  SELECT * FROM (SELECT '${name}', ${tid}) AS tmp
+  WHERE NOT EXISTS (
+      SELECT name FROM cell_schemas WHERE NAME = '${name}'
+  ) LIMIT 1;`)
+
+  var s_id = (await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`))[0].id
+  var col_name, type_id;
+
+  for(var i=0; i<attrs.length; i++) {
+    col_name = attrs[i].name
+    type_id = attrs[i].type_id
+    await db.doQuery(`INSERT INTO cell_columns(NAME, schema_id, type_id) VALUES('${col_name}', ${s_id}, ${type_id})`)
+  }
+  res.json({new_sid : s_id})
 }));
 router.post('/cell_schemas/add', wrapper.asyncMiddleware(async (req, res, next) =>{
 	console.log(req.body)
@@ -757,16 +804,22 @@ router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
 }));
 
 router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) =>{
-  const start_id = req.body.start_id;
-  const end_id = req.body.end_id;
+  console.log("update dest info")
+  const from_id = req.body.from_id;
+  const to_id = req.body.to_id;
+  const start_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
+  WHERE jt.id = ${from_id} AND ec.id = jt.ec_id `)
+
+  const prev_out_schema = start_info[0].output_schema_id
+  console.log("start out chema : ", prev_out_schema)
+  await db.doQuery(`UPDATE job_tasks SET input_schema_id = ${prev_out_schema} WHERE id = ${to_id}`)
+  
   const dest_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
-WHERE jt.id = ${end_id} AND ec.id = jt.ec_id `);
+  WHERE jt.id = ${to_id} AND ec.id = jt.ec_id `);
 
   const dest_ip = dest_info[0].ip_address;
   const dest_port = dest_info[0].listening_port;
-  
-  console.log("dest info : ", dest_ip, dest_port)
-  await db.doQuery(`UPDATE job_tasks SET dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id = ${start_id}`);
+  await db.doQuery(`UPDATE job_tasks SET dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id = ${from_id}`);
   res.json({success: true});
 }));
 
@@ -1381,7 +1434,14 @@ router.post('/task_lines', wrapper.asyncMiddleware(async (req, res, next) => {
   const task_lines = await db.doQuery(`SELECT * FROM task_lines where job_id = ${job_id}`);
   res.json(task_lines);
 }));
+router.post('/get_prev_attrs', wrapper.asyncMiddleware(async (req, res, next) => {
+  const id = req.body.id;
+  const attrs = await db.doQuery(`SELECT cs.*, cc.* FROM job_tasks jt, cell_schemas cs, cell_columns cc
+  WHERE jt.id = ${id} AND jt.input_schema_id = cs.id AND cs.id = cc.schema_id`);
+  res.json(attrs);
+}));
 router.post('/rel_lines', wrapper.asyncMiddleware(async (req, res, next) => {
+  console.log("rel lines")
   const id = req.body.id;
   const rel_lines = await db.doQuery(`SELECT * FROM task_lines where from_id = ${id} or to_id = ${id}`);
   res.json(rel_lines);
