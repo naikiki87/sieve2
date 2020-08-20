@@ -29,7 +29,7 @@
         </tr>
         <br>
         <tr>
-          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal"> DISPATCH </button> </td>
+          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal2"> DISPATCH </button> </td>
           <td> <button class="JobDetailHeaderbutton2" v-on:click="jobRUN"> RUN </button> </td>
         </tr>
       </table>
@@ -912,7 +912,7 @@ import Transaction from '../components/configWindow/Transaction'
 var serverADDR = serverConfig.hostserver;
 
 var WIDTH = 90
-var JOB_ID
+var JOB_ID, USER_ID
 
 var start_div_x, start_div_y, end_div_x, end_div_y
 var start_class, end_class
@@ -1016,7 +1016,10 @@ async function deleteTask(index) {
     }
   }
 
-  var params = { id : index }
+  var params = { 
+    id : index,
+    user_id : USER_ID
+  }
   var api = "http://" + serverADDR + ":3000/users/job_tasks/delete";
   await axios.post(api, params)
 
@@ -1404,6 +1407,11 @@ async function get_JOB_ID() {
   
   return JOB_ID
 }
+async function get_USER_ID() {
+  USER_ID = await getParameterByName('case');
+  
+  return USER_ID
+}
 $(function() {
   cntxtmenu = document.getElementById("context-menus");
   modify_BS = document.getElementById("modify_BS");
@@ -1517,9 +1525,12 @@ $(function() {
       event.stopPropagation();
       box_move = 0
 
-      if(cntxtmenu.style.display == 'block') {    // modify 메뉴 가리기
-        await hideMenu();
+      try {
+        if(cntxtmenu.style.display == 'block') {    // modify 메뉴 가리기
+          await hideMenu();
+        }
       }
+      catch(e) {}
 
       divE2 = $(event.target);
       destid = $(event.target).attr('id');
@@ -1564,6 +1575,7 @@ export default {
       columnArray : [],
 
       JOB_ID : '',
+      USER_ID : '',
       mode : "CREATE",
       task_id : '',
       input_schema : '',
@@ -1655,6 +1667,7 @@ export default {
   async created() {
     this.svrAddr = this.svrConfig.hostserver;
     this.JOB_ID = await get_JOB_ID()
+    this.USER_ID = await get_USER_ID()
     await load_task_line(JOB_ID)
     await this.loadSvr();
     await this.loadSchema();
@@ -1668,8 +1681,7 @@ export default {
   methods : {
     async func_test() {
       console.log("func test")
-      var test = await get_iteminfo(509)
-      console.log("test : ", test)
+      console.log("user id : ", USER_ID, this.USER_ID)
     },
     RT_health_check() {
       console.log("RT_health_check")
@@ -1700,7 +1712,11 @@ export default {
     },
     async jobDistTotal2() {
       console.log("jobDistTotal : ", JOB_ID);
-      await this.setDistTasks();
+
+      var params = { job_id : JOB_ID }
+      var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      this.dist_tasks = (await axios.post(api, params)).data
+
       await this.jobDistribute();
     },
     async jobDistTotal() {
@@ -1825,7 +1841,10 @@ export default {
     jobDistribute() {
       console.log(JOB_ID);
       this.jobDistShowingStart();
-      var params = { id : JOB_ID }
+      var params = { 
+        id : JOB_ID,
+        user_id : USER_ID
+      }
       var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
       axios.post(api, params)
       .then( response => {

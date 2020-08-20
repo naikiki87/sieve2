@@ -24,6 +24,7 @@
               <td>{{ p.id }}</td>
               <td>{{ p.name }}</td>
               <td>{{ p.comment }}</td>
+              <!-- <td> <button style="width:100px; cursor:pointer; border:0px; background : lightblue;" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td> -->
               <td> <button style="width:100px; cursor:pointer;" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td>
               <td> <button style="width:100px; cursor:pointer;" v-on:click="removeJob(p.id)"> DEL </button> </td>
             </tr>
@@ -89,7 +90,8 @@ export default {
       console.log("B: ", B)
 
       var de_C =A[0]+B[4]+A[1]+B[3]+A[2]+B[2]+A[3]+B[1]+A[4]+B[0]
-      var url = "taskdetail?job="+de_C;
+      // var url = "taskdetail?job="+de_C;
+      var url = "jobDetail?job="+de_C+"&case="+this.currentuserid;
 
       this.openWin = window.open(url, "childForm", "width=1130, height=880, resizable=no, scrollbars=no, titlebar=no, location=no");
       console.log("click popup");
@@ -167,4 +169,5 @@ export default {
 </script>
 
 <style src="./css/total.css"></style>
+
 

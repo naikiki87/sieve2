@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainPage from '@/components/MainPage'
-import TaskDetail from '@/components/Taskdetail'
+// import TaskDetail from '@/components/Taskdetail'
+import JobDetail from '@/components/jobDetail'
 // import TaskModify from '@/components/taskModify'
 // import Test from '@/components/test'
 import Login from '@/components/Login'
@@ -28,10 +29,15 @@ export default new Router({
       name: 'MainPage',
       component: MainPage
     },
+    // {
+    //   path: '/taskdetail',
+    //   name: 'TaskDetail',
+    //   component: TaskDetail
+    // },
     {
-      path: '/taskdetail',
-      name: 'TaskDetail',
-      component: TaskDetail
+      path: '/jobDetail',
+      name: 'JobDetail',
+      component: JobDetail
     },
     // {
     //   path: '/taskmodify',

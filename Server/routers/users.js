@@ -66,19 +66,31 @@ function connectUser (user, callback) {
     callback(user, userSSH);
   });
 }
-function copyPasteModules(user, userSSH, callback) {
-  userSSH.putDirectory("./tasks", "/home/sieve_input_" + user.listening_port, {
+function deleteProjectFolder(user, userSSH, user_name, callback) {
+  console.log("del pro fol : ", user_name)
+  const dest_folder = "/home/project/" + user_name +"/" + user.listening_port
+  userSSH.execCommand('rm -rf ' + dest_folder)
+  .then((result) => {
+      callback();
+  });
+}
+function copyPasteModules(user, userSSH, user_name, callback) {
+  console.log("copyPasteM : ", user_name)
+  const dest_folder = "/home/project/" + user_name +"/" + user.listening_port
+  console.log("folder : ", dest_folder)
+  // userSSH.putDirectory("./tasks", "/home/sieve_input_" + user.listening_port, {
+  userSSH.putDirectory("./tasks", dest_folder, {
     recursive : true,
     concurrency : 1,
     tick : (localPath, remotePath, error) => {
       if (error) {
-        //console.log(error);
         userSSH.putFile(localPath, remotePath);
       };
     }
   })
   .then((status) => {
-    userSSH.execCommand('chmod -R 777 /home/sieve_input_' + user.listening_port)
+    // userSSH.execCommand('chmod -R 777 /home/sieve_input_' + user.listening_port)
+    userSSH.execCommand('chmod -R 777 ' + dest_folder)
     .then((result) => {
        callback();
     });
@@ -741,31 +753,32 @@ router.post('/jobs/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
 router.post('/jobs/distribute', wrapper.asyncMiddleware(async (req, res, next) =>{
   var result = 0;
   const id = req.body.id;
+  const user_id = req.body.user_id
+
   console.log("id : ", id)
+  console.log("user id : ", user_id)
+  
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+  console.log("user name : ", user_name)
+  
   const engine_computer = await db.doQuery(`select * from job_tasks jt
   join jobs j on j.id = jt.job_id
   join tasks t on t.id = jt.task_id
   join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id}`);
 
-  // const engine_computer = await db.doQuery(`select * from job_tasks jt
-  // join jobs j on j.id = jt.job_id
-  // join tasks t on t.id = jt.task_id
-  // join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id} and not t.program_type = 3`);
   console.log("Eng Leng : " + engine_computer.length);
 
 	for (var i =0; i <engine_computer.length; i++){
-		// var index = i;
 		var user = engine_computer[i]
 		connectUser(user, (user, userSSH) => {
       console.log(result);
 			console.log("sieve_input_" + user.listening_port + " connected!")
-			copyPasteModules(user, userSSH, () => {
+			copyPasteModules(user, userSSH, user_name, () => {
         console.log("sieve_input_" + user.listening_port + " move modules done!")
         res.json({success: 1});
 			});
     });
 	};
-
 }));
 router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
@@ -943,7 +956,17 @@ router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
 router.post('/job_tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("JOB DELETE START");
   const id = req.body.id;
-  console.log(await db.doQuery(`DELETE FROM job_tasks where id = ${id}`));
+  const user_id = req.body.user_id
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+  const user = (await db.doQuery(`SELECT * FROM job_tasks jt, engine_computer ec
+  WHERE jt.id = ${id} AND jt.ec_id = ec.id`))[0]
+
+  connectUser(user, (user, userSSH) => {
+    deleteProjectFolder(user, userSSH, user_name, () => {
+      console.log("delete project folder complete")
+    })
+  });
+  await db.doQuery(`DELETE FROM job_tasks where id = ${id}`)
   res.json({success: true});
 }));
 router.post('/job_tasks/delete_all', wrapper.asyncMiddleware(async (req, res, next) =>{

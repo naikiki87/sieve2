@@ -3,7 +3,7 @@
     <br><br><br>
     <br><br><br><br>
     <br><br><br><br><br><br>
-    <!-- <img src="./title3.png" /> -->
+    <img src="./title3.png" />
 
     <!-- <button v-on:click="dataTEST3"> TEST2 </button> -->
 
