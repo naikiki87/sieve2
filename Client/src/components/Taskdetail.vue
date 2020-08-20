@@ -917,13 +917,9 @@ var JOB_ID
 var start_div_x, start_div_y, end_div_x, end_div_y
 var start_class, end_class
 var rt_check;
-var drag_flag=0;
-var src;
-var dest;
 var startid, destid;
 var x1, y1, x2, y2;
 var divE1, divE2;
-var divwid1, divhei1, divwid2, divhei2;
 var marginX=0;
 var marginY=0;
 var cntxtmenu;
@@ -1080,7 +1076,7 @@ async function clear_rel_line(lines) {    // canvas의 related line 만 지우�
     end_x = end.position_x
     end_y = end.position_y
 
-    drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
+    drawLine(start_x, start_y, end_x, end_y, WIDTH, WIDTH, WIDTH, WIDTH, id);
   }
 }
 async function addLine(start, end) {    // line 정보를 db에 저장
@@ -1117,7 +1113,7 @@ async function create_line() {
     start_y = start.position_y
     end_x = end.position_x
     end_y = end.position_y
-    drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
+    drawLine(start_x, start_y, end_x, end_y, WIDTH, WIDTH, WIDTH, WIDTH, id);
   }
 }
 async function deleteLine(index) {
@@ -1248,7 +1244,6 @@ function drawLine(start_x, start_y, dest_x, dest_y, w1, h1, w2, h2, lineID) {  /
   path.setAttribute('id', lineID);
   path.setAttribute('class', 'linkline');
   path.setAttribute('d', "M" + startpt_x + "," + startpt_y + "," + destpt_x + "," + destpt_y + "," + r__x + "," + r__y + "," + l__x + "," + l__y + "," + destpt_x + "," + destpt_y);
-  //path.setAttribute('d', "M" + startpt_x + "," + startpt_y + " " + destpt_x + "," + destpt_y + " " + r__x + "," + r__y + " " + l__x + "," + l__y + " " + destpt_x + "," + destpt_y);
   svgdiv.appendChild(path);
 }
 function arrow_x(a, b, d, l, c, step) {  // 화살표 오른쪽 좌표
@@ -1282,7 +1277,6 @@ function showMenu(x, y) {
   cntxtmenu.style.left = x + "px";
 }
 function hideMenu() {
-  console.log("hide menu");
   event.stopPropagation();
   cntxtmenu.style.display = 'none';
 }
@@ -1296,7 +1290,6 @@ function box_position_update(id, pos_x, pos_y) {
   axios.post(api, params)
 }
 function clearBG() {
-  console.log("func clear BG");
   var select = 0;
   var content = document.getElementById("content");
   var arrowbg = document.getElementById("arrowbg");
@@ -1399,8 +1392,17 @@ function realtime_redraw(startid, lines, tasks, x, y) {
       end_x = x
       end_y = y
     }
-    drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
+    drawLine(start_x, start_y, end_x, end_y, WIDTH, WIDTH, WIDTH, WIDTH, id);
   }
+}
+async function get_JOB_ID() {
+  var en_C = await getParameterByName('job');
+  var d_add_add = en_C[0]+en_C[2]+en_C[4]+en_C[6]+en_C[8]
+  var d_add = parseInt(d_add_add, 16) - 5555
+  var real_add = en_C[9]+en_C[7]+en_C[5]+en_C[3]+en_C[1]
+  JOB_ID = parseInt(real_add, 16) - d_add
+  
+  return JOB_ID
 }
 $(function() {
   cntxtmenu = document.getElementById("context-menus");
@@ -1455,12 +1457,8 @@ $(function() {
       start_class = divE1[0].className
       try {
         if(start_class.indexOf("div-content") !== -1) {
-          
           start_div_x = divE1.offset().left;
           start_div_y = divE1.offset().top;
-
-          divwid1 = divE1.width();
-          divhei1 = divE1.height();
 
           x1 = start_div_x-marginX;
           y1 = start_div_y-marginY;
@@ -1509,18 +1507,18 @@ $(function() {
     mousemove : async function(event) {
       if(box_move == 1) {
         try {
+          console.log("rel lines : ", rel_lines)
           realtime_redraw(startid, rel_lines, rel_tasks, selected_box.offsetLeft, selected_box.offsetTop)
         }
         catch(e) {}
       }
     },
-
     mouseup : async function(event) {
       event.stopPropagation();
       box_move = 0
 
       if(cntxtmenu.style.display == 'block') {    // modify 메뉴 가리기
-        hideMenu();
+        await hideMenu();
       }
 
       divE2 = $(event.target);
@@ -1654,18 +1652,13 @@ export default {
       sieve2OP : []
     }
   },
-  created() {
+  async created() {
     this.svrAddr = this.svrConfig.hostserver;
-    var en_C = this.getParameterByName('job');
-    var d_add_add = en_C[0]+en_C[2]+en_C[4]+en_C[6]+en_C[8]
-    var d_add = parseInt(d_add_add, 16) - 5555
-    var real_add = en_C[9]+en_C[7]+en_C[5]+en_C[3]+en_C[1]
-    JOB_ID = parseInt(real_add, 16) - d_add
-    this.JOB_ID = JOB_ID;
-    load_task_line(JOB_ID)
-    this.loadSvr();
-    this.loadSchema();
-    this.loadTaskList();
+    this.JOB_ID = await get_JOB_ID()
+    await load_task_line(JOB_ID)
+    await this.loadSvr();
+    await this.loadSchema();
+    await this.loadTaskList();
     // this.RT_health_check()
   },
   computed: {
@@ -1673,19 +1666,10 @@ export default {
   watch: {
   },
   methods : {
-    func_test() {
+    async func_test() {
       console.log("func test")
-      console.log("this : ", JOB_ID)
-    },
-    status_change() {
-      console.log("status change")
-      if(this.mode == "DRAG" ) {
-        this.mode = "CREATE / LINK";
-      }
-      else {
-        this.mode = "DRAG";
-      }
-      // div_mode_change()
+      var test = await get_iteminfo(509)
+      console.log("test : ", test)
     },
     RT_health_check() {
       console.log("RT_health_check")
@@ -1693,6 +1677,7 @@ export default {
       rt_check = setInterval(this.health_check, 5000)
     },
     async health_check() {
+      var ret = 0
       console.log("health check")
       for(var i=0; i<taskArray.length; i++) {
         var params = {
@@ -1709,6 +1694,9 @@ export default {
           target.style.background = "#e6e6e6"
         }
       }
+
+      ret = 1
+      return ret
     },
     async jobDistTotal() {
       console.log("jobDistTotal : ", JOB_ID);
@@ -1797,7 +1785,7 @@ export default {
       this.TRData = message;
       console.log(this.TRData);
     },
-    jobRUN() {
+    async jobRUN() {
       console.log("jobRUN : ", JOB_ID);
 
       var params = {
@@ -1805,21 +1793,28 @@ export default {
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
+      var success = (await axios.post(api, params)).data.success
 
-      axios.post(api, params)
-      .then( response => {
-        return response.data.success;
-      })
-      .then( response => {
-        if(response == 1) {
-          this.health_check()
+      if(success == 1) {
+        if((await this.health_check()) == 1) {
           alert("***** JOB 실행 완료 *****");
         }
-        else {
-          alert("2");
-        }
-      })
-      .catch( response => {});
+      }
+
+      // axios.post(api, params)
+      // .then( response => {
+      //   return response.data.success;
+      // })
+      // .then( response => {
+      //   if(response == 1) {
+      //     this.health_check()
+      //     alert("***** JOB 실행 완료 *****");
+      //   }
+      //   else {
+      //     alert("2");
+      //   }
+      // })
+      // .catch( response => {});
 
     },
     jobDistribute() {
@@ -2032,6 +2027,7 @@ export default {
         await addTask(task)
         await clearBG()
         await load_task_line(id)
+        await this.clearInput()
       }
     },
     async port_using_check(ec_id, lis_port) {
@@ -2391,41 +2387,6 @@ export default {
     hideModifyMenu() {
       modify_menu.style.display = 'none';
     },
-    async load_task_line(index) {
-      var params = { job_id: index }
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
-
-      taskArray = (await axios.post(api, params)).data
-      this.taskcnt = taskArray.length
-      await this.initDIV()
-      await loadLine(index)
-      await div_mode_change()
-    },
-    initDIV() {
-      for(var i=0; i<this.taskcnt; i++) {
-        this.createDIV(i);
-      }
-      this.taskcnt = 0;
-    },
-    createDIV(index) {      // box 생성
-      var obj = document.getElementById("content");
-      var newDIV = document.createElement("div");
-      var id = taskArray[index].id;
-      var name = taskArray[index].name;
-      var ec = taskArray[index].ec_id;
-      var port = taskArray[index].listening_port;
-      var marginLeft = taskArray[index].position_x;
-      var marginTop = taskArray[index].position_y;
-      var position = "margin-left : " + marginLeft + "px; margin-top : " + marginTop + "px;";
-
-      newDIV.setAttribute("id", id);
-      newDIV.setAttribute('class', "div-content");
-      newDIV.innerHTML = "<table> <tr> <p class='no-drag'>" + name + "</p> </tr> <tr> <p class='no-drag2'> TID : " + id + "</p> </tr> <tr> <p class='no-drag2'> Eng : " + ec + "</p> </tr> <tr> <p class='no-drag2'> Port :" + port + "</p> </tr> </table>";
-      newDIV.setAttribute("style", position);
-      
-
-      obj.appendChild(newDIV);
-    },
     clearInput() {
       this.task_id = '',
       this.input_schema = '',
@@ -2436,29 +2397,6 @@ export default {
       this.heartbeat_task = '',
       this.heartbeat_job = '',
       this.output_schema = ''
-    },
-    changeMode() {
-      if(this.mode == "DRAG" ) {
-        this.mode = "CREATE / LINK";
-      }
-      else {
-        this.mode = "DRAG";
-      }
-    },
-    loadSvr() {
-      var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
-      axios.get(api)
-      .then(response => {
-        this.svrArray = response.data;
-      })
-      .catch(err => { console.log(err); });
-    },
-    loadSchema() {
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
-
-      axios.get(api)
-      .then(response => { this.schemaArray = response.data; })
-      .catch(err => { console.log(err); });
     },
     getParameterByName(name) {
       name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -2508,11 +2446,17 @@ export default {
       $('#loadingBack, #loadingBar').hide();
       $('#loadingBack, #loadingBar').remove();
     },
-    loadTaskList() {
+    async loadSvr() {
+      var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
+      this.svrArray = (await axios.get(api)).data
+    },
+    async loadSchema() {
+      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
+      this.schemaArray = (await axios.get(api)).data
+    },
+    async loadTaskList() {
       var api = "http://" + this.svrAddr + ":3000/users/tasks";
-      axios.get(api)
-      .then(response => { this.taskListArray = response.data; })
-      .catch(err => { console.log(err); });
+      this.taskListArray = (await axios.get(api)).data
     }
   },
   components: {
