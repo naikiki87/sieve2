@@ -26,6 +26,7 @@ button { border-style: groove; }
 .add_title { width : 120px; background:; font-weight:700;}
 
 .loginBtn { width:76px; height:30px; font-size:14px; font-weight:700; margin-left:10px; margin-right:30px; background:white; color:;}
+.cntxtmenuItem { cursor : pointer;}
 
 div { padding : 0px; margin : 0px; font-size: 12px; }
 

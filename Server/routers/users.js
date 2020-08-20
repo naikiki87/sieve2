@@ -525,6 +525,8 @@ router.post('/make_new_schema', wrapper.asyncMiddleware(async (req, res, next) =
   var s_id = (await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`))[0].id
   var col_name, type_id;
 
+  await db.doQuery(`delete from cell_columns where schema_id = ${s_id}`)
+
   for(var i=0; i<attrs.length; i++) {
     col_name = attrs[i].name
     type_id = attrs[i].type_id
@@ -549,12 +551,17 @@ router.post('/cell_schemas/add', wrapper.asyncMiddleware(async (req, res, next) 
 router.post('/cell_schemas/del_taskschema', wrapper.asyncMiddleware(async (req, res, next) =>{
   const tid = req.body.id;
   var name = tid + 'out'
-  var s_id = (await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`))[0].id
-
-  console.log("sid : ", s_id)
-
-  await db.doQuery(`DELETE from cell_columns WHERE schema_id = ${s_id}`)
-  await db.doQuery(`DELETE from cell_schemas WHERE name = '${name}'`)
+  // var s_id = (await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`))[0].id
+  var schema = await db.doQuery(`SELECT id FROM cell_schemas WHERE NAME = '${name}'`)
+  if(schema == "") {
+    console.log("schema is null")
+  }
+  else {
+    var s_id = schema[0].id
+    await db.doQuery(`DELETE from cell_columns WHERE schema_id = ${s_id}`)
+    await db.doQuery(`DELETE from cell_schemas WHERE name = '${name}'`)
+  }
+  
   res.json({success: true});
 }));
 router.post('/cell_schemas/xml2', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -1474,7 +1481,12 @@ router.post('/task_lines/add', wrapper.asyncMiddleware(async (req, res, next) =>
   const from_id = req.body.from_id;
   const to_id = req.body.to_id;
 
-  console.log(await db.doQuery(`INSERT INTO task_lines (job_id, from_id, to_id) values ('${job_id}', '${from_id}', '${to_id}')`));
+  // console.log(await db.doQuery(`INSERT INTO task_lines (job_id, from_id, to_id) values ('${job_id}', '${from_id}', '${to_id}')`));
+  await db.doQuery(`INSERT INTO task_lines (job_id, from_id, to_id)
+  SELECT * FROM (SELECT ${job_id}, ${from_id}, ${to_id}) AS tmp
+  WHERE NOT EXISTS (
+      SELECT * FROM task_lines WHERE job_id = ${job_id} AND from_id = ${from_id} AND to_id = ${to_id}
+  ) LIMIT 1`)
   res.json({success: true});
 }));
 router.post('/task_lines/delete', wrapper.asyncMiddleware(async (req, res, next) =>{

@@ -6,20 +6,20 @@
     <div id="header">
       <table valign="middle" align="left" style="height:70px;margin:auto; width:250px; padding-top : 5px; background:;">
         <tr>
-          <td v-model="JOB_ID" style="font-size:22px; font-weight:700;"> JOB : {{ JOB_ID }} </td>
-          <!-- <td v-model="localcnt" style="font-size:14px;"> # Tasks : {{ localcnt }} </td> -->
+          <td v-model="jobId" style="font-size:22px; font-weight:700;"> job : #{{ jobId }} </td>
+          <td v-model="localcnt" style="font-size:14px;"> # Tasks : {{ localcnt }} </td>
         </tr>
       </table>
 
       <table id="TDHeader_table" style=" margin : auto; width:89%;">
         <tr>
-          <!-- <td colspan="2" style="background:gold;" v-model="mode"> {{ mode }} </td> -->
+          <td colspan="2" style="background:gold;" v-model="mode"> {{ mode }} </td>
         </tr>
       </table>
 
       <table id="TDHeader_table" style=" margin : auto; width:97%;">
         <tr>
-          <!-- <td colspan="2"> <button id="modeChanger" class="JobDetailHeaderbutton" v-on:click="status_change"> STATUS CHANGE </button> </td> -->
+          <td colspan="2"> <button id="modeChanger" class="JobDetailHeaderbutton" v-on:click="status_change"> STATUS CHANGE </button> </td>
         </tr>
       </table>
 
@@ -68,7 +68,7 @@
       <br>
       <br>
       <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="addTask_reload"> ADD </button>
-      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> TEST </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="status_change"> TEST </button>
     </div>
     <div id="context-menus" class="context-menus">
       <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p>
@@ -910,12 +910,9 @@ import BinaryJoin from '../components/configWindow/BinaryJoin'
 import Transaction from '../components/configWindow/Transaction'
 
 var serverADDR = serverConfig.hostserver;
-
-var WIDTH = 90
-var JOB_ID
+var jobID = getParameterByName('jobID');
 
 var start_div_x, start_div_y, end_div_x, end_div_y
-var start_class, end_class
 var rt_check;
 var drag_flag=0;
 var src;
@@ -924,6 +921,7 @@ var startid, destid;
 var x1, y1, x2, y2;
 var divE1, divE2;
 var divwid1, divhei1, divwid2, divhei2;
+var div_cnt = 0;
 var marginX=0;
 var marginY=0;
 var cntxtmenu;
@@ -934,21 +932,17 @@ var t;
 var taskArray = [];
 var lineArray = [];
 var call = 0;
-var taskcnt;
-var box_move = 0;
-var rel_lines;
-var rel_tasks;
-var selected_box;
-var t_pos_x, t_pos_y
 
-function get_iteminfo(index) {
-  var res;
-  var params = { id : index }
-  var api = "http://" + serverADDR + ":3000/users/get_taskinfo";
-  return axios.post(api, params)
-}
 function div_mode_change() {
-  $('.div-content').draggable({disabled: false});         // drag 가능 상태로 변경
+    if(drag_flag == 0) {
+      drag_flag = 1;
+      $('.div-content').draggable({disabled: false});         // drag 가능 상태로 변경
+    }
+    else {
+      drag_flag = 0;
+      $('.div-content').draggable({disabled: true});          // drag 불가 상태로 변경
+    }
+  // $('.div-content').draggable({disabled: false});         // drag 가능 상태로 변경
 }
 function returnArray(index) {
   var output, arr, returnArr;
@@ -965,74 +959,33 @@ function returnArray(index) {
 
   return returnArr;
 }
-async function addLine_reload(start, end) {
+function addLine_reload(start, end) {
   console.log("addLine_reload")
-  await addLine(start, end)   // line 연결정보 db 저장
-  await clearBG()
-  await load_task_line(JOB_ID)
+  new Promise(function(resolve, reject){
+    addLine(start, end);
+    setTimeout(function() {
+      resolve(1);
+    }, 200);
+  })
+  .then(function(result) {
+    clearLine();
+    return;
+  })
+  .then(function(result) {
+    loadLine(jobID);
+    return;
+  });
 }
-async function load_task_line(index) {
-  var params = { job_id: index }
-  var api = "http://" + serverADDR + ":3000/users/job_tasks";
-
-  taskArray = (await axios.post(api, params)).data
-  taskcnt = taskArray.length
-  await initDIV()
-  await loadLine(index)
-  await div_mode_change()
-}
-function initDIV() {
-  for(var i=0; i<taskcnt; i++) {
-    createDIV(i);
-  }
-  taskcnt = 0;
-}
-async function addTask(task) {
-  var api = "http://" + serverADDR + ":3000/users/job_tasks/add";
-  await axios.post(api, task)
-}
-function createDIV(index) {      // box 생성
-  var obj = document.getElementById("content");
-  var newDIV = document.createElement("div");
-  var id = taskArray[index].id;
-  var name = taskArray[index].name;
-  var ec = taskArray[index].ec_id;
-  var port = taskArray[index].listening_port;
-  var marginLeft = taskArray[index].position_x;
-  var marginTop = taskArray[index].position_y;
-  var position = "margin-left : " + marginLeft + "px; margin-top : " + marginTop + "px;";
-
-  newDIV.setAttribute("id", id);
-  newDIV.setAttribute('class', "div-content");
-  newDIV.innerHTML = "<table> <tr> <p class='no-drag'>" + name + "</p> </tr> <tr> <p class='no-drag2'> TID : " + id + "</p> </tr> <tr> <p class='no-drag2'> Eng : " + ec + "</p> </tr> <tr> <p class='no-drag2'> Port :" + port + "</p> </tr> </table>";
-  newDIV.setAttribute("style", position);
-  
-
-  obj.appendChild(newDIV);
-}
-async function deleteTask(index) {
-  console.log("DEL TASK");
-
-  for(var i=0; i<lineArray.length; i++) {
-    if(lineArray[i].from_id == index || lineArray[i].to_id == index) {
-      console.log(i + " : " + lineArray[i].id);
-      await deleteLine(lineArray[i].id);
-    }
-  }
-
-  var params = { id : index }
-  var api = "http://" + serverADDR + ":3000/users/job_tasks/delete";
-  await axios.post(api, params)
-
-  var api = "http://" + serverADDR + ":3000/users/cell_schemas/del_taskschema";
-  await axios.post(api, params)
-}
-async function loadLine(index) {
+function loadLine(index) {
   var params = { job_id: index }
   var api = "http://" + serverADDR + ":3000/users/task_lines";
 
-  lineArray = (await axios.post(api, params)).data
-  await create_line()
+  axios.post(api, params)
+  .then( response => {
+    lineArray = response.data;
+    createLine();
+  })
+  .catch( response => { console.log(response) } );
 }
 function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -1040,7 +993,9 @@ function getParameterByName(name) {
   results = regex.exec(location.search);
   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-function clearLine() {    // canvas의 line을 모두 지움
+function clearLine() {    // canvas의 line을 지움
+
+  var select = 0;
   var arrowbg = document.getElementById("arrowbg");
   var arrowbgNodeLength = arrowbg.childNodes.length;
 
@@ -1053,7 +1008,7 @@ function clearLine() {    // canvas의 line을 모두 지움
     arrowbgNodeLength = arrowbgNodeLength - 1;
   }
 }
-async function clear_rel_line(lines) {    // canvas의 related line 만 지우고 redraw
+async function clearLine2(lines) {    // canvas의 related line 만 지우고 redraw
   var id, from_id, to_id;
   var start, end;
   var start_x, start_y, end_x, end_y;
@@ -1083,22 +1038,37 @@ async function clear_rel_line(lines) {    // canvas의 related line 만 지우�
     drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
 }
-async function addLine(start, end) {    // line 정보를 db에 저장
+async function addLine(start, end) {
   console.log("ADD LINE");
 
   var params = {
-    job_id : JOB_ID,
+    job_id : jobID,
     from_id : start,
     to_id : end
   }
+
+  console.log("add : ", params)
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/add";
   await axios.post(api, params)
   console.log("addline 2")
   api = "http://" + serverADDR + ":3000/users/update_dest_info";
   await axios.post(api, params)
+
+  // axios.post(api, params)
+  // .then(response => {
+  //   params = {
+  //     // _id : start,
+  //     to_id : end
+  //   }
+  //   api = "http://" + serverADDR + ":3000/users/update_dest_info";
+  //   axios.post(api, params)
+  //   .then(response => {
+  //   })
+  // })
+  // .catch(err => {});
 }
-async function create_line() {
+async function createLine() {
   var output, arr;
   var start_x, start_y, end_x, end_y;
   var id;
@@ -1115,12 +1085,34 @@ async function create_line() {
 
     start_x = start.position_x
     start_y = start.position_y
+    console.log("end : ", end)
     end_x = end.position_x
     end_y = end.position_y
+
+    // if(call == 0) {
+    //   start_x = start.position_x
+    //   start_y = start.position_y
+    //   end_x = end.position_x
+    //   end_y = end.position_y
+    // }
+    // else {
+    //   start_x = start.position_x - marginX
+    //   start_y = start.position_y - marginY
+    //   end_x = end.position_x + marginX
+    //   end_y = end.position_y + marginY
+    // }`
+
     drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
   }
+  // call = 1;
 }
-async function deleteLine(index) {
+function get_iteminfo(index) {
+  var res;
+  var params = { id : index }
+  var api = "http://" + serverADDR + ":3000/users/get_taskinfo";
+  return axios.post(api, params)
+}
+function deleteLine(index) {
   console.log("DEL LINE");
 
   var params = {
@@ -1128,8 +1120,9 @@ async function deleteLine(index) {
   }
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/delete"
-  await axios.post(api, params)
-  console.log("delete line from db complete")
+  axios.post(api, params)
+  .then(response => { })
+  .catch(err => { });
 }
 function drawLine(start_x, start_y, dest_x, dest_y, w1, h1, w2, h2, lineID) {  // drawing line
   //console.log("Draw Line222");
@@ -1287,6 +1280,7 @@ function hideMenu() {
   cntxtmenu.style.display = 'none';
 }
 function box_position_update(id, pos_x, pos_y) {
+
   var params = {
     id : id,
     pos_x : pos_x,
@@ -1294,113 +1288,9 @@ function box_position_update(id, pos_x, pos_y) {
   }
   var api = "http://" + serverADDR + ":3000/users/update_task_pos";
   axios.post(api, params)
-}
-function clearBG() {
-  console.log("func clear BG");
-  var select = 0;
-  var content = document.getElementById("content");
-  var arrowbg = document.getElementById("arrowbg");
-
-  var contentNodeLength = content.childNodes.length;
-  var arrowbgNodeLength = arrowbg.childNodes.length;
-
-  while(arrowbgNodeLength > 0) {
-    arrowbg.removeChild(arrowbg.firstChild);
-    arrowbgNodeLength = arrowbgNodeLength - 1;
-  }
-
-  while(contentNodeLength > 0) {
-    if(content.childNodes[select].id == "arrowbg") {
-      select += 1;
-    }
-    else {
-      content.removeChild(content.childNodes[select]);
-    }
-    contentNodeLength = contentNodeLength - 1;
-  }
-  localStorage.clear();
-}
-function over_check(x, y, id) {
-  var tasks = document.getElementsByClassName("div-content")
-  var left, right, top, bottom
-  var ob_left, ob_right, ob_top, ob_bottom
-  var res = 0
-
-  ob_left = x
-  ob_right = x + WIDTH
-  ob_top = y
-  ob_bottom = y + WIDTH
-
-  for(var i =0; i<tasks.length; i++) {
-    if(tasks[i].id == id) {
-      continue
-    }
-    else {
-      left = tasks[i].offsetLeft
-      right = left + WIDTH
-      top = tasks[i].offsetTop
-      bottom = top + WIDTH
-      if((ob_left < right) && (ob_left > left)) {
-        if((ob_bottom > top) && (ob_bottom < bottom)) {
-          res = tasks[i].id         // 겹치는 경우
-        }
-        else if((ob_top > top) && (ob_top < bottom)) {
-          res = tasks[i].id         // 겹치는 경우
-        }
-      }
-      else if((ob_right > left) && (ob_right <right)) {
-        if((ob_bottom > top) && (ob_bottom < bottom)) {
-          res = tasks[i].id         // 겹치는 경우
-        }
-        else if((ob_top > top) && (ob_top < bottom)) {
-          res = tasks[i].id         // 겹치는 경우
-        }
-      }
-    }
-  }
-  return res
-}
-function realtime_redraw(startid, lines, tasks, x, y) {
-  var id, from_id, to_id
-  var start_x, start_y, end_x, end_y
-
-  for(var i in lines) {
-    var lineid = lines[i].id
-    for(var j=0; j<arrowbg.children.length; j++) {
-      if(lineid == arrowbg.children[j].id) {
-        arrowbg.removeChild(arrowbg.children[j])     // line delete
-      }
-    }
-  }
-
-  for(var i in lines) {
-    id = lines[i].id
-    from_id = lines[i].from_id
-    to_id = lines[i].to_id
-
-    if(startid == from_id) {
-      start_x = x
-      start_y = y
-      for(var j in tasks) {
-        if(to_id == tasks[j].id) {
-          end_x = tasks[j].x
-          end_y = tasks[j].y
-        }
-      }
-    }
-
-    else if(startid == to_id) {
-      for(var j in tasks) {
-        if(from_id == tasks[j].id) {
-          start_x = tasks[j].x
-          start_y = tasks[j].y
-        }
-      }
-      end_x = x
-      end_y = y
-    }
-    drawLine(start_x, start_y, end_x, end_y, 90, 90 ,90, 90, id);
-  }
+  .then( res => {
+    // console.log("result : ", res.data.success)
+  })
 }
 $(function() {
   cntxtmenu = document.getElementById("context-menus");
@@ -1415,109 +1305,85 @@ $(function() {
   modify_TR = document.getElementById("modify_TR");
   modify_RD_1 = document.getElementById("modify_RD_1");
 
-  $(document).on("click",".linkline", async function(){
+  $("#modeChanger").click(function(){
+    if(drag_flag == 0) {
+      drag_flag = 1;
+      $('.div-content').draggable({disabled: false});         // drag 가능 상태로 변경
+    }
+    else {
+      drag_flag = 0;
+      $('.div-content').draggable({disabled: true});          // drag 불가 상태로 변경
+    }
+  })
+  $(document).on("click",".linkline",function(){
     console.log("delete line");
     var line = $(event.target)
+    console.log("line : ", line)
+    console.log
     var id = $(event.target).attr('id');
-    console.log("line : ", line, id)
+    console.log(id);
 
-    await deleteLine(id);         // db에서 해당 line 정보 삭제
+    deleteLine(id);
+
     var p = this.parentElement;
-    console.log("p : ", p)
-    console.log("this : ", this)
-    await p.removeChild(this);
-    console.log("after : ", p)
+    p.removeChild(this);
   })
   $('div').bind({
     contextmenu : function(event) {
       divE2 = $(event.target);
       var dest_class = divE2[0].className
-      try {
-        if(dest_class.indexOf("div-content") !== -1) {
-          event.stopPropagation();
-          event.preventDefault();
-          var id = $(event.target).attr('id');
-          cntxtmenuID = id;
-          var divx = divE1.offset().left;
-          var divy = divE1.offset().top;
-          showMenu((divx+80), (divy+80));
-        }
+      // var divclass = $(event.target).attr('class');
+      // if(dest_class == "div-content" || dest_class == "div-content ui-draggable ui-draggable-handle" || dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-disabled")
+      if(dest_class.indexOf("div-content") !== -1) {
+        event.stopPropagation();
+        event.preventDefault();
+        var id = $(event.target).attr('id');
+        cntxtmenuID = id;
+        var divx = divE1.offset().left;
+        var divy = divE1.offset().top;
+        showMenu((divx+80), (divy+80));
       }
-      catch(e) {}
     },
-    mousedown : async function(event) {
+    mousedown : function(event) {
       var divclass = $(event.target).attr('class');
       startid = $(event.target).attr('id');
 
       event.stopPropagation();
       divE1 = $(event.target);
       
-      start_class = divE1[0].className
-      try {
-        if(start_class.indexOf("div-content") !== -1) {
-          
-          start_div_x = divE1.offset().left;
-          start_div_y = divE1.offset().top;
+      
+      
+      // var start_class = divE1[0].className
+      // if(start_class.indexOf("div-content") !== -1) {
+      //   console.log("classssss : ", start_class)
+      //   // var divx = divE1.offset().left;
+      //   // var divy = divE1.offset().top;
+      //   start_div_x = divE1.offset().left;
+      //   start_div_y = divE1.offset().top;
 
-          divwid1 = divE1.width();
-          divhei1 = divE1.height();
+      //   divwid1 = divE1.width();
+      //   divhei1 = divE1.height();
 
-          x1 = start_div_x-marginX;
-          y1 = start_div_y-marginY;
+      //   x1 = start_div_x-marginX;
+      //   y1 = start_div_y-marginY;
+      // }
 
-          box_move = 1
 
-          var params = { id : startid }
-          var api = "http://" + serverADDR + ":3000/users/rel_lines";
-          rel_lines = ''
-          rel_lines = (await axios.post(api, params)).data
-          rel_tasks = []
-          var from_id, to_id
 
-          for(var i=0; i<rel_lines.length; i++) {
-            from_id = rel_lines[i].from_id
-            to_id = rel_lines[i].to_id
 
-            if(startid != from_id) {
-              var temp = {
-                id : from_id
-              }
-            }
-            else {
-              var temp = {
-                id : to_id
-              }
-            }
-            rel_tasks.push(temp)
-          }
+      var divx = divE1.offset().left;
+      var divy = divE1.offset().top;
 
-          for(var i=0; i<rel_tasks.length; i++) {
-            var t_x = document.getElementById(rel_tasks[i].id).offsetLeft
-            var t_y = document.getElementById(rel_tasks[i].id).offsetTop
-            rel_tasks[i].x = t_x
-            rel_tasks[i].y = t_y
-          }
-
-          selected_box = document.getElementById(startid)
-          var temp_x = selected_box.offsetLeft
-          var temp_y = selected_box.offsetTop
-          realtime_redraw(startid, rel_lines, rel_tasks, temp_x, temp_y)
-        }  
-      }
-      catch(e) {}   // do nothing
-    },
-    mousemove : async function(event) {
-      if(box_move == 1) {
-        try {
-          realtime_redraw(startid, rel_lines, rel_tasks, selected_box.offsetLeft, selected_box.offsetTop)
-        }
-        catch(e) {}
+      divwid1 = divE1.width();
+      divhei1 = divE1.height();
+      if(drag_flag == 1) {}
+      else {
+        x1 = divx-marginX;
+        y1 = divy-marginY;
       }
     },
-
-    mouseup : async function(event) {
+    mouseup : function(event) {
       event.stopPropagation();
-      box_move = 0
 
       if(cntxtmenu.style.display == 'block') {    // modify 메뉴 가리기
         hideMenu();
@@ -1525,28 +1391,39 @@ $(function() {
 
       divE2 = $(event.target);
       destid = $(event.target).attr('id');
-      end_class = divE2[0].className
-      try {
-        if(end_class.indexOf("div-content") !== -1) {
-          var temp_x = divE2[0].offsetLeft
-          var temp_y = divE2[0].offsetTop
-          var link_id = await over_check(temp_x, temp_y, destid)    // 연결되는 task id
+      var dest_class = divE2[0].className
+      var divx = divE2.offset().left - 9;
+      var divy = divE2.offset().top - 11;
 
-          if(link_id == 0) {     // 연결되는 놈이 없을 경우
-            await box_position_update(destid, temp_x, temp_y)   // box 위치 db update
-            // var params = { id : destid }
-            // var api = "http://" + serverADDR + ":3000/users/rel_lines";
-            // rel_lines = (await axios.post(api, params)).data
-            // clear_rel_line(rel_lines)
-          }
-          else {              // 연결되는 놈이 있는 경우
-            console.log("link exist : box link")
-            box_position_update(destid, start_div_x, start_div_y)     // 기본 박스 원위치
-            addLine_reload(destid, link_id)
-          }
+      divwid2 = divE2.width();
+      divhei2 = divE2.height();
+
+      if (dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-dragging") {
+        box_position_update(destid, divx, divy)   // box 위치 db update
+      }
+
+      if(drag_flag == 1 && dest_class == "div-content ui-draggable ui-draggable-handle ui-draggable-dragging") {  // drag 상태
+        var params = {
+          id : destid
+        }
+        var api = "http://" + serverADDR + ":3000/users/rel_lines";
+        axios.post(api, params)
+        .then(res => {
+          clearLine2(res.data)
+        })
+        
+        // clearLine();        // line redraw를 위해 line delete
+        // createLine();
+      }
+
+      else {  // create or draw line 상태
+        x2=divx-marginX;
+        y2=divy-marginY;
+        if(destid == "arrowbg" || destid =="app" || destid == "content" || destid == "aside" || destid == "header" || destid == startid) { }  // do nothing
+        else {
+          addLine_reload(startid, destid);
         }
       }
-      catch(e) {}
     }
   });
 });
@@ -1555,7 +1432,9 @@ export default {
     return {
       prev_attrs : [],
       selected_attrs : [],
+      rt_h_check : '',
       temp_para : [],
+      link_lines : [],
 
       test : [],
       schemaArray : [],
@@ -1564,9 +1443,10 @@ export default {
       svrConfig : serverConfig,
       svrAddr : '',
       columnArray : [],
-
-      JOB_ID : '',
+      jobId : '',
+      linecnt : '',
       mode : "CREATE",
+      task_type : '',
       task_id : '',
       input_schema : '',
       output_schema : '',
@@ -1624,6 +1504,7 @@ export default {
       AggOBQueryData : [],
 
       parentOutSchemaName : '',
+      tempArr2 : [],
       val_InputQueueSize : 10,
       val_WindowType : 1,
       val_WindowSize : 60,
@@ -1647,6 +1528,9 @@ export default {
       SOInputQueueSize : 1,
       jobEXEresult : '',
       AggConfigTrans : [],
+      number: 0,
+      tweenedNumber: 0,
+      testnumber : 0,
 
       temp_res : 10,
       dist_tasks : '',
@@ -1656,26 +1540,33 @@ export default {
   },
   created() {
     this.svrAddr = this.svrConfig.hostserver;
+    // var id = this.getParameterByName('jobID');
     var en_C = this.getParameterByName('job');
     var d_add_add = en_C[0]+en_C[2]+en_C[4]+en_C[6]+en_C[8]
     var d_add = parseInt(d_add_add, 16) - 5555
     var real_add = en_C[9]+en_C[7]+en_C[5]+en_C[3]+en_C[1]
-    JOB_ID = parseInt(real_add, 16) - d_add
-    this.JOB_ID = JOB_ID;
-    load_task_line(JOB_ID)
+    var id = parseInt(real_add, 16) - d_add
+    jobID = id;
+    this.jobId = id;
+    this.loadTask(id)
     this.loadSvr();
     this.loadSchema();
     this.loadTaskList();
     // this.RT_health_check()
   },
   computed: {
+    animatedNumber: function() {
+      return this.tweenedNumber.toFixed(0);
+    }
   },
   watch: {
+    number: function(newValue) {
+      TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue });
+    }
   },
   methods : {
     func_test() {
       console.log("func test")
-      console.log("this : ", JOB_ID)
     },
     status_change() {
       console.log("status change")
@@ -1711,13 +1602,28 @@ export default {
       }
     },
     async jobDistTotal() {
-      console.log("jobDistTotal : ", JOB_ID);
+      console.log("jobDistTotal : ", this.jobId);
+      // var res;
+      // var _this = this;
+      // new Promise(function(resolve, reject){
+      //   _this.setDistTasks();
+      //   // _this.jobDistTotal_SetTasks();
+      //   setTimeout(function() {
+      //     resolve(1);
+      //   }, 200);
+      // })
+      // .then(function(result) {
+      //   _this.jobDistribute();
+      //   // _this.jobDistTotal_DivTasksAndDist();
+      //   return ;
+      // });
+
       await this.setDistTasks();
       await this.jobDistribute();
     },
     setDistTasks() {
       console.log("set Dist Tasks")
-      var params = { job_id : JOB_ID }
+      var params = { job_id : this.jobId }
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
       axios.post(api, params)
       .then( response => {
@@ -1727,7 +1633,7 @@ export default {
       .catch( response => {})
     },
     jobDistTotal_SetTasks() {
-      var params = { job_id : JOB_ID }
+      var params = { job_id : this.jobId }
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
       axios.post(api, params)
       .then( response => {
@@ -1778,9 +1684,9 @@ export default {
       }
     },
     jobDistTotal_MixedTasksDist(cb) {
-      console.log(JOB_ID);
+      console.log(this.jobId);
       this.jobDistShowingStart();
-      var params = { id : JOB_ID }
+      var params = { id : this.jobId }
       var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
       axios.post(api, params)
       .then( response => {
@@ -1798,10 +1704,11 @@ export default {
       console.log(this.TRData);
     },
     jobRUN() {
-      console.log("jobRUN : ", JOB_ID);
+      console.log("jobRUN");
+      console.log(this.jobId);
 
       var params = {
-        id : JOB_ID
+        id : this.jobId
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
@@ -1823,9 +1730,9 @@ export default {
 
     },
     jobDistribute() {
-      console.log(JOB_ID);
+      console.log(this.jobId);
       this.jobDistShowingStart();
-      var params = { id : JOB_ID }
+      var params = { id : this.jobId }
       var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
       axios.post(api, params)
       .then( response => {
@@ -1850,7 +1757,7 @@ export default {
         output = localStorage.getItem(i);
         arr = JSON.parse(output);
 
-        if(arr[1] == JOB_ID) {   // 현재 job ID와 같은 놈들을 고름 -> 향후 table 분리 검토
+        if(arr[1] == this.jobId) {   // 현재 job ID와 같은 놈들을 고름 -> 향후 table 분리 검토
           tasks[count] = arr;
           count++;
         }
@@ -2011,30 +1918,33 @@ export default {
     },
     async addTask_reload(){
       console.log("add task reload")
-      var id = JOB_ID;
-      var port_using = await this.port_using_check(this.ec_id, this.listening_port)
-      if(port_using == 1) {
-        alert(this.listening_port, " : Port Duplicate")
-      }
-      else {
-        var task = {
-          job_id: JOB_ID,
-          task_id : this.task_id,
-          listening_port : this.listening_port,
-          ec_id : this.ec_id,
-          position_x : 0,
-          position_y : 0,
-          linkto : null,
-          linkfrom : null,
-          dest_ip : "",
-          dest_port : 0
+      var id = this.jobId;
+      var _this = this;
+
+      var port_using = await this.port_using_check(this.ec_id, this.listening_port, function(port_using) {
+        if(port_using == 1) {
+          alert("Port Duplicate")
         }
-        await addTask(task)
-        await clearBG()
-        await load_task_line(id)
-      }
+        else {
+          console.log("port is not using")
+          new Promise(function(resolve, reject){
+            _this.addTask();
+            setTimeout(function() {
+              resolve(1);
+            }, 200);
+          })
+          .then(function(result) {
+            _this.clearBG();
+            return result + 10;
+          })
+          .then(function(result) {
+            _this.loadTask(id);
+            return ;
+          });
+        }
+      })
     },
-    async port_using_check(ec_id, lis_port) {
+    port_using_check(ec_id, lis_port, callback) {
       console.log("port using check : ", ec_id, lis_port)
       var res;
       var params = {
@@ -2042,13 +1952,61 @@ export default {
         lis_port : lis_port
       }
       var api = "http://" + this.svrAddr + ":3000/users/port_use_check";
+      axios.post(api, params)
+      .then((res) => {
+        if(res.data.use == 1) {
+          res = 1
+        }
+        else {
+          res = 0
+        }
+        callback(res)
+      })
+    },
+    addTask() {
+      console.log("addTask")
+      var params = {
+        job_id: this.jobId,
+        task_id : this.task_id,
+        listening_port : this.listening_port,
+        ec_id : this.ec_id,
+        position_x : 0,
+        position_y : 0,
+        linkto : null,
+        linkfrom : null,
+        dest_ip : "",
+        dest_port : 0
+      }
 
-      return (await axios.post(api, params)).data.use
+      var api = "http://" + this.svrAddr + ":3000/users/job_tasks/add";
+
+      axios.post(api, params)
+      .then( response => {})
+      .catch( response => { console.log(response) } );
     },
     async deleteTask_reload() {
-      await deleteTask(cntxtmenuID)
-      await clearBG()
-      await load_task_line(JOB_ID)
+      console.log("deleteTask_reload");
+      var id = this.jobId;
+      await this.deleteTask(cntxtmenuID)
+      await this.clearBG()
+      await this.loadTask(id)
+    },
+    async deleteTask(index) {
+      console.log("DEL TASK");
+
+      for(var i=0; i<lineArray.length; i++) {
+        if(lineArray[i].from_id == index || lineArray[i].to_id == index) {
+          console.log(i + " : " + lineArray[i].id);
+          await deleteLine(lineArray[i].id);
+        }
+      }
+
+      var params = { id : index }
+      var api = "http://" + this.svrAddr + ":3000/users/job_tasks/delete";
+      await axios.post(api, params)
+
+      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/del_taskschema";
+      await axios.post(api, params)
     },
     make_parameter(index) {               // data update를 위한 parameter 데이터 세팅
       console.log("make parameter  : ", index);
@@ -2293,8 +2251,8 @@ export default {
 
       await this.make_parameter(this.temptask_id)
       await this.updateModifyTask()
-      await clearBG()
-      await load_task_line(JOB_ID)
+      await this.clearBG()
+      await this.loadTask(this.jobId)
     },
     async make_new_schema(tid, attrs) {
       console.log("make new schema")
@@ -2391,7 +2349,23 @@ export default {
     hideModifyMenu() {
       modify_menu.style.display = 'none';
     },
-    async load_task_line(index) {
+    deleteTaskAll(index) {
+      var params = {
+        job_id: this.jobId
+      }
+      var api = "http://" + this.svrAddr + ":3000/users/job_tasks/delete_all";
+
+      axios.post(api, params)
+      .then( response => { })
+      .catch( response => { console.log(response) } );
+
+      var api2 = "http://" + this.svrAddr + ":3000/users/task_lines/delete_joblines";
+
+      axios.post(api2, params)
+      .then( response => { })
+      .catch( response => { console.log(response) } );
+    },
+    async loadTask(index) {
       var params = { job_id: index }
       var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
 
@@ -2399,7 +2373,7 @@ export default {
       this.taskcnt = taskArray.length
       await this.initDIV()
       await loadLine(index)
-      await div_mode_change()
+      // await div_mode_change()
     },
     initDIV() {
       for(var i=0; i<this.taskcnt; i++) {
@@ -2444,6 +2418,37 @@ export default {
       else {
         this.mode = "DRAG";
       }
+    },
+    clearBG() {
+      console.log("clear BG");
+      var select = 0;
+      var content = document.getElementById("content");
+      var arrowbg = document.getElementById("arrowbg");
+
+      var contentNodeLength = content.childNodes.length;
+      var arrowbgNodeLength = arrowbg.childNodes.length;
+
+      while(arrowbgNodeLength > 0) {
+        arrowbg.removeChild(arrowbg.firstChild);
+        arrowbgNodeLength = arrowbgNodeLength - 1;
+      }
+
+      while(contentNodeLength > 0) {
+        if(content.childNodes[select].id == "arrowbg") {
+          select += 1;
+        }
+        else {
+          content.removeChild(content.childNodes[select]);
+        }
+        contentNodeLength = contentNodeLength - 1;
+      }
+      localStorage.clear();
+    },
+    loadTaskList() {
+      var api = "http://" + this.svrAddr + ":3000/users/tasks";
+      axios.get(api)
+      .then(response => { this.taskListArray = response.data; })
+      .catch(err => { console.log(err); });
     },
     loadSvr() {
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
@@ -2507,12 +2512,6 @@ export default {
     jobDistShowingEnd() {
       $('#loadingBack, #loadingBar').hide();
       $('#loadingBack, #loadingBar').remove();
-    },
-    loadTaskList() {
-      var api = "http://" + this.svrAddr + ":3000/users/tasks";
-      axios.get(api)
-      .then(response => { this.taskListArray = response.data; })
-      .catch(err => { console.log(err); });
     }
   },
   components: {
