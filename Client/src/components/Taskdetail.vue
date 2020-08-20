@@ -1698,6 +1698,11 @@ export default {
       ret = 1
       return ret
     },
+    async jobDistTotal2() {
+      console.log("jobDistTotal : ", JOB_ID);
+      await this.setDistTasks();
+      await this.jobDistribute();
+    },
     async jobDistTotal() {
       console.log("jobDistTotal : ", JOB_ID);
       await this.setDistTasks();
