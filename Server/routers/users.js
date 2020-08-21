@@ -399,10 +399,8 @@ router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   res.json(user[0].userID);
 }));
 router.get('/engine_computer', wrapper.asyncMiddleware(async (req, res, next) => {
-
   console.log("engine Computer")
   const engine_computer = await db.doQuery('SELECT * FROM engine_computer');
-  // res.json({success: true});
   res.json(engine_computer);
 }));
 router.post('/engine_computer/get_by_id', wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -419,14 +417,14 @@ router.post('/engine_computer/add', wrapper.asyncMiddleware(async (req, res, nex
   const root_passwd = req.body.root_passwd;
   const sieve_key = req.body.sieve_key;
   const currentuserid = req.body.currentuserid;
-  console.log(await db.doQuery(`INSERT INTO engine_computer (ip_address, root_id, root_passwd, sieve_key, userid) values ('${ip_address}','${root_id}','${root_passwd}','${sieve_key}', '${currentuserid}')`));
+  const alias = req.body.alias;
+  console.log(await db.doQuery(`INSERT INTO engine_computer (ip_address, root_id, root_passwd, sieve_key, alias, userid) values ('${ip_address}','${root_id}','${root_passwd}','${sieve_key}', '${alias}', '${currentuserid}')`));
   res.json({success: true});
 }));
 router.post('/engine_computer2', wrapper.asyncMiddleware(async (req, res, next) =>{
 	console.log(req.body)
-  const searchTarget = req.body.searchTarget;
-  const engine_computer =  (await db.doQuery(`select * FROM engine_computer where userid = ${searchTarget}`));
-  // console.log(await db.doQuery(`INSERT INTO engine_computer (ip_address, root_id, root_passwd, sieve_key) values ('${ip_address}','${root_id}','${root_passwd}','${sieve_key}')`));
+  const user_id = req.body.user_id
+  const engine_computer =  (await db.doQuery(`select * FROM engine_computer where userid = ${user_id}`));
   res.json(engine_computer);
 }));
 router.post('/engine_computer/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -441,6 +439,8 @@ router.post('/engine_computer/delete_all', wrapper.asyncMiddleware(async (req, r
 }));
 router.get('/cell_schemas', wrapper.asyncMiddleware(async (req, res, next) => {
   const cell_schemas = await db.doQuery('SELECT * FROM cell_schemas');
+  console.log("cell schemas ::::::")
+  console.log(cell_schemas)
   res.json(cell_schemas);
 }));
 router.post('/cell_schemas2', wrapper.asyncMiddleware(async (req, res, next) =>{

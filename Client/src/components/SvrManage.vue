@@ -8,28 +8,28 @@
       <div style="height:450px; overflow:auto;">
         <table class="mainMngTable" style="width:98%;">
           <colgroup>
-            <col style="width: 50px"> <!-- ID -->
-            <col style="width: 120px"> <!-- IP -->
+            <col style="width: 10px"> <!-- ID -->
+            <col style="width: 100px">
+            <col style="width: 100px"> <!-- IP -->
           	<!-- <col style="width: 120px">
           	<col style="width: 120px">
           	<col style="width: 120px"> -->
-            <col style="width: 80px"> <!-- delete -->
+            <col style="width: 180px">
+            <col style="width: 100px">
           </colgroup>
           <tr>
             <th>ID</th>
+            <th>Alias</th>
             <th>IP Address</th>
-            <!-- <th>Root ID</th>
-            <th>Root PW</th>
-            <th>SIEVE KEY</th> -->
+            <th>Description</th>
             <th>Delete</th>
           </tr>
           <tr v-for="p in pageArray" :key="p.id">
             <td>{{ p.id }}</td>
+            <td>{{ p.alias }}</td>
             <td>{{ p.ip_address }}</td>
-            <!-- <td>{{ p.root_id }}</td>
-            <td type="password">{{ p.root_passwd }}</td>
-            <td>{{ p.sieve_key }}</td> -->
-            <td> <button class="longBtn" v-on:click="removeSvr(p.id)"> DEL </button> </td>
+            <td>{{ p.description }}</td>
+            <td> <button v-if="p.userid == currentuserid" class="longBtn" v-on:click="removeSvr(p.id)"> DEL </button> </td>
           </tr>
         </table>
       </div>
@@ -43,18 +43,14 @@
         <td rowspan="2" style="width:20px;"> </td>
         <td rowspan="2"> <button class="addButton" v-on:click = "addSvr" > ADD </button> </td>
         <td rowspan="2" style="width:10px;"> </td>
-        <!-- <td rowspan="2"> <button class="addButton" v-on:click = "clearSvr" > 전체 삭제 </button> </td> -->
-        <!-- <td rowspan="2" style="width:10px;"> </td> -->
       </tr>
       <tr>
         <td class="add_title"> Root PW </td>
         <td> <input style="width : 95%;" type="text" v-model="add_pw" v-on:keyup.enter="addSvr"> </td>
-        <td class="add_title"> SIEVE KEY </td>
-        <td> <input style="width : 95%;" type="text" v-model="add_sievekey" v-on:keyup.enter="addSvr"> </td>
+        <td class="add_title"> Alias </td>
+        <td> <input style="width : 95%;" type="text" v-model="add_alias" v-on:keyup.enter="addSvr"> </td>
       </tr>
     </table>
-    <!-- <button class="addButton" v-on:click = "setCookie" > test1 </button> </td> -->
-    <!-- <button class="addButton" v-on:click = "searchTarget" > test </button> -->
   </div>
 </template>
 
@@ -76,6 +72,7 @@ export default {
       add_id : '',
       add_pw : '',
       add_sievekey : '',
+      add_alias : '',
       cookie_name : 'myHobby',
       cookie_value : 'game',
       cookie_days : 3,
@@ -84,7 +81,8 @@ export default {
   },
   created () {
     this.svrAddr = this.svrConfig.hostserver;
-    this.loadSvrPost();
+    // this.loadSvrPost();
+    this.loadSvr()
   },
 
   methods: {
@@ -162,10 +160,9 @@ export default {
     loadSvrPost() {
       console.log("**** (1/5)LOAD SERVER **** : ", this.currentuserid);
 
-      // console.log("addr : " + this.svrAddr);
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer2";
       var params = {
-        searchTarget : this.currentuserid
+        user_id : this.currentuserid
       }
 
       axios
@@ -177,61 +174,34 @@ export default {
       .catch( response => { console.log(response) } );
     },
 
-    addSvr() {
+    async addSvr() {
       var value_ip = this.add_ip && this.add_ip.trim();
       var value_id = this.add_id && this.add_id.trim();
       var value_pw = this.add_pw && this.add_pw.trim();
       var value_sievekey = this.add_sievekey && this.add_sievekey.trim();
+      var value_alias = this.add_alias && this.add_alias.trim();
       var params = {
         ip_address: value_ip,
         root_id: value_id,
         root_passwd: value_pw,
         sieve_key: value_sievekey,
+        alias : value_alias,
         currentuserid : this.currentuserid
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer/add";
-
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-
-      this.clearInput();
-      // this.loadSvr();
-      // this.loadSvr();
-      // this.loadSvr();
-      this.loadSvrPost(this.currentuserid);
-      this.loadSvrPost(this.currentuserid);
-      this.loadSvrPost(this.currentuserid);
+      this.clearInput()
+      await axios.post(api, params)
+      await this.loadSvr()
     },
-
-    clearSvr() {
-      console.log("CLEAR SERVER");
-      var api = "http://" + this.svrAddr + ":3000/users/engine_computer/delete_all";
-      axios
-      .post(api)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-      this.loadSvr();
-      this.loadSvr();
-      this.loadSvr();
-    },
-
-    removeSvr(index) {
+    async removeSvr(index) {
       console.log("DELETE" + index);
       var params = {
         id : index
       }
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer/delete";
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-
-      this.loadSvrPost(this.currentuserid);
-      this.loadSvrPost(this.currentuserid);
-      this.loadSvrPost(this.currentuserid);
+      await axios.post(api, params)
+      await this.loadSvr()
     },
     clearInput() {
       this.add_ip = "";

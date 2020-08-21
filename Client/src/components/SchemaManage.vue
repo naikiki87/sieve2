@@ -9,29 +9,24 @@
             <table class="mainMngTable" style="width:97%;">
               <colgroup>
                 <col style="width: 50px"> <!-- ID -->
-                <col style="width: 120px"> <!-- IP -->
+                <col style="width: 100px"> <!-- IP -->
               	<col style="width: 120px"> <!-- root ID -->
-                <col style="width: 50px"> <!-- root ID -->
-                <col style="width: 50px"> <!-- root ID -->
+                <col style="width: 80px"> <!-- root ID -->
+                <col style="width: 80px"> <!-- root ID -->
               </colgroup>
               <tr>
-                <!-- <th class="svrMngColName">ID</th>
-                <th class="svrMngColName">스키마명</th>
-                <th class="svrMngColName">설명</th>
-                <th class="svrMngColName">삭제</th>
-                <th class="svrMngColName">컬럼</th> -->
                 <th class="svrMngColName">ID</th>
                 <th class="svrMngColName">Schema</th>
                 <th class="svrMngColName">Description</th>
-                <th class="svrMngColName">Delete</th>
                 <th class="svrMngColName">Columns</th>
+                <th class="svrMngColName">Delete</th>
               </tr>
               <tr v-for="p in schemaArray" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button class="shortBtn" v-on:click="removeSchema(p.id)"> DEL </button> </td>
-                <td> <button class="longBtn" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
+                <td> <button class="longBtn" v-on:click="loadSchemaColumn(p.id)"> VIEW </button> </td>
+                <td> <button v-if="p.userid == currentuserid" class="longBtn" v-on:click="removeSchema(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -66,15 +61,10 @@
                 <col style="width: 50px"> <!-- del -->
               </colgroup>
               <tr>
-                <!-- <th class="svrMngColName">ID</th>
-                <th class="svrMngColName">스키마</th>
-                <th class="svrMngColName">컬럼명</th>
-                <th class="svrMngColName">자료형</th>
-                <th class="svrMngColName">삭제</th> -->
                 <th class="svrMngColName">ID</th>
                 <th class="svrMngColName">Schema</th>
                 <th class="svrMngColName">Column</th>
-                <th class="svrMngColName">Data Type</th>
+                <th class="svrMngColName">Type</th>
                 <th class="svrMngColName">Delete</th>
               </tr>
               <tr v-for="p in columnArray" :key="p.id">
@@ -82,7 +72,7 @@
                 <td>{{ p.schema_id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
-                <td> <button style="width:50px; cursor : pointer; " v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
+                <td> <button v-if="p.userid == currentuserid" class="shortBtn" v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -137,8 +127,10 @@ export default {
     }
   },
   created () {
+    console.log("this curr : ", this.currentuserid)
     this.svrAddr = this.svrConfig.hostserver;
-    this.loadSchemaPost();
+    // this.loadSchemaPost();
+    this.loadSchema();
     this.loadAllColumns();
 
   },
@@ -299,13 +291,13 @@ export default {
       .get(api)
       .then(response => {
         this.schemaArray = response.data;
-        // console.log(this.schemaArray);
+        console.log(this.schemaArray);
       })
       .catch(err => {
         console.log(err);
       });
     },
-    addSchema() {
+    async addSchema() {
       console.log("ADD SCHEMA");
       var params = {
         name: this.add_schemaName,
@@ -314,35 +306,28 @@ export default {
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/add";
-
-      axios
-      .post(api, params)
-      .then( response => {
-        this.loadSchemaPost(this.currentuserid);
-      })
-      .catch( response => { console.log(response) } );
-
       this.clearInput();
-      // this.loadSchemaPost(this.currentuserid);
-      // this.loadSchemaPost(this.currentuserid);
-      // this.loadSchemaPost(this.currentuserid);
+      await axios.post(api, params)
+      await this.loadSchema()
     },
-    removeSchema(index) {
+    async removeSchema(index) {
       console.log("DELETE" + index);
       var params = {
         id : index
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/delete";
+      await axios.post(api, params)
+      await this.loadSchema()
 
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
+      // axios
+      // .post(api, params)
+      // .then( response => { console.log(response) } )
+      // .catch( response => { console.log(response) } );
 
-      this.loadSchemaPost(this.currentuserid);
-      this.loadSchemaPost(this.currentuserid);
-      this.loadSchemaPost(this.currentuserid);
+      // this.loadSchemaPost(this.currentuserid);
+      // this.loadSchemaPost(this.currentuserid);
+      // this.loadSchemaPost(this.currentuserid);
     },
     clearInput() {
       this.add_schemaCom = "";

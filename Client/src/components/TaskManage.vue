@@ -2,26 +2,26 @@
   <div>
     <div>
       <div style="width:48%; height:500px; float:left;">
-        <div class="pageName" style="margin-right:3px;"> Common Tasks </div>
+        <div class="pageName" style="margin-right:3px;"> PUBLIC </div>
         <div style="height:465px; background">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
               <colgroup>
                 <col style="width: 50px"> <!-- ID -->
                 <col style="width: 100px"> <!-- IP -->
-              	<col style="width: 100px"> <!-- root ID -->
+              	<!-- <col style="width: 100px"> -->
                 <col style="width: 200px"> <!-- root ID -->
               </colgroup>
               <tr>
                 <th>ID</th>
                 <th>Task Name</th>
-                <th>Language</th>
+                <!-- <th>Language</th> -->
                 <th>Description</th>
               </tr>
               <tr v-for="p in taskArrayS1" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
-                <td>{{ p.type_name }}</td>
+                <!-- <td>{{ p.type_name }}</td> -->
                 <td>{{ p.comment }}</td>
               </tr>
             </table>
@@ -31,28 +31,28 @@
 
       <div style="width:52%; height:500px; float:left;">
         <!-- <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Custom Tasks </div> -->
-        <div class="pageName3"> Custom Tasks </div>
+        <div class="pageName3"> PRIVATE </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
               <colgroup>
                 <col style="width: 50px">
                 <col style="width: 100px">
-                <col style="width: 100px">
+                <!-- <col style="width: 100px"> -->
               	<col style="width: 200px">
                 <col style="width: 60px">
               </colgroup>
               <tr>
                 <th>ID</th>
                 <th>Task Name</th>
-                <th>Language</th>
+                <!-- <th>Language</th> -->
                 <th>Description</th>
                 <th>Delete</th>
               </tr>
               <tr v-for="p in taskArrayS2" :key="p.id">
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
-                <td>{{ p.type_name }}</td>
+                <!-- <td>{{ p.type_name }}</td> -->
                 <td>{{ p.comment }}</td>
                 <td> <button class="shortBtn" v-on:click="removeTask(p.id)"> DEL </button> </td>
               </tr>
