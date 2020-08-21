@@ -11,6 +11,7 @@ var multer = require('multer');
 var xml2js = require('xml2js');
 var mime = require('mime');
 const session = require('express-session');
+const { resolveCname } = require('dns');
 const app = express();
 // var pyrun = require('../tasks/pyrun.js')
 
@@ -66,9 +67,9 @@ function connectUser (user, callback) {
     callback(user, userSSH);
   });
 }
-function deleteProjectFolder(user, userSSH, user_name, callback) {
+function del_work_folder(user, userSSH, user_name, callback) {
   console.log("del pro fol : ", user_name)
-  const dest_folder = "/home/project/" + user_name +"/" + user.listening_port
+  const dest_folder = "/home/workspace/" + user_name +"/" + user.listening_port
   userSSH.execCommand('rm -rf ' + dest_folder)
   .then((result) => {
       callback();
@@ -76,7 +77,7 @@ function deleteProjectFolder(user, userSSH, user_name, callback) {
 }
 function copyPasteModules(user, userSSH, user_name, callback) {
   console.log("copyPasteM : ", user_name)
-  const dest_folder = "/home/project/" + user_name +"/" + user.listening_port
+  const dest_folder = "/home/workspace/" + user_name +"/" + user.listening_port
   console.log("folder : ", dest_folder)
   // userSSH.putDirectory("./tasks", "/home/sieve_input_" + user.listening_port, {
   userSSH.putDirectory("./tasks", dest_folder, {
@@ -210,105 +211,40 @@ function runModules(user, db_info)
     });
   });
 }
-
-function runModules2(user, db_info)
-{
-  console.log("RUN2");
-  connectUser(user, (user, userSSH) =>
-  {
-    console.log("sieve_input_" + user.listening_port + " connected!")
-    userSSH.execCommand('pkill -f /home/sieve_input_' + user.listening_port)
-    .then((result) =>
+function runModules2(user, db_info, user_name) {
+  return new Promise((resolve) => {
+    console.log("RUN MODULE 2");
+    connectUser(user, (user, userSSH) =>
     {
-      console.log("sieve_input_" + user.listening_port + " starting!")
-      console.log("program type : ", user.program_type)
+      const dest_folder = "/home/workspace/" + user_name +"/" + user.listening_port
 
-      if (user.program_type == 0) // python
-      {
-        var execarr = [];
-        console.log("user : ", user)
-        execarr.push('python3.6 /home/sieve_input_' + user.listening_port + '/' + user.program_name+'.py')
-      }
-      if (user.program_type == 1) // java
-      {
-        var execarr = [];
-        execarr.push('java -jar /home/sieve_input_' + user.listening_port + '/' + user.program_name+'.jar')
-      }
-      if (user.program_type == 2) // js
-      {
-        var execarr = [];
-        execarr.push('node /home/sieve_input_' + user.listening_port + '/' + user.program_name+'.js')
-        var parameters = JSON.parse(user.config) 
-        for (var i in parameters) {
-          execarr.push(parameters[i])
+      userSSH.execCommand('pkill -f ' + dest_folder)
+      .then((res) => {
+        console.log("pkill -f ", dest_folder, "complete")
+        if(user.program_type == 0) {
+          var execarr = [];
+          var filename = "python3.6 " + dest_folder + '/' + user.program_name + '.py'
+          execarr.push(filename)
+
+          if(user.task_id == 37) {          // receive test 인 경우
+            execarr.push(user.ip_address)         // args[1]
+            execarr.push(user.listening_port)     // args[2]  
+          }
+          else {
+            execarr.push(user.ip_address)         // args[1]
+            execarr.push(user.listening_port)     // args[2]
+            execarr.push(user.dest_ip)            // args[3]
+            execarr.push(user.dest_port)          // args[4]
+            execarr.push(user.input_schema_id)    // args[5]
+          }
         }
-      }
-      if (user.program_type == 4) // sieve
-      {
-        userSSH.execCommand('yes | cp -rf /home/sieve_input_' + user.listening_port+'/'+user.program_name+'.xml ' + '/home/sieve_input_' + user.listening_port+'/dist/config/task.xml')
-        .then((result) =>
-        {
-          userSSH.execCommand('yes | cp -rf /home/sieve_input_' + user.listening_port+'/'+user.program_name+'+_d.xml ' + '/home/sieve_input_' + user.listening_port+'/dist/config/DataDefinition.xml')
-          .then((result) =>
-          {
-            userSSH.execCommand('echo ' + user.sieve_key + '/home/sieve_input_' + user.listening_port+'/dist/authstring')
-            .then((result) =>
-            {
-              userSSH.execCommand('cd /home/sieve_input_' + user.listening_port + '/bin && ./revise.sh '+user.ip_address+' e'+user.listening_port+' ' + user.listening_port - 100)
-              .then((result) =>
-              {
-                userSSH.execCommand('cd /home/sieve_input_' + user.listening_port + '/bin && ./exedep.sh & ./exedesc.sh &')
-                .then((result) =>
-                {
-                });
-              });
-            });
-          });
-        });
-        return
-      }
-      
-      execarr.push(user.ip_address)         // args[1]
-      execarr.push(user.listening_port)     // args[2]
-      execarr.push(user.dest_ip)            // args[3]
-      execarr.push(user.dest_port)          // args[4]
-      var exe = execarr.join(' ')
-      console.log("EXEEXE : ", exe)
-      // userSSH.execCommand(exe)
-      userSSH.execCommand(execarr.join(" ") + " & ")
-      .then((result) => {
-        console.log(exe, "started")
-        
-        // var exe_test = "ps -ef | grep FP_1_item | grep 10091"
-        // userSSH.execCommand(exe_test)
-        // .then((result) => {
-        //   console.log("SASDFASDFSADFSADFSADFSAFSADF")
-        //   console.log("result : ", result)
-        //   console.log(exe, "started")
-        // })
-      })
 
-      var name = user.program_name
-      var lis_port = user.listening_port
-
-      // var exe2 = `ps -ef | grep ${name} | grep ${lis_port}`
-      var exe2 = `ps -ef | grep ${name} | grep 10090`
-
-      console.log("exe2 : ", exe2)
-      healthcheck()
-      userSSH.execCommand(exe2)
-      .then((result) => {
-        console.log("alive : ", result.stdout, result.stdout.length)
-        var text = "Transact.py"
-
-        if(result.stdout.indexOf(text) != -1) {
-          console.log("it's alive")
-        }
+        userSSH.execCommand(execarr.join(" ") + " & ")
+        resolve(100)
       })
     });
   });
 }
-
 async function healthcheck(user, db_info, callback) {
   var res = 2;
   connectUser(user, (user, userSSH) =>
@@ -394,7 +330,6 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
     res.redirect('http://localhost:8080/');
   }
 }));
-
 // var cookiecount = 0;
 router.get('/', function(req, res, next) {
   console.log("RES USR");
@@ -406,7 +341,6 @@ router.get('/', function(req, res, next) {
 
   res.redirect('http://localhost:8080/main');
 })
-
 router.get('/download/:fildid', function(req, res) {
   console.log("DoWnLoAd");
   var fildId = req.params.fileid;
@@ -458,7 +392,6 @@ router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>
 
   res.json({use : check})
 }));
-
 router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
 
@@ -506,7 +439,6 @@ router.post('/engine_computer/delete_all', wrapper.asyncMiddleware(async (req, r
   console.log(await db.doQuery(`DELETE FROM engine_computer`));
   res.json({success: true});
 }));
-
 router.get('/cell_schemas', wrapper.asyncMiddleware(async (req, res, next) => {
   const cell_schemas = await db.doQuery('SELECT * FROM cell_schemas');
   res.json(cell_schemas);
@@ -693,7 +625,6 @@ router.post('/cell_schemas/delete', wrapper.asyncMiddleware(async (req, res, nex
   console.log(await db.doQuery(`DELETE FROM cell_columns where schema_id = ${id}`));
   res.json({success: true});
 }));
-
 router.get('/cell_columns/all', wrapper.asyncMiddleware(async (req, res, next) => {
   // const jobs = await db.doQuery('SELECT * FROM cell_columns');
   const jobs = await db.doQuery(`SELECT cc.*, dt.name AS type_name from cell_columns cc
@@ -722,7 +653,6 @@ router.post('/cell_columns/delete', wrapper.asyncMiddleware(async (req, res, nex
   console.log(await db.doQuery(`DELETE FROM cell_columns where id = ${id}`));
   res.json({success: true});
 }));
-
 router.get('/jobs', wrapper.asyncMiddleware(async (req, res, next) => {
   const jobs = await db.doQuery('SELECT * FROM jobs');
   res.json(jobs);
@@ -782,23 +712,23 @@ router.post('/jobs/distribute', wrapper.asyncMiddleware(async (req, res, next) =
 }));
 router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
-  const db_info =  await db.doQuery("select * from db_info")
-  // const engine_computer = await db.doQuery(`select *, t.name as program_name from job_tasks jt
-  //   join jobs j on j.id = jt.job_id
-  //   join tasks t on t.id = jt.task_id
-  //   join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id} and not program_type = 3`);
+  const user_id = req.body.user_id
 
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+  const db_info =  await db.doQuery("select * from db_info")
   const engine_computer = await db.doQuery(`select *, t.name as program_name from job_tasks jt
     join jobs j on j.id = jt.job_id
     join tasks t on t.id = jt.task_id
     join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id}`);
 
   console.log("-------------- RUN -----------------")
-  for (var i =0; i <engine_computer.length; i++){
-    var index = i;
+  console.log("en com : ", engine_computer)
+  for (var i =0; i<engine_computer.length; i++){
     var user = engine_computer[i]
-    // runModules(user,db_info)
-    runModules2(user,db_info)
+    var showtime = new Date()
+    var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
+    console.log(curtime, i, "runmodule2 call")
+    await runModules2(user, db_info, user_name)
   };
   res.json({success: true});
 }));
@@ -824,21 +754,18 @@ router.get('/tasks', wrapper.asyncMiddleware(async (req, res, next) => {
 join program_types pt on t.program_type = pt.id`);
   res.json(tasks);
 }));
-
 router.post('/tasks2', wrapper.asyncMiddleware(async (req, res, next) =>{
   const currentuserid = req.body.currentuserid;
   const tasks = await db.doQuery(`SELECT t.*, pt.name AS type_name from tasks t
 join program_types pt on t.program_type = pt.id where userid=0 or userid= ${currentuserid}`);
   res.json(tasks);
 }));
-
 router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("/get_taskinfo")
   const id = req.body.id;
   const taskinfo = await db.doQuery(`SELECT jt.*, t.name FROM job_tasks jt, tasks t WHERE jt.id = ${id} AND jt.task_id = t.id`);
   res.json(taskinfo);
 }));
-
 router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("update dest info")
   const from_id = req.body.from_id;
@@ -858,7 +785,6 @@ router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) 
   await db.doQuery(`UPDATE job_tasks SET dest_ip = '${dest_ip}', dest_port = ${dest_port} WHERE id = ${from_id}`);
   res.json({success: true});
 }));
-
 router.post('/update_task_pos', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id
   const pos_x = req.body.pos_x
@@ -867,7 +793,6 @@ router.post('/update_task_pos', wrapper.asyncMiddleware(async (req, res, next) =
   await db.doQuery(`UPDATE job_tasks SET position_x = ${pos_x}, position_y = ${pos_y} WHERE id=${id}`);
   res.json({success: true});
 }));
-
 router.post('/tasks/add',up, wrapper.asyncMiddleware(async (req, res, next) =>{
   const name = req.body.name;
   const program_type = req.body.program_type;
@@ -883,13 +808,11 @@ router.post('/tasks/add',up, wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log(await db.doQuery(`INSERT INTO tasks (name,program_type, comment, userid, sieve2) values ('${name}','${program_type}','${comment}','${currentuserid}','${sieve2}')`));
   res.redirect('http://localhost:8080/main');
 }));
-
 router.post('/tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
   console.log(await db.doQuery(`DELETE FROM tasks where id = ${id}`));
   res.json({success: true});
 }));
-
 router.post('/job_tasks', wrapper.asyncMiddleware(async (req, res, next) => {
   const job_id = req.body.job_id;
   // const job_tasks = await db.doQuery(`select jt.*, t.name FROM job_tasks jt join tasks t on t.id = jt.task_id where jt.job_id = ${job_id}`);
@@ -962,7 +885,7 @@ router.post('/job_tasks/delete', wrapper.asyncMiddleware(async (req, res, next) 
   WHERE jt.id = ${id} AND jt.ec_id = ec.id`))[0]
 
   connectUser(user, (user, userSSH) => {
-    deleteProjectFolder(user, userSSH, user_name, () => {
+    del_work_folder(user, userSSH, user_name, () => {
       console.log("delete project folder complete")
     })
   });
@@ -975,7 +898,6 @@ router.post('/job_tasks/delete_all', wrapper.asyncMiddleware(async (req, res, ne
   console.log(await db.doQuery(`DELETE FROM job_tasks where job_id = ${job_id}`));
   res.json({success: true});
 }));
-
 router.post('/job_tasks/xml2', wrapper.asyncMiddleware(async (req, res, next) => {
   const task_lines = JSON.parse(JSON.stringify(await db.doQuery(`select * FROM task_lines`)));
   var tasks = req.body.tasks;
@@ -1474,7 +1396,6 @@ fs.appendFileSync(path, text);
 
   res.redirect('http://localhost:3000/users/cell_schemas/to_sieve1');
 }));
-
 router.post('/task_lines', wrapper.asyncMiddleware(async (req, res, next) => {
   const job_id = req.body.job_id;
   const task_lines = await db.doQuery(`SELECT * FROM task_lines where job_id = ${job_id}`);

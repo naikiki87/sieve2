@@ -30,7 +30,8 @@
       </div>
 
       <div style="width:52%; height:500px; float:left;">
-        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Custom Tasks </div>
+        <!-- <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Custom Tasks </div> -->
+        <div class="pageName3"> Custom Tasks </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
@@ -53,7 +54,7 @@
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px; cursor:pointer;" v-on:click="removeTask(p.id)"> DEL </button> </td>
+                <td> <button class="shortBtn" v-on:click="removeTask(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>

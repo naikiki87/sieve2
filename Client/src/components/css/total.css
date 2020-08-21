@@ -4,15 +4,19 @@ button { border-style: groove; }
 .shadow { box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03) }
 .tabmenu { float : left; padding : 0px; height : 48px; width : 105px; padding-top : 15px; color : white; font-size : 13px; cursor:pointer;}
 .active { font-size : 14px; font-weight:bold; color : gold; }
-.pageName { background : gold; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
+.pageName { background : rgb(173, 232, 255); font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
 .pageName2 { margin-left : 5px; margin-right:5px; background : grey; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:3px; color:white}
+.pageName3 { background : rgb(135, 183, 255); font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
 
 .tabcontent { width:98%; margin-left:1%; border : 1px solid grey; height:600px;}
 .addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:navy; color:white; cursor:pointer;}
 
+.longBtn{ width:100px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.shortBtn{ width:50px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+
 .mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}
 .mainMngTable tr { margin:0px; padding:0px; height : 33px; padding : 0px; border : 1px solid blue; background : ; }
-.mainMngTable th { margin:0px; padding:0px;font-size : 15px; height : 33px; padding : 0px; border : 0px solid #d8d8d8; background : #bdbdbd; }
+.mainMngTable th { margin:0px; padding:0px;font-size : 15px; height : 33px; padding : 0px; border : 0px solid #d8d8d8; background : #dddddd; }
 .mainMngTable td { margin:0px; padding:0px;font-size : 15px; font-style:italic; border-top : 1px solid #d8d8d8; background : #fafafa }
 /* #d8d8d8 */
 
@@ -67,6 +71,7 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 /* #modify_TR { background : white; border : 1px solid; width : 848px; height : 450px; border : 2px solid darkblue; display : none;} */
 #modify_TR { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
 #modify_RD_1 { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
+#modify_RT { background : white; border : 1px solid; width : 350px; height : 400px; border : 2px solid darkblue; display : none;}
 
 .modify_window_title { background:darkblue; height : 50px; margin : 0px; padding : 3px; color:white;}
 .proj_attr_box { width : 200px; height : 230px; border : 0px solid; }

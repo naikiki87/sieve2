@@ -25,8 +25,8 @@
               <td>{{ p.name }}</td>
               <td>{{ p.comment }}</td>
               <!-- <td> <button style="width:100px; cursor:pointer; border:0px; background : lightblue;" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td> -->
-              <td> <button style="width:100px; cursor:pointer;" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td>
-              <td> <button style="width:100px; cursor:pointer;" v-on:click="removeJob(p.id)"> DEL </button> </td>
+              <td> <button class="longBtn" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td>
+              <td> <button class="longBtn" v-on:click="removeJob(p.id)"> DEL </button> </td>
             </tr>
           </table>
         </div>

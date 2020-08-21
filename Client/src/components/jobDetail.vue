@@ -118,10 +118,10 @@
           </td>
         </tr>
 
-        <tr>
+        <!-- <tr>
           <td style="width : 80px;" class="add_title"> 전송 속도 </td>
           <td> <input style="width : 95%;" type="text" v-model="temp_para[0]"></td>
-        </tr>
+        </tr> -->
       </table>
       <br> <br>
       <button id="modifyButton" v-on:click="modifyTask_reload"> SAVE </button>
@@ -893,6 +893,35 @@
       <button id="modifyButton" v-on:click="modifyTask_reload"> SAVE </button>
       <button id="modifyButton" v-on:click="hideModifyMenu"> CLOSE </button>
     </div> -->
+    <div id="modify_RT">
+      <div class="modify_window_title">
+        <h2 v-model="taskID"> Task ID : {{ taskID }} </h2>
+      </div>
+      <br>
+      <table style="margin:auto; align:center;">
+        <tr>
+          <td style="width : 80px;" class="add_title"> 연산자 </td>
+          <td>
+            <h3 v-model="temptask_name" class="modify_window_op_title"> {{ temptask_name }} </h3>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" class="add_title"> 수행 서버 </td>
+          <td>
+            <select style="width : 99%;" v-model="tempec_id" disabled>
+              <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" class="add_title"> 수행 포트 </td>
+          <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
+        </tr>
+      </table>
+      <br> <br>
+      <button id="modifyButton" v-on:click="modifyTask_reload"> SAVE </button>
+      <button id="modifyButton" v-on:click="hideModifyMenu"> CLOSE </button>
+    </div>
 
   </div>
 </template>
@@ -924,7 +953,7 @@ var marginX=0;
 var marginY=0;
 var cntxtmenu;
 var modify_menu;
-var modify_BS, modify_Proj, modify_SO, modify_Agg, modify_HJ, modify_BJ, modify_TR, modify_1_itemFP, modify_n_itemFP, modify_RD_1;
+var modify_BS, modify_Proj, modify_SO, modify_Agg, modify_HJ, modify_BJ, modify_TR, modify_1_itemFP, modify_n_itemFP, modify_RD_1, modify_RT;
 var cntxtmenuID;
 var t;
 var taskArray = [];
@@ -1424,6 +1453,7 @@ $(function() {
   modify_BJ = document.getElementById("modify_BJ");
   modify_TR = document.getElementById("modify_TR");
   modify_RD_1 = document.getElementById("modify_RD_1");
+  modify_RT = document.getElementById("modify_RT");
 
   $(document).on("click",".linkline", async function(){
     console.log("delete line");
@@ -1515,7 +1545,6 @@ $(function() {
     mousemove : async function(event) {
       if(box_move == 1) {
         try {
-          console.log("rel lines : ", rel_lines)
           realtime_redraw(startid, rel_lines, rel_tasks, selected_box.offsetLeft, selected_box.offsetTop)
         }
         catch(e) {}
@@ -1682,6 +1711,10 @@ export default {
     async func_test() {
       console.log("func test")
       console.log("user id : ", USER_ID, this.USER_ID)
+      var showtime = new Date()
+      var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
+      console.log("test : ", curtime)
+
     },
     RT_health_check() {
       console.log("RT_health_check")
@@ -1690,24 +1723,25 @@ export default {
     },
     async health_check() {
       var ret = 0
-      console.log("health check")
       for(var i=0; i<taskArray.length; i++) {
         var params = {
           task_id : taskArray[i].id
         }
         var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
         var res = await axios.post(api, params)
-        console.log(taskArray[i].id, ' : ', res.data.alive)
+        // console.log(taskArray[i].id, ' : ', res.data.alive)
         var target = document.getElementById(taskArray[i].id)
         if(res.data.alive == 1) {
-          target.style.background = "#2efe2e"
+          // target.style.background = "#11fe2e"
+          target.style.background = "#3af42c"
+          ret = ret + 1
         }
         else if(res.data.alive == 0) {
-          target.style.background = "#e6e6e6"
+          target.style.background = "#ffffff"
         }
       }
 
-      ret = 1
+      // ret = 1
       return ret
     },
     async jobDistTotal2() {
@@ -1808,35 +1842,19 @@ export default {
     },
     async jobRUN() {
       console.log("jobRUN : ", JOB_ID);
-
       var params = {
-        id : JOB_ID
+        id : JOB_ID,
+        user_id : USER_ID
       }
-
       var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
       var success = (await axios.post(api, params)).data.success
-
-      if(success == 1) {
-        if((await this.health_check()) == 1) {
-          alert("***** JOB 실행 완료 *****");
+      if(success == true) {
+        if((await this.health_check()) == taskArray.length) {
+        // if((await this.health_check()) == 1) {
+          // alert("***** JOB 실행 완료 *****");
+          console.log("JOB RUN COMPLETE")
         }
       }
-
-      // axios.post(api, params)
-      // .then( response => {
-      //   return response.data.success;
-      // })
-      // .then( response => {
-      //   if(response == 1) {
-      //     this.health_check()
-      //     alert("***** JOB 실행 완료 *****");
-      //   }
-      //   else {
-      //     alert("2");
-      //   }
-      // })
-      // .catch( response => {});
-
     },
     jobDistribute() {
       console.log(JOB_ID);
@@ -2282,6 +2300,7 @@ export default {
         case 34:  modify_menu = modify_n_itemFP; break;
         case 35:  modify_menu = modify_TR; break;
         case 36:  modify_menu = modify_RD_1; break;
+        case 37:  modify_menu = modify_RT; break;
         default : modify_menu = modify_BS; break;
        }
 

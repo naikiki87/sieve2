@@ -30,8 +30,8 @@
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button style="width:50px; cursor:pointer;" v-on:click="removeSchema(p.id)"> DEL </button> </td>
-                <td> <button style="width:100px; cursor:pointer;" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
+                <td> <button class="shortBtn" v-on:click="removeSchema(p.id)"> DEL </button> </td>
+                <td> <button class="longBtn" v-on:click="loadSchemaColumn(p.id)"> COLUMN </button> </td>
               </tr>
             </table>
           </div>
@@ -53,7 +53,8 @@
       
       <div style="width:52%; height:500px; float:left;" margin="auto">
         <!-- <div class="pageName" style="margin-left:3px; background:brown; color:white;"> 컬럼 목록 </div> -->
-        <div class="pageName" style="margin-left:3px; background:brown; color:white;"> Column List </div>
+        <!-- <div class="pageName2" style="margin-left:3px; background:brown; color:white;"> Column List </div> -->
+        <div class="pageName3"> Column List </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
