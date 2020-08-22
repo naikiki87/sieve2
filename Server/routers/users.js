@@ -307,23 +307,12 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
   if(userPW == result[0].password) {
     console.log("password correct");
     for(var i=0; i<10; i++) {
-      // res.cookie(`user${i}`, userID , {
       res.cookie(`user${i}`, result[0].id , {
         expires: new Date(Date.now() + 3600000)
         // httpOnly: true
       });
 
     }
-    // res.cookie("user", userID , {
-    //   expires: new Date(Date.now() + 900000),
-    //   httpOnly: true
-    // });
-    //
-    // res.cookie("user2", userID , {
-    //   expires: new Date(Date.now() + 900000),
-    //   httpOnly: true
-    // });
-    // res.redirect('http://localhost:8080/main');
     res.redirect('/users');
   }
   else {
@@ -634,18 +623,22 @@ join data_types dt on cc.type_id = dt.id`);
 router.post('/cell_columns', wrapper.asyncMiddleware(async (req, res, next) => {
   const schema_id = req.body.schema_id;
   // const cell_columns = await db.doQuery(`select * FROM cell_columns where schema_id = ${schema_id}`);
-  const cell_columns = await db.doQuery(`SELECT cc.*, dt.name AS type_name from cell_columns cc
-join data_types dt on cc.type_id = dt.id
-where cc.schema_id = ${schema_id}`);
+//   const cell_columns = await db.doQuery(`SELECT cc.*, dt.name AS type_name from cell_columns cc
+// join data_types dt on cc.type_id = dt.id
+// where cc.schema_id = ${schema_id}`);
+
+  const cell_columns = await db.doQuery(`SELECT cc.*, dt.name AS type_name FROM cell_columns cc, data_types dt
+WHERE cc.schema_id = ${schema_id} AND cc.type_id = dt.id`);
 
   res.json(cell_columns);
 }));
 router.post('/cell_columns/add', wrapper.asyncMiddleware(async (req, res, next) =>{
-	console.log(req.body);
+  console.log("cell column add")
   const name = req.body.name;
   const schema_id = req.body.schema_id;
   const type_id = req.body.type_id;
-  console.log(await db.doQuery(`INSERT INTO cell_columns (name, schema_id, type_id) values ('${name}','${schema_id}','${type_id}')`));
+  const user_id = req.body.user_id
+  console.log(await db.doQuery(`INSERT INTO cell_columns (name, schema_id, type_id, userid) values ('${name}','${schema_id}','${type_id}', '${user_id}')`));
   res.json({success: true});
 }));
 router.post('/cell_columns/delete', wrapper.asyncMiddleware(async (req, res, next) =>{

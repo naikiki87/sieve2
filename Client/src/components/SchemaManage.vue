@@ -47,8 +47,6 @@
       </div>
       
       <div style="width:52%; height:500px; float:left;" margin="auto">
-        <!-- <div class="pageName" style="margin-left:3px; background:brown; color:white;"> 컬럼 목록 </div> -->
-        <!-- <div class="pageName2" style="margin-left:3px; background:brown; color:white;"> Column List </div> -->
         <div class="pageName3"> Column List </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
@@ -83,7 +81,7 @@
               <td style="width:50px;" rowspan="2"> ID : <a style="font-size:16px; font-weight:700; color:red;" v-model="add_ColSchema"> {{ add_ColSchema }} </a> </td>
               <td class="add_title"> Column Name </td>
               <td> <input style="width : 95%;" type="text" v-model="add_ColName" v-on:keyup.enter="addSchema"> </td>
-              <td rowspan="2"> <button class="addButton" v-on:click = "addColumn2" > ADD </button> </td>
+              <td rowspan="2"> <button class="addButton" v-on:click = "addColumn3" > ADD </button> </td>
             </tr>
             <tr>
               <td class="add_title"> Data Type </td>
@@ -135,18 +133,20 @@ export default {
 
   },
   methods: {
-    loadSchemaColumn(index) {
+    async loadSchemaColumn(index) {
       this.ok = 1;
       this.add_ColSchema = index;
       var params = {
         schema_id: index
       }
       var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
-      axios.post(api, params)
-      .then( response => {
-        this.columnArray = response.data;
-      })
-      .catch( response => { console.log(response) } );
+      this.columnArray = (await axios.post(api, params)).data
+      
+      // axios.post(api, params)
+      // .then( response => {
+      //   this.columnArray = response.data;
+      // })
+      // .catch( response => { console.log(response) } );
     },
     loadAllColumns() {
       console.log("**** (3/5)LOAD SCH COLs ****" );
@@ -183,6 +183,24 @@ export default {
       this.ok = 0;
 
       this.clearInput();
+    },
+    async addColumn3() {
+      var schema_id = this.add_ColSchema
+      var params = {
+        name: this.add_ColName,
+        schema_id: this.add_ColSchema,
+        type_id: this.add_ColType,
+        user_id: this.currentuserid
+      }
+
+      console.log("addcol3 : ", params)
+
+      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      await axios.post(api, params)
+      this.clearInput()
+      await this.loadSchemaColumn(schema_id)
+
+
     },
     addColumn2() {
       var colSchema = this.add_ColSchema;

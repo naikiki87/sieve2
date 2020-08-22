@@ -1,20 +1,25 @@
 <template>
   <div>
-    <h1 style="height:20px">  </h1>
+    <br><br>
+    <br>
+    <div style="background:;">
     <img src="./title3.png" />
 
+    </div>
+
     <div align="right" style="font-size:18px; font-weight:700;">
-      <form action="http://localhost:3000/users/logout" method="get" enctype="multipart/form-data">
+      <form action="http://165.132.105.40:3000/users/logout" method="get" enctype="multipart/form-data">
         <table>
           <tr>
             <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo3.jpg" width="28px" height="28px"> </td>
             <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo.jpg" width="28px" height="28px"> </td>
             <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo2.jpg" width="28px" height="28px"> </td>
-            <td> <b v-if="this.currentuserid"> Current User :  </b> </td>
+            <td> <b v-if="this.currentuserid"> Welcome </b> </td>
             <td> <a style="font-size:20px; color:blue;"> {{ currentusername }} </a> </td>
+            
             <td>
-              <button class="loginBtn" type="submit" v-if="!this.currentuserid"> LogIN </button>
-              <button class="loginBtn" type="submit" v-if="this.currentuserid"> LogOUT </button>
+              <button class="loginBtn" type="submit" v-if="!this.currentuserid"> 로그인 </button>
+              <button class="loginBtn" type="submit" v-if="this.currentuserid"> 로그아웃 </button>
             </td>
           </tr>
         </table>
