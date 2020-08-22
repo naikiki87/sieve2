@@ -161,50 +161,37 @@ export default {
         console.log(err);
       });
     },
-    loadTaskPost() {
+    async loadTaskPost() {
       console.log("**** (5/5)LOAD TASK ****");
       var api = "http://" + this.svrAddr + ":3000/users/tasks2";
       var params = { currentuserid : this.currentuserid };
-      axios
-      .post(api, params)
-      .then(response => {
-        this.taskArray = response.data;
-        for(var i=0; i<response.data.length; i++) {
-          if(response.data[i].sieve2 == 0) {
-            this.taskArrayS1.push(response.data[i]);
-          }
-          else {
-            this.taskArrayS2.push(response.data[i]);
-          }
-        }
+      this.taskArrayS1 = []
+      this.taskArrayS2 = []
 
-        // console.log("S1", this.taskArrayS1);
-        // console.log("S2", this.taskArrayS2);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      this.taskArray = (await axios.post(api, params)).data
+      for(var i=0; i<this.taskArray.length; i++) {
+        if(this.taskArray[i].sieve2 == 0) {
+          this.taskArrayS1.push(this.taskArray[i]);
+        }
+        else {
+          this.taskArrayS2.push(this.taskArray[i]);
+        }
+      }
     },
     clearInput() {
       this.add_taskName = "";
       this.add_taskProg = "";
       this.add_taskComment = "";
     },
-    removeTask(index) {
+    async removeTask(index) {
       console.log("DELETE" + index);
       var params = {
         id : index
       }
 
       var api = "http://" + this.svrAddr + ":3000/users/tasks/delete";
-
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-
-      this.loadTaskPost(this.currentuserid);
-      this.loadTaskPost(this.currentuserid);
+      await axios.post(api, params)
+      await this.loadTaskPost(this.currentuserid)
     }
   }
 }

@@ -97,7 +97,7 @@ export default {
       console.log("click popup");
       this.openWin.document.title = "SIEVE2 Job Detail";
     },
-    removeJob(index) {
+    async removeJob(index) {
       console.log("DELETE" + index);
       var params = {
         id : index
@@ -105,16 +105,11 @@ export default {
 
       var api = "http://" + this.svrAddr + ":3000/users/jobs/delete";
 
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-
-      this.loadJobPost(this.currentuserid);
-      this.loadJobPost(this.currentuserid);
+      await axios.post(api, params)
+      await this.loadJobPost(this.currentuserid)
     },
 
-    addJob() {
+    async addJob() {
       console.log("ADD JOB");
       console.log(this.add_jobName);
       console.log(this.add_jobComment);
@@ -125,15 +120,9 @@ export default {
       }
       var api = "http://" + this.svrAddr + ":3000/users/jobs/add";
 
-      axios
-      .post(api, params)
-      .then( response => { console.log(response) } )
-      .catch( response => { console.log(response) } );
-
-      this.clearInput();
-      this.loadJobPost(this.currentuserid);
-      this.loadJobPost(this.currentuserid);
-      this.loadJobPost(this.currentuserid);
+      await axios.post(api, params)
+      this.clearInput()
+      await this.loadJobPost(this.currentuserid)
     },
 
     loadJob() {
@@ -147,16 +136,12 @@ export default {
       .catch(err => { console.log(err); });
     },
 
-    loadJobPost() {
+    async loadJobPost() {
       console.log("**** (4/5)LOAD JOB ****");
       var api = "http://" + this.svrAddr + ":3000/users/jobs2";
       var params={currentuserid:this.currentuserid};
-      axios
-      .post(api, params)
-      .then(response => {
-        this.jobArray = response.data;
-      })
-      .catch(err => { console.log(err); });
+
+      this.jobArray = (await axios.post(api, params)).data
     },
     clearInput() {
       this.add_jobName = "";

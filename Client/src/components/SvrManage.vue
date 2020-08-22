@@ -2,18 +2,12 @@
   <div>
     <div style="height:500px;">
       <div class="pageName"> Edge Server List </div>
-      <!-- <button v-on:click="setCookie"> click </button>
-      <button v-on:click="dataTEST"> TEST </button>
-      <button v-on:click="dataTEST2"> TEST2 </button> -->
       <div style="height:450px; overflow:auto;">
         <table class="mainMngTable" style="width:98%;">
           <colgroup>
-            <col style="width: 10px"> <!-- ID -->
+            <col style="width: 30px"> <!-- ID -->
             <col style="width: 100px">
             <col style="width: 100px"> <!-- IP -->
-          	<!-- <col style="width: 120px">
-          	<col style="width: 120px">
-          	<col style="width: 120px"> -->
             <col style="width: 180px">
             <col style="width: 100px">
           </colgroup>
