@@ -13,8 +13,11 @@ button { border-style: groove; }
 .addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:rgb(0, 48, 87); color:white; cursor:pointer; border-radius:10px;}
 
 .longBtn{ width:100px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.longBtn_DEL{ width:100px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
 .midBtn{ width : 75px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.midBtn_DEL{ width:75px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
 .shortBtn{ width:50px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.shortBtn_DEL{ width:50px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
 
 .mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}
 .mainMngTable tr { margin:0px; padding:0px; height : 33px; padding : 0px; border : 1px solid blue; background : ; }

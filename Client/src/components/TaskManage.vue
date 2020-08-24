@@ -53,7 +53,7 @@
                   <td>{{ p.name }}</td>
                   <td>{{ p.comment }}</td>
                   <td> <button class="shortBtn" v-on:click="show_params(p.id)"> VIEW </button> </td>
-                  <td> <button class="shortBtn" v-on:click="removeTask(p.id)"> DEL </button> </td>
+                  <td> <button class="shortBtn_DEL" v-on:click="removeTask(p.id)"> DEL </button> </td>
                 </tr>
               </table>
             </div>
@@ -110,7 +110,7 @@
                 <td>{{ index + 1 }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
-                <td> <button class="shortBtn" v-on:click="remove_param(p.id)"> DEL </button> </td>
+                <td> <button class="shortBtn_DEL" v-on:click="remove_param(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>

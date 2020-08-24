@@ -26,7 +26,7 @@
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
                 <td> <button class="longBtn" v-on:click="loadSchemaColumn(p.id)"> VIEW </button> </td>
-                <td> <button v-if="p.userid == currentuserid" class="longBtn" v-on:click="removeSchema(p.id)"> DEL </button> </td>
+                <td> <button v-if="p.userid == currentuserid" class="longBtn_DEL" v-on:click="removeSchema(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -47,30 +47,27 @@
       </div>
       
       <div style="width:52%; height:500px; float:left;" margin="auto">
-        <div class="pageName3"> Column List </div>
+        <div class="pageName3" v-model="add_ColSchema"> Column List : {{ add_ColSchema }} </div>
         <div style="height:465px;">
           <div style="height:450px; overflow:auto;">
             <table class="mainMngTable" style="width:97%;">
               <colgroup>
-                <col style="width: 50px"> <!-- ID -->
-                <col style="width: 70px"> <!-- sch ID -->
-                <col style="width: 150px"> <!-- name -->
-              	<col style="width: 80px"> <!-- type ID -->
-                <col style="width: 50px"> <!-- del -->
+                <col style="width: 40px">
+                <col style="width: 100px">
+              	<col style="width: 80px">
+                <col style="width: 50px">
               </colgroup>
               <tr>
                 <th class="svrMngColName">ID</th>
-                <th class="svrMngColName">Schema</th>
                 <th class="svrMngColName">Column</th>
                 <th class="svrMngColName">Type</th>
                 <th class="svrMngColName">Delete</th>
               </tr>
               <tr v-for="(p, index) in columnArray" :key="p.id">
                 <td>{{ index + 1 }}</td>
-                <td>{{ p.schema_id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>
-                <td> <button v-if="p.userid == currentuserid" class="shortBtn" v-on:click="removeColumn2(p.id, p.schema_id)"> DEL </button> </td>
+                <td> <button v-if="p.userid == currentuserid" class="shortBtn_DEL" v-on:click="removeColumn3(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -146,12 +143,6 @@ export default {
       }
       var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
       this.columnArray = (await axios.post(api, params)).data
-      
-      // axios.post(api, params)
-      // .then( response => {
-      //   this.columnArray = response.data;
-      // })
-      // .catch( response => { console.log(response) } );
     },
     loadAllColumns() {
       // console.log("**** (3/5)LOAD SCH COLs ****" );
@@ -242,6 +233,14 @@ export default {
 
       this.ok = 0;
       this.clearInput();
+    },
+
+    async removeColumn3(index) {
+      var params = { id : index }
+      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      await axios.post(api, params)
+      this.columnArray = []
+      await this.loadSchemaColumn(this.add_ColSchema)
     },
     removeColumn2(index, schema_id) {
       var colSchema = schema_id;
@@ -342,15 +341,6 @@ export default {
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/delete";
       await axios.post(api, params)
       await this.loadSchema()
-
-      // axios
-      // .post(api, params)
-      // .then( response => { console.log(response) } )
-      // .catch( response => { console.log(response) } );
-
-      // this.loadSchemaPost(this.currentuserid);
-      // this.loadSchemaPost(this.currentuserid);
-      // this.loadSchemaPost(this.currentuserid);
     },
     clearInput() {
       this.add_schemaCom = "";

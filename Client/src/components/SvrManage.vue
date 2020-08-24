@@ -23,7 +23,7 @@
             <td>{{ p.alias }}</td>
             <td>{{ p.ip_address }}</td>
             <td>{{ p.description }}</td>
-            <td> <button v-if="p.userid == currentuserid" class="longBtn" v-on:click="removeSvr(p.id)"> DEL </button> </td>
+            <td> <button v-if="p.userid == currentuserid" class="longBtn_DEL" v-on:click="removeSvr(p.id)"> DEL </button> </td>
           </tr>
         </table>
       </div>

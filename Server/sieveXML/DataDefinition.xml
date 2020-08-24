@@ -55,4 +55,70 @@
 </attribute>
 </attribute-list>
 </ddl>
+<ddl id="19">
+<title> test4 </title>
+<owner>dblab</owner>
+<creation-date>1579168326196</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+</attribute-list>
+</ddl>
+<ddl id="20">
+<title> 4test2 </title>
+<owner>dblab</owner>
+<creation-date>1579168326196</creation-date>
+<comments/>
+<attribute-format type="variable">
+<field-delimeter>\t</field-delimeter>
+<record-delimeter>\n</record-delimeter>
+<itemset is-itemset-data="false" itemset-delimeter="">
+<tid-index>0</tid-index>
+</itemset>
+</attribute-format>
+<attribute-list>
+<attribute id="0">
+<name>ssss</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="1">
+<name>s2</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="2">
+<name>deed</name>
+<type>string</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="3">
+<name>test11</name>
+<type>double</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="4">
+<name>ddddfsss</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+<attribute id="5">
+<name>ssss</name>
+<type>integer</type>
+<allow-null>false</allow-null>
+<default-value/>
+</attribute>
+</attribute-list>
+</ddl>
 </ddl-list>
