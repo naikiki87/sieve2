@@ -66,7 +66,7 @@
             <td class="add_title"> Task Name : </td>
             <td style="width:35%; background:"> <input style="width:100%; align:left;" name="name" type="text" v-model="addTName"> </td>
             <td style="background:"> <button style="width:130px" class="midBtn" v-on:click="taskname_check"> Name CHECK </button> </td>
-            <td style="width:15%; background:"> <a v-if="nameok == 2" style="color:green"> OK </a> <a v-if="nameok == 1" style="color:red"> Not OK </a></td>
+            <td style="width:30%; background:"> <a v-if="nameok == 2" style="color:green"> OK </a> <a v-if="nameok == 1" style="color:red"> Not OK : Exist Same Name </a> <a v-if="nameok == 3" style="color:red"> Not OK : Name Empty </a></td>
           </tr>
         </table>
         <form v-if="add_window" action="http://localhost:3000/users/tasks/add" method="post" enctype="multipart/form-data">
@@ -288,6 +288,7 @@ export default {
       console.log("taskname check")
       if(this.addTName == "") {
         console.log("nullllll")
+        this.nameok = 3
       }
       else {
         console.log("this.add : ", this.addTName)
@@ -299,7 +300,7 @@ export default {
         var same = (await axios.post(api, params)).data.same
 
         if(same == 1) {
-          alert("Same Name Exist")
+          // alert("Same Name Exist")
           this.nameok = 1
         }
         else {

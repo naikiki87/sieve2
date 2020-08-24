@@ -4,32 +4,17 @@
       <svg id="arrowbg"> </svg>
     </div>
     <div id="header">
-      <table valign="middle" align="left" style="height:70px;margin:auto; width:250px; padding-top : 5px; background:;">
+      <table valign="middle" align="left" style="height:130px;margin:auto; width:250px; padding-top : 5px; background:;">
         <tr>
           <td v-model="JOB_ID" style="font-size:22px; font-weight:700;"> JOB : {{ JOB_ID }} </td>
-          <!-- <td v-model="localcnt" style="font-size:14px;"> # Tasks : {{ localcnt }} </td> -->
         </tr>
       </table>
-
-      <table id="TDHeader_table" style=" margin : auto; width:89%;">
+      <table id="TDHeader_table" style=" margin : auto; width:97%; border:0px">
         <tr>
-          <!-- <td colspan="2" style="background:gold;" v-model="mode"> {{ mode }} </td> -->
-        </tr>
-      </table>
-
-      <table id="TDHeader_table" style=" margin : auto; width:97%;">
-        <tr>
-          <!-- <td colspan="2"> <button id="modeChanger" class="JobDetailHeaderbutton" v-on:click="status_change"> STATUS CHANGE </button> </td> -->
-        </tr>
-      </table>
-
-      <table id="TDHeader_table" style=" margin : auto; width:97%;">
-        <tr>
-          <!-- <td colspan="2"> <button style="background:lightblue;" class="JobDetailHeaderbutton" v-on:click="boxPositionSave"> TASK SHAPE 저장 </button> </td> -->
+          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal2"> DISPATCH </button> </td>
         </tr>
         <br>
         <tr>
-          <td> <button class="JobDetailHeaderbutton2" v-on:click="jobDistTotal2"> DISPATCH </button> </td>
           <td> <button class="JobDetailHeaderbutton2" v-on:click="jobRUN"> RUN </button> </td>
         </tr>
       </table>

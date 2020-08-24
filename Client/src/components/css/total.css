@@ -40,7 +40,7 @@ button { border-style: groove; }
 div { padding : 0px; margin : 0px; font-size: 12px; }
 
 #content {position:absolute; top:0px; left:0px; width: 850px; height : 850px; background:; margin : 0px; padding:0px; border : 1px solid;}
-#header {position:absolute; top : 0px; left:850px; width : 250px; height:280px; background : lightgrey ;border : 1px solid; }
+#header {position:absolute; top : 0px; left:850px; width : 250px; height:280px; background : rgb(237, 251, 255) ;border : 1px solid; }
 #job_notice {position:absolute; top : 0px; left:850px; width : 250px; height:100px; background : blue; border : 10px solid; }
 #content div:hover{ background:#a9e2f3; color:white; border : 1px solid blue; }
 #rightaside {position:absolute; top:280px; left: 850px; background : ; width:250px; height : 570px; border : 1px solid;}
@@ -139,7 +139,7 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 .BJvalAttrIndex { width : 91%; }
 .BJbutton { width : 80px;}
 .JobDetailHeaderbutton { height:33px; width:218px; margin:1px; font-size:13px; font-weight:700; cursor:pointer;}
-.JobDetailHeaderbutton2 { height:48px; width:100px; margin:5px; font-size:14px; font-weight:700; background:darkblue; color:white; cursor:pointer;}
+.JobDetailHeaderbutton2 { height:40px; width:150px; margin:5px; font-size:14px; font-weight:700; background:rgb(56, 134, 235); color:white; cursor:pointer; border-radius:8px}
 
 #TDHeader_table { border : 1px solid lightgrey; padding : 0px; font-weight:700}
 #TDHeader_table tr { height : 30px; padding : 0px; border : 1px solid #d8d8d8; background :  }
