@@ -53,18 +53,13 @@ export default {
       }
       x[index].style.display = 'block';
     },
-    getUserName() {
-      // console.log("init", this.currentuserid);
-      var api = "http://" + this.svrAddr + ":3000/users/get_username";
-      var params = {id:this.currentuserid};
-      axios
-      .post(api, params)
-      .then(response => {
-        this.currentusername = response.data;
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    async getUserName() {
+      try {
+        var api = "http://" + this.svrAddr + ":3000/users/get_username";
+        var params = { id:this.currentuserid }
+        this.currentusername = (await axios.poat(api, params)).data
+      }
+      catch(e) {}
     }
   }
 }

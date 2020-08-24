@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <table class="mainMngTable2" style="margin:auto; width:500px;">
+      <table v-if="add_window" class="mainMngTable2" style="margin:auto; width:500px;">
         <tr>
           <td class="add_title"> JOB Name </td>
           <td> <input style="width : 95%;" type="text" v-model="add_jobName" v-on:keyup.enter="addJob"> </td>
@@ -62,7 +62,8 @@ export default {
       add_jobName : '',
       add_jobSchema : '',
       add_jobComment : '',
-      openWin : ''
+      openWin : '',
+      add_window : 0
     }
   },
   props:['currentuserid'],
@@ -71,6 +72,9 @@ export default {
     // this.loadJob();
     this.loadJobPost();
     // this.loadSchema();
+    if(this.currentuserid != null) {
+      this.add_window = 1
+    }
   },
 
   methods: {
@@ -87,18 +91,18 @@ export default {
       var id = index
       var id_add = id + add
       var B = id_add.toString(16)
-      console.log("B: ", B)
+      // console.log("B: ", B)
 
       var de_C =A[0]+B[4]+A[1]+B[3]+A[2]+B[2]+A[3]+B[1]+A[4]+B[0]
       // var url = "taskdetail?job="+de_C;
       var url = "jobDetail?job="+de_C+"&case="+this.currentuserid;
 
       this.openWin = window.open(url, "childForm", "width=1130, height=880, resizable=no, scrollbars=no, titlebar=no, location=no");
-      console.log("click popup");
+      // console.log("click popup");
       this.openWin.document.title = "SIEVE2 Job Detail";
     },
     async removeJob(index) {
-      console.log("DELETE" + index);
+      // console.log("DELETE" + index);
       var params = {
         id : index
       }
@@ -110,9 +114,9 @@ export default {
     },
 
     async addJob() {
-      console.log("ADD JOB");
-      console.log(this.add_jobName);
-      console.log(this.add_jobComment);
+      // console.log("ADD JOB");
+      // console.log(this.add_jobName);
+      // console.log(this.add_jobComment);
       var params = {
         name: this.add_jobName,
         comment: this.add_jobComment,
@@ -126,7 +130,7 @@ export default {
     },
 
     loadJob() {
-      console.log("**** (4/5)LOAD JOB ****");
+      // console.log("**** (4/5)LOAD JOB ****");
       var api = "http://" + this.svrAddr + ":3000/users/jobs";
       axios
       .get(api)
@@ -137,7 +141,7 @@ export default {
     },
 
     async loadJobPost() {
-      console.log("**** (4/5)LOAD JOB ****");
+      // console.log("**** (4/5)LOAD JOB ****");
       var api = "http://" + this.svrAddr + ":3000/users/jobs2";
       var params={currentuserid:this.currentuserid};
 

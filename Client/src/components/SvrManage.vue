@@ -28,7 +28,7 @@
         </table>
       </div>
     </div>
-    <table class="mainMngTable2" style="margin:auto; width:800px;">
+    <table v-if="add_window" class="mainMngTable2" style="margin:auto; width:800px;">
       <tr>
         <td class="add_title"> IP Address </td>
         <td> <input style="width : 95%;" type="text" v-model="add_ip" v-on:keyup.enter="addSvr"> </td>
@@ -70,13 +70,15 @@ export default {
       cookie_name : 'myHobby',
       cookie_value : 'game',
       cookie_days : 3,
-      currentuserid : ''
+      add_window : 0
     }
   },
   created () {
     this.svrAddr = this.svrConfig.hostserver;
-    // this.loadSvrPost();
     this.loadSvr()
+    if(this.currentuserid != null) {
+      this.add_window = 1
+    }
   },
 
   methods: {
@@ -126,7 +128,7 @@ export default {
       });
     },
     setCookie() {
-      console.log("set Cookie");
+      // console.log("set Cookie");
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + this.cookie_days);
       // 설정 일수만큼 현재시간에 만료값으로 지정
@@ -136,7 +138,7 @@ export default {
     },
 
     loadSvr() {
-      console.log("**** (1/5)LOAD SERVER ****", this.svrAddr);
+      // console.log("**** (1/5)LOAD SERVER ****", this.svrAddr);
 
       // console.log("addr : " + this.svrAddr);
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
@@ -152,7 +154,7 @@ export default {
       });
     },
     loadSvrPost() {
-      console.log("**** (1/5)LOAD SERVER **** : ", this.currentuserid);
+      // console.log("**** (1/5)LOAD SERVER **** : ", this.currentuserid);
 
       var api = "http://" + this.svrAddr + ":3000/users/engine_computer2";
       var params = {
@@ -163,7 +165,7 @@ export default {
       .post(api, params)
       .then( response => {
         this.pageArray = response.data;
-        console.log(response.data)
+        // console.log(response.data)
       })
       .catch( response => { console.log(response) } );
     },
@@ -189,7 +191,7 @@ export default {
       await this.loadSvr()
     },
     async removeSvr(index) {
-      console.log("DELETE" + index);
+      // console.log("DELETE" + index);
       var params = {
         id : index
       }

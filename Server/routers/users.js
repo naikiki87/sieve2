@@ -290,6 +290,9 @@ function killModules(user, db_info)
 // }));
 
 router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
+  for(var i=0; i<10; i++) {
+    res.clearCookie(`user${i}`)
+  }
   res.redirect('http://localhost:8080/');
 }));
 router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -382,7 +385,6 @@ router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>
 }));
 router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
-
   const user =  (await db.doQuery(`select * FROM users_test where id = ${id}`));
   res.json(user[0].userID);
 }));
@@ -787,23 +789,56 @@ router.post('/update_task_pos', wrapper.asyncMiddleware(async (req, res, next) =
 }));
 router.post('/tasks/add',up, wrapper.asyncMiddleware(async (req, res, next) =>{
   const name = req.body.name;
-  const program_type = req.body.program_type;
+  // const program_type = req.body.program_type;
+  const program_type = 0
   const comment = req.body.comment;
   const currentuserid = req.body.currentuserid;
   var sieve2 = 1;
   console.log("TASK ADD");
-  console.log(name);
-  console.log(program_type);
-  console.log(comment);
-  console.log(currentuserid);
-
   console.log(await db.doQuery(`INSERT INTO tasks (name,program_type, comment, userid, sieve2) values ('${name}','${program_type}','${comment}','${currentuserid}','${sieve2}')`));
+  // res.json({success : true})
   res.redirect('http://localhost:8080/main');
 }));
+router.post('/tasks/add_param', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const param_name = req.body.param_name
+  const param_des= req.body.param_des
+  const task_id = req.body.task_id
+  const currentuserid = req.body.currentuserid
+
+  await db.doQuery(`INSERT INTO task_params (name, task_id, description, userid) 
+  SELECT * FROM (SELECT '${param_name}', ${task_id}, '${param_des}', ${currentuserid}) AS tmp 
+  WHERE NOT EXISTS 
+  (SELECT * FROM task_params WHERE NAME = '${param_name}' AND task_id = ${task_id}) 
+  LIMIT 1`)
+  
+  res.json({success: true});
+}));
+
 router.post('/tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
-  console.log(await db.doQuery(`DELETE FROM tasks where id = ${id}`));
+  await db.doQuery(`DELETE FROM tasks where id = ${id}`)
+  await db.doQuery(`DELETE FROM task_params where task_id = ${id}`)
   res.json({success: true});
+}));
+
+router.post('/tasks/name_check', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const t_name = req.body.t_name
+  var tasks = (await db.doQuery(`select * from tasks`))
+  var same = 0
+
+  for(var i in tasks) {
+    if(tasks[i].name == t_name) {
+      same = 1
+      break
+    }
+  }
+  console.log("same : ", same)
+  res.json({same: same});
+}));
+router.post('/tasks/get_params', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const task_id = req.body.task_id
+  var task_params = (await db.doQuery(`select * from task_params where task_id = ${task_id}`));
+  res.json(task_params);
 }));
 router.post('/job_tasks', wrapper.asyncMiddleware(async (req, res, next) => {
   const job_id = req.body.job_id;

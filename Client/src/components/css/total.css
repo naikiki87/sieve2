@@ -7,11 +7,13 @@ button { border-style: groove; }
 .pageName { background : rgb(173, 232, 255); font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
 .pageName2 { margin-left : 5px; margin-right:5px; background : grey; font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:3px; color:white}
 .pageName3 { background : rgb(135, 183, 255); font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px;}
+.pageName4 { background : rgb(10, 107, 252); font-size:15px; font-weight:bold; height:25px; padding-top:5px; margin-bottom:5px; color:white}
 
 .tabcontent { width:98%; margin-left:1%; border : 1px solid grey; height:600px;}
-.addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:navy; color:white; cursor:pointer;}
+.addButton { width:80px; height:62px; font-weight:700; font-size:15px; background:rgb(0, 48, 87); color:white; cursor:pointer; border-radius:10px;}
 
 .longBtn{ width:100px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.midBtn{ width : 75px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
 .shortBtn{ width:50px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
 
 .mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}

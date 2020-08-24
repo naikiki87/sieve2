@@ -32,7 +32,7 @@
           </div>
         </div>
         <div>
-          <table class="mainMngTable2" style="margin:auto; width:97%;">
+          <table v-if="add_window" class="mainMngTable2" style="margin:auto; width:97%;">
             <tr>
               <td class="add_title"> Schema Name </td>
               <td> <input style="width : 95%; cursor:pointer;" type="text" v-model="add_schemaName" v-on:keyup.enter="addSchema"> </td>
@@ -120,16 +120,21 @@ export default {
       add_schemaCom : '',
       add_ColName : '',
       add_ColSchema : '',
-      add_ColType : ''
+      add_ColType : '',
+      add_window : 0
+
 
     }
   },
   created () {
-    console.log("this curr : ", this.currentuserid)
+    // console.log("this curr : ", this.currentuserid)
     this.svrAddr = this.svrConfig.hostserver;
     // this.loadSchemaPost();
     this.loadSchema();
     this.loadAllColumns();
+    if(this.currentuserid != null) {
+      this.add_window = 1
+    }
 
   },
   methods: {
@@ -149,7 +154,7 @@ export default {
       // .catch( response => { console.log(response) } );
     },
     loadAllColumns() {
-      console.log("**** (3/5)LOAD SCH COLs ****" );
+      // console.log("**** (3/5)LOAD SCH COLs ****" );
 
       var api = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
       axios.get(api)
@@ -160,7 +165,7 @@ export default {
       .catch( response => { console.log(response) } );
     },
     addColumn() {
-      console.log("ADD COLUMN");
+      // console.log("ADD COLUMN");
       var params = {
         name: this.add_ColName,
         schema_id: this.add_ColSchema,
@@ -170,7 +175,7 @@ export default {
       var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
       axios.post(api, params)
       .then( response => {
-        console.log("1", response.data.success);
+        // console.log("1", response.data.success);
       })
       .catch( response => { console.log(response) } );
 
@@ -193,7 +198,7 @@ export default {
         user_id: this.currentuserid
       }
 
-      console.log("addcol3 : ", params)
+      // console.log("addcol3 : ", params)
 
       var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
       await axios.post(api, params)
@@ -272,7 +277,7 @@ export default {
 
     },
     removeColumn(index, schema_id) {
-      console.log("DELETE" + index);
+      // console.log("DELETE" + index);
       var params = {
         id : index
       }
@@ -289,7 +294,7 @@ export default {
       this.loadSchemaColumn(schema_id);
     },
     loadSchemaPost() {
-      console.log("**** (2/5)LOAD SCHEMA ****" + this.currentuserid);
+      // console.log("**** (2/5)LOAD SCHEMA ****" + this.currentuserid);
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas2";
       var params = { currentuserid : this.currentuserid }
       axios
@@ -303,20 +308,20 @@ export default {
 
     },
     loadSchema() {
-      console.log("**** (2/5)LOAD SCHEMA ****");
+      // console.log("**** (2/5)LOAD SCHEMA ****");
       var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
       axios
       .get(api)
       .then(response => {
         this.schemaArray = response.data;
-        console.log(this.schemaArray);
+        // console.log(this.schemaArray);
       })
       .catch(err => {
         console.log(err);
       });
     },
     async addSchema() {
-      console.log("ADD SCHEMA");
+      // console.log("ADD SCHEMA");
       var params = {
         name: this.add_schemaName,
         comment: this.add_schemaCom,
@@ -329,7 +334,7 @@ export default {
       await this.loadSchema()
     },
     async removeSchema(index) {
-      console.log("DELETE" + index);
+      // console.log("DELETE" + index);
       var params = {
         id : index
       }
