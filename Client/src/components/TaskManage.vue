@@ -19,8 +19,8 @@
                     <th>Description</th>
                     <th>Params</th>
                   </tr>
-                  <tr v-for="p in taskArrayS1" :key="p.id">
-                    <td>{{ p.id }}</td>
+                  <tr v-for="(p, index) in taskArrayS1" :key="p.id">
+                    <td>{{ index + 1 }}</td>
                     <td>{{ p.name }}</td>
                     <td>{{ p.comment }}</td>
                     <td> <button class="shortBtn" v-on:click="show_params(p.id)"> VIEW </button> </td>
@@ -48,8 +48,8 @@
                   <th>Params</th>
                   <th>Delete</th>
                 </tr>
-                <tr v-for="p in taskArrayS2" :key="p.id">
-                  <td>{{ p.id }}</td>
+                <tr v-for="(p, index) in taskArrayS2" :key="p.id">
+                  <td>{{ index + 1 }}</td>
                   <td>{{ p.name }}</td>
                   <td>{{ p.comment }}</td>
                   <td> <button class="shortBtn" v-on:click="show_params(p.id)"> VIEW </button> </td>
@@ -107,7 +107,7 @@
                 <th>Delete</th>
               </tr>
               <tr v-for="(p, index) in task_params" :key="p.id">
-                <td>{{ index }}</td>
+                <td>{{ index + 1 }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
                 <td> <button class="shortBtn" v-on:click="remove_param(p.id)"> DEL </button> </td>

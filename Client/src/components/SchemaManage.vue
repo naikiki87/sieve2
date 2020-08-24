@@ -21,8 +21,8 @@
                 <th class="svrMngColName">Columns</th>
                 <th class="svrMngColName">Delete</th>
               </tr>
-              <tr v-for="p in schemaArray" :key="p.id">
-                <td>{{ p.id }}</td>
+              <tr v-for="(p, index) in schemaArray" :key="p.id">
+                <td>{{ index + 1 }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
                 <td> <button class="longBtn" v-on:click="loadSchemaColumn(p.id)"> VIEW </button> </td>
@@ -65,8 +65,8 @@
                 <th class="svrMngColName">Type</th>
                 <th class="svrMngColName">Delete</th>
               </tr>
-              <tr v-for="p in columnArray" :key="p.id">
-                <td>{{ p.id }}</td>
+              <tr v-for="(p, index) in columnArray" :key="p.id">
+                <td>{{ index + 1 }}</td>
                 <td>{{ p.schema_id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.type_name }}</td>

@@ -20,8 +20,8 @@
               <th>Delete</th>
             </tr>
 
-            <tr v-for="p in jobArray" :key="p.id">
-              <td>{{ p.id }}</td>
+            <tr v-for="(p, index) in jobArray" :key="p.id">
+              <td>{{ index + 1 }}</td>
               <td>{{ p.name }}</td>
               <td>{{ p.comment }}</td>
               <!-- <td> <button style="width:100px; cursor:pointer; border:0px; background : lightblue;" v-on:click="jobDetailPopup(p.id)"> MODIFY </button> </td> -->

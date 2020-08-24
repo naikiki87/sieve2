@@ -18,8 +18,8 @@
             <th>Description</th>
             <th>Delete</th>
           </tr>
-          <tr v-for="p in pageArray" :key="p.id">
-            <td>{{ p.id }}</td>
+          <tr v-for="(p, index) in pageArray" :key="p.id">
+            <td>{{ index + 1 }}</td>
             <td>{{ p.alias }}</td>
             <td>{{ p.ip_address }}</td>
             <td>{{ p.description }}</td>
