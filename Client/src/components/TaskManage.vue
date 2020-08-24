@@ -98,16 +98,19 @@
                 <col style="width: 50px">
                 <col style="width: 100px">
               	<col style="width: 200px">
+                <col style="width: 60px">
               </colgroup>
               <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Delete</th>
               </tr>
-              <tr v-for="p in task_params" :key="p.id">
-                <td>{{ p.id }}</td>
+              <tr v-for="(p, index) in task_params" :key="p.id">
+                <td>{{ index }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.comment }}</td>
+                <td> <button class="shortBtn" v-on:click="remove_param(p.id)"> DEL </button> </td>
               </tr>
             </table>
           </div>
@@ -179,11 +182,19 @@ export default {
       var api = "http://" + this.svrAddr + ":3000/users/tasks/add_param";
       await axios.post(api, params)
       await this.show_params(this.temp_tid)
+    },
+    async remove_param(index) {
+      var params = {
+        p_id : index
+      }
 
-      // var api = "http://" + this.svrAddr + ":3000/users/engine_computer/add";
-      // this.clearInput()
-      // await axios.post(api, params)
-      // await this.loadSvr()
+      console.log("index : ", index)
+      var api = "http://" + this.svrAddr + ":3000/users/tasks/remove_param";
+      await axios.post(api, params)
+      this.task_params = []
+      await this.show_params(this.temp_tid)
+      // await this.loadTaskPost(this.currentuserid)
+      
     },
     addRow() {
       this.add_params.push({

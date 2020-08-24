@@ -813,6 +813,11 @@ router.post('/tasks/add_param', wrapper.asyncMiddleware(async (req, res, next) =
   
   res.json({success: true});
 }));
+router.post('/tasks/remove_param', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const p_id = req.body.p_id
+  await db.doQuery(`DELETE FROM task_params where id = ${p_id}`)
+  res.json({success: true});
+}));
 
 router.post('/tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
