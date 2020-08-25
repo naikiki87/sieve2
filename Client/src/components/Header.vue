@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 style="height:20px">  </h1>
-    <!-- <img src="./title3.png" /> -->
+    <img src="./title3.png" />
 
     <div align="right" style="font-size:18px; font-weight:700;">
       <form action="http://localhost:3000/users/logout" method="get" enctype="multipart/form-data">
