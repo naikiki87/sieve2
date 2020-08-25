@@ -289,6 +289,12 @@ function killModules(user, db_info)
 //   // pyrun();
 //   res.json({success: true});
 // }));
+router.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "PUT, GET,POST");
+  next();
+ });
 
 router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
   for(var i=0; i<10; i++) {
