@@ -99,7 +99,7 @@ export default {
       var api = this.api_addr + "/users/engine_computer"
       console.log("svr mng : ", api)
       console.log("sss")
-      this.pageArray = (await axios.post(api, params)).data
+      this.pageArray = (await axios.get(api)).data
       console.log("svr mng : ", this.pageArray)
       
       // axios
