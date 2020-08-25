@@ -81,6 +81,7 @@ export default {
     }
   },
   created () {
+    console.log("svar mananananan")
     this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
     this.loadSvr()
@@ -96,7 +97,11 @@ export default {
       // var api = "http://"
       // var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
       var api = this.api_addr + "/users/engine_computer"
+      console.log("svr mng : ", api)
+      console.log("sss")
       this.pageArray = (await axios.post(api, params)).data
+      console.log("svr mng : ", this.pageArray)
+      
       // axios
       // .get(api)
       // .then(response => {

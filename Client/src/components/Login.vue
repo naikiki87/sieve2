@@ -68,6 +68,7 @@ export default {
       }
 
       var api = this.api_addr + "/users/login"
+
       console.log("api222 : ", api)
       var login_res = (await axios.post(api, params)).data
       var success = login_res.success
