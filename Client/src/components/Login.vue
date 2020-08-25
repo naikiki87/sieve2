@@ -9,8 +9,8 @@
 
     <br><br><br>
     <div>
-      <!-- <form action="http://localhost:3000/users/login" method="post" enctype="multipart/form-data"> -->
-      <form action="http://165.132.105.40:50000/users/login" method="post" enctype="multipart/form-data">
+      <form action="http://localhost:3000/users/login" method="post" enctype="multipart/form-data">
+      <!-- <form action="http://165.132.105.40:50000/users/login" method="post" enctype="multipart/form-data"> -->
         <table id="loginTable" style="margin:auto; width:430px;">
           <br>
           <tr>

@@ -14,6 +14,7 @@ const session = require('express-session');
 const { resolveCname } = require('dns');
 const app = express();
 var serverConfig = require('../../Client/src/assets/data/server_config.json')
+var serverport = require('../../Client/config/index')
 // var pyrun = require('../tasks/pyrun.js')
 
 // import pyrun2 from './pyrun2'
@@ -298,6 +299,7 @@ router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
 router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("LOGIN")
   console.log("AAAAAA : ", serverConfig.hostserver)
+  console.log("AAAAAA : ", serverport.dev.port)
   var userID = req.body.userID;
   var userPW = req.body.userPW;
   console.log("");
@@ -322,7 +324,7 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
     // res.redirect(red)
   }
   else {
-    var red = "http://" + serverConfig.hostserver + ":50000"
+    var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port
     // res.redirect('http://localhost:8080/');
     res.redirect(red)
   }
@@ -337,7 +339,7 @@ router.get('/', function(req, res, next) {
   }
 
   // res.redirect('http://localhost:8080/main');
-  var red = "http://" + serverConfig.hostserver + ":50000/main"
+  var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port + "/main"
   res.redirect(red);
 
 })

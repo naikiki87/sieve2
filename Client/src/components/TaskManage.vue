@@ -138,10 +138,12 @@
 <script>
 import axios from 'axios'
 import serverConfig from "../assets/data/server_config.json";
+import portinfo from "../../config/index";
 
 export default {
   data() {
     return {
+      temptest : portinfo.dev.port,
       svrConfig : serverConfig,
       svrAddr : '',
       taskArray : [],
@@ -163,6 +165,7 @@ export default {
   },
   props : ['currentuserid'],
   created() {
+    console.log("port : ", this.temptest)
     this.svrAddr = this.svrConfig.hostserver;
     this.loadTaskPost();
     if(this.currentuserid != null) {
