@@ -913,7 +913,8 @@
 
 <script>
 import axios from 'axios'
-import serverConfig from "../assets/data/server_config.json";
+// import serverConfig from "../assets/data/server_config.json";
+import serverConfig from '../../config/index'
 import AggGeneral from './AggGeneral.vue'
 import AggGroupBy from './AggGroupBy.vue'
 import AggHaving from './AggHaving.vue'
@@ -923,7 +924,8 @@ import HalfJoin from '../components/configWindow/HalfJoin'
 import BinaryJoin from '../components/configWindow/BinaryJoin'
 import Transaction from '../components/configWindow/Transaction'
 
-var serverADDR = serverConfig.hostserver;
+// var serverADDR = serverConfig.hostserver;
+var serverADDR = serverConfig.dev.host;
 
 var WIDTH = 90
 var JOB_ID, USER_ID
@@ -1675,10 +1677,13 @@ export default {
       temp_res : 10,
       dist_tasks : '',
       sieve1OP : [],
-      sieve2OP : []
+      sieve2OP : [],
+
+      api_addr : ''
     }
   },
   async created() {
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
     this.JOB_ID = await get_JOB_ID()
     this.USER_ID = await get_USER_ID()
@@ -1712,7 +1717,8 @@ export default {
         var params = {
           task_id : taskArray[i].id
         }
-        var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
+        // var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
+        var api = this.api_addr + "/users/healthcheck"
         var res = await axios.post(api, params)
         // console.log(taskArray[i].id, ' : ', res.data.alive)
         var target = document.getElementById(taskArray[i].id)
@@ -1733,7 +1739,8 @@ export default {
       console.log("jobDistTotal : ", JOB_ID);
 
       var params = { job_id : JOB_ID }
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      var api = this.api_addr + "/users/job_tasks"
       this.dist_tasks = (await axios.post(api, params)).data
 
       await this.jobDistribute();
@@ -1746,7 +1753,8 @@ export default {
     setDistTasks() {
       console.log("set Dist Tasks")
       var params = { job_id : JOB_ID }
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      var api = this.api_addr + "/users/job_tasks";
       axios.post(api, params)
       .then( response => {
         this.dist_tasks = response.data
@@ -1756,7 +1764,8 @@ export default {
     },
     jobDistTotal_SetTasks() {
       var params = { job_id : JOB_ID }
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
+      var api = this.api_addr + "/users/job_tasks";
       axios.post(api, params)
       .then( response => {
         this.temp_res = response.data;
@@ -1790,7 +1799,8 @@ export default {
             s2tasks : s2tasks
           }
 
-          var api = "http://" + svrAddr + ":3000/users/job_tasks/xml2";
+          // var api = "http://" + svrAddr + ":3000/users/job_tasks/xml2";
+          var api = this.api_addr + "/users/job_tasks/xml2";
           axios.post(api, params)
           .then( response => {
             console.log(response.data);
@@ -1809,7 +1819,8 @@ export default {
       console.log(JOB_ID);
       this.jobDistShowingStart();
       var params = { id : JOB_ID }
-      var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
+      var api = this.api_addr + "/users/jobs/distribute";
       axios.post(api, params)
       .then( response => {
         return response.data.success;
@@ -1831,7 +1842,9 @@ export default {
         id : JOB_ID,
         user_id : USER_ID
       }
-      var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
+      var api = this.api_addr + "/users/jobs/run";
+      
       var success = (await axios.post(api, params)).data.success
       if(success == true) {
         if((await this.health_check()) == taskArray.length) {
@@ -1848,7 +1861,8 @@ export default {
         id : JOB_ID,
         user_id : USER_ID
       }
-      var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs/distribute";
+      var api = this.api_addr + "/users/jobs/distribute";
       axios.post(api, params)
       .then( response => {
         console.log("success : ", response.data.success)
@@ -1882,7 +1896,8 @@ export default {
         tasks : tasks,
         s2tasks : ''
       }
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks/xml2";
+      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks/xml2";
+      var api = this.api_addr + "/users/job_tasks/xml2";
       axios.post(api, params)
       .then( response => {
         console.log(response.data);
@@ -2064,7 +2079,8 @@ export default {
         ec_id : ec_id,
         lis_port : lis_port
       }
-      var api = "http://" + this.svrAddr + ":3000/users/port_use_check";
+      // var api = "http://" + this.svrAddr + ":3000/users/port_use_check";
+      var api = this.api_addr + "/users/port_use_check";
 
       return (await axios.post(api, params)).data.use
     },
@@ -2154,10 +2170,12 @@ export default {
         id : index
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/get_prev_attrs";
+      // var api = "http://" + this.svrAddr + ":3000/users/get_prev_attrs";
+      var api = this.api_addr + "/users/get_prev_attrs";
       var prev_attrs = (await axios.post(api, params)).data
 
-      var api = "http://" + this.svrAddr + ":3000/users/get_taskinfo";
+      // var api = "http://" + this.svrAddr + ":3000/users/get_taskinfo";
+      var api = this.api_addr + "/users/get_taskinfo";
       axios.post(api, params)
       .then( response => {
         arr = response.data[0]
@@ -2263,7 +2281,8 @@ export default {
 
       console.log("params : ", params)
 
-      var api = "http://" + this.svrAddr + ":3000/users/job_tasks/update";
+      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks/update";
+      var api = this.api_addr + "/users/job_tasks/update";
 
       axios.post(api, params)
       .then( response => {})
@@ -2326,7 +2345,8 @@ export default {
         tid : tid,
         attrs : attrs
       }
-      var api = "http://" + this.svrAddr + ":3000/users/make_new_schema";
+      // var api = "http://" + this.svrAddr + ":3000/users/make_new_schema";
+      var api = this.api_addr + "/users/make_new_schema";
       return (await axios.post(api, params)).data.new_sid
     },
     which_ip(index) {
@@ -2343,7 +2363,8 @@ export default {
     findParent(index) {
       // console.log("1. FIND Parent");
       var params = { to_id : index }
-      var api = "http://" + this.svrAddr + ":3000/users/task_lines/findparent";
+      // var api = "http://" + this.svrAddr + ":3000/users/task_lines/findparent";
+      var api = this.api_addr + "/users/task_lines/findparent";
       axios.post(api, params)
       .then( response => {
         this.parent = response.data;
@@ -2377,7 +2398,8 @@ export default {
         arr = returnArray(index[0].from_id);
         this.parentOutSchemaName = this.returnSchemaName(arr[10]);
 
-        var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        // var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        var api = this.api_addr + "/users/cell_columns";
         var params = { schema_id: arr[10] }
         axios.post(api, params)
         .then( response => {
@@ -2395,7 +2417,8 @@ export default {
           arr = returnArray(index[i].from_id);
           this.parentOutSchemaName = this.returnSchemaName(arr[10]);
 
-          var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+          // var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+          var api = this.api_addr + "/users/cell_columns";
           var params = { schema_id: arr[10] }
           axios.post(api, params)
           .then( response => {
@@ -2475,15 +2498,18 @@ export default {
       $('#loadingBack, #loadingBar').remove();
     },
     async loadSvr() {
-      var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
+      // var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
+      var api = this.api_addr + "/users/engine_computer";
       this.svrArray = (await axios.get(api)).data
     },
     async loadSchema() {
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
+      var api = this.api_addr + "/users/cell_schemas";
       this.schemaArray = (await axios.get(api)).data
     },
     async loadTaskList() {
-      var api = "http://" + this.svrAddr + ":3000/users/tasks";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks";
+      var api = this.api_addr + "/users/tasks";
       this.taskListArray = (await axios.get(api)).data
     }
   },
