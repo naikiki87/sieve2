@@ -38,6 +38,7 @@
 
 // import Header from './Header.vue'
 import axios from 'axios'
+import addInfo from '../../config/index'
 
 export default {
   name: 'app',
@@ -45,7 +46,10 @@ export default {
     return {
       loginID : '',
       loginPW : '',
-      last_volume : 0
+      last_volume : 0,
+      host : addInfo.dev.host,
+      f_port : addInfo.dev.port,
+      b_port : addInfo.dev.sport
     }
   },
   created() {
@@ -54,6 +58,8 @@ export default {
   methods: {
     async func_test() {
       console.log("func tetst")
+      // console.log("addInfo : ", addInfo.dev.host, addInfo.dev.shost)
+      console.log("sadfasdfsafd : ", this.f_host, this.f_port, this.b_host, this.b_port)
       console.log("id : ", this.loginID)
       console.log("pw : ", this.loginPW)
 
@@ -61,8 +67,10 @@ export default {
         userID : this.loginID,
         userPW : this.loginPW
       }
+
       // var api = "http://localhost:3000/users/login";
-      var api = "http://165.132.105.40:3000/users/login";
+      var api = "http://" + this.host + ':' + this.b_port + "/users/login"
+      // var api = "http://165.132.105.40:3000/users/login";
 
       var login_res = (await axios.post(api, params)).data
       var success = login_res.success
@@ -73,8 +81,13 @@ export default {
       console.log("suc : ", success)
       console.log("cookie : ", login_res.userid)
       if(success) {
-      //   location.href = "http://localhost:8080/main"
-        location.href = "http://165.132.105.40:50000/main"
+        location.href = "http://" + this.host + ':' + this.f_port + "/main"
+        // location.href = "http://localhost:8080/main"
+        // location.href = "http://165.132.105.40:50000/main"
+      }
+      else {
+        // location.href = "http://localhost:8080"  
+        location.href = "http://" + this.host + ':' + this.f_port
       }
       // else {
       //   // location.href = "http://localhost:8080"

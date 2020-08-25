@@ -334,7 +334,8 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
     // res.redirect(red)
   }
   else {
-    res.redirect('http://localhost:8080/');
+    res.json({success : false})
+    // res.redirect('http://localhost:8080/');
   }
 }));
 // var cookiecount = 0;
