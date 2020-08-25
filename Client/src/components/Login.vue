@@ -65,10 +65,12 @@ export default {
       var success = (await axios.post(api, params)).data.success
       console.log("suc : ", success)
       if(success) {
-        location.href = "http://localhost:8080/main"
+        // location.href = "http://localhost:8080/main"
+        location.href = "http://165.132.105.40:50000/main"
       }
       else {
-        location.href = "http://localhost:8080"
+        // location.href = "http://localhost:8080"
+        location.href = "http://165.132.105.40:50000"
       }
 
     },
