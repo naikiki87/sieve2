@@ -13,8 +13,8 @@ var mime = require('mime');
 const session = require('express-session');
 const { resolveCname } = require('dns');
 const app = express();
+var serverConfig = require('../../Client/src/assets/data/server_config.json')
 // var pyrun = require('../tasks/pyrun.js')
-
 
 // import pyrun2 from './pyrun2'
 
@@ -296,6 +296,8 @@ router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
   res.redirect('http://localhost:8080/');
 }));
 router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("LOGIN")
+  console.log("AAAAAA : ", serverConfig.hostserver)
   var userID = req.body.userID;
   var userPW = req.body.userPW;
   console.log("");
@@ -315,10 +317,14 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
         // httpOnly: true
       });
     }
+    // var red = "http://" + serverConfig.hostserver + ":50000/users"
     res.redirect('/users');
+    // res.redirect(red)
   }
   else {
-    res.redirect('http://localhost:8080/');
+    var red = "http://" + serverConfig.hostserver + ":50000"
+    // res.redirect('http://localhost:8080/');
+    res.redirect(red)
   }
 }));
 // var cookiecount = 0;
