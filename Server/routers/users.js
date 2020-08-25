@@ -324,9 +324,9 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
     // res.redirect(red)
   }
   else {
-    var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port
-    // res.redirect('http://localhost:8080/');
-    res.redirect(red)
+    // var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port
+    res.redirect('http://localhost:8080/');
+    // res.redirect(red)
   }
 }));
 // var cookiecount = 0;
@@ -338,9 +338,9 @@ router.get('/', function(req, res, next) {
     console.log(req.cookies);
   }
 
-  // res.redirect('http://localhost:8080/main');
-  var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port + "/main"
-  res.redirect(red);
+  res.redirect('http://localhost:8080/main');
+  // var red = "http://" + serverConfig.hostserver + ':' + serverport.dev.port + "/main"
+  // res.redirect(red);
 
 })
 router.get('/download/:fildid', function(req, res) {
