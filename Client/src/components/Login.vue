@@ -38,62 +38,49 @@
 
 // import Header from './Header.vue'
 import axios from 'axios'
-import addInfo from '../../config/index'
+import serverConfig from '../../config/index'
 
 export default {
   name: 'app',
   data() {
     return {
+      svrConfig : serverConfig,
       loginID : '',
       loginPW : '',
       last_volume : 0,
-      host : addInfo.dev.host,
-      f_port : addInfo.dev.port,
-      b_port : addInfo.dev.sport
+      svrHost : '',
+      f_port : '',
+      b_port : '',
+      api_addr : ''
     }
   },
   created() {
-    //     expires: new Date(Date.now() + 3600000)
+    this.svrHost = this.svrConfig.dev.host;
+    this.f_port = this.svrConfig.dev.port;
+    this.b_port = this.svrConfig.dev.sport;
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
   },
   methods: {
     async func_test() {
-      console.log("func tetst")
-      // console.log("addInfo : ", addInfo.dev.host, addInfo.dev.shost)
-      console.log("sadfasdfsafd : ", this.f_host, this.f_port, this.b_host, this.b_port)
-      console.log("id : ", this.loginID)
-      console.log("pw : ", this.loginPW)
-
       var params = {
         userID : this.loginID,
         userPW : this.loginPW
       }
 
-      // var api = "http://localhost:3000/users/login";
-      var api = "http://" + this.host + ':' + this.b_port + "/users/login"
-      // var api = "http://165.132.105.40:3000/users/login";
-
+      var api = this.api_addr + "/users/login"
+      console.log("api222 : ", api)
       var login_res = (await axios.post(api, params)).data
       var success = login_res.success
 
-      this.$cookie.set("user0", login_res.userid, (new Date(Date.now() + 3600000)))
+      console.log("succe : ", success)
 
-      // var success = (await axios.post(api, params)).data.success
-      console.log("suc : ", success)
-      console.log("cookie : ", login_res.userid)
       if(success) {
-        location.href = "http://" + this.host + ':' + this.f_port + "/main"
-        // location.href = "http://localhost:8080/main"
-        // location.href = "http://165.132.105.40:50000/main"
+        this.$cookie.set("user0", login_res.userid, (new Date(Date.now() + 3600000)))
+        location.href = "http://" + this.svrHost + ':' + this.f_port + "/main"
       }
       else {
-        // location.href = "http://localhost:8080"  
-        location.href = "http://" + this.host + ':' + this.f_port
+        location.href = "http://" + this.svrHost + ':' + this.f_port
       }
-      // else {
-      //   // location.href = "http://localhost:8080"
-      //   location.href = "http://165.132.105.40:50000"
-      // }
-
     },
     dataTEST2() {
       // var url = `https://finance.daum.net/api/quotes/A${item}?summary=false&changeStatistics=true`;
@@ -166,15 +153,3 @@ export default {
 </script>
 
 <style src="./css/total.css"></style>
-
-<!-- /* <style>
-body { text-align : center; background-color: #f6f6f8; }
-input { border-style: groove; width : 200px; }
-button { border-style: groove; }
-.shadow { box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03) }
-.tabmenu { float : left; padding : 0px; height : 48px; width : 105px; padding-top : 14px; color : white; font-size : 13px; }
-.active { font-size : 14px; font-weight:bold; color : gold; }
-p { color : white; font-weight : bold; }
-th, td { height : 25px; padding : 0px; border : 0.1px solid #d8d8d8; background : #fafafa }
-table { font-size : 14px; border : 1px solid; }
-</style> */ -->
