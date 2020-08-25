@@ -7,9 +7,9 @@
       <form action="http://localhost:3000/users/logout" method="get" enctype="multipart/form-data">
         <table>
           <tr>
-            <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo3.jpg" width="28px" height="28px"> </td>
+            <!-- <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo3.jpg" width="28px" height="28px"> </td>
             <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo.jpg" width="28px" height="28px"> </td>
-            <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo2.jpg" width="28px" height="28px"> </td>
+            <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo2.jpg" width="28px" height="28px"> </td> -->
             <td> <b v-if="this.currentuserid"> Current User :  </b> </td>
             <td> <a style="font-size:20px; color:blue;"> {{ currentusername }} </a> </td>
             <td>
