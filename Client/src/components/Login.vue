@@ -70,11 +70,12 @@ export default {
       this.$cookie.set("user0", login_res.userid, (new Date(Date.now() + 3600000)))
 
       // var success = (await axios.post(api, params)).data.success
-      // console.log("suc : ", success)
-      if(success) {
-        location.href = "http://localhost:8080/main"
-        // location.href = "http://165.132.105.40:50000/main"
-      }
+      console.log("suc : ", success)
+      console.log("cookie : ", login_res.userid)
+      // if(success) {
+      //   location.href = "http://localhost:8080/main"
+      //   // location.href = "http://165.132.105.40:50000/main"
+      // }
       // else {
       //   // location.href = "http://localhost:8080"
       //   location.href = "http://165.132.105.40:50000"
