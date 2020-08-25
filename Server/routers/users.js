@@ -308,6 +308,7 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("AAAAAA : ", serverport.dev.port)
   var userID = req.body.userID;
   var userPW = req.body.userPW;
+
   console.log("");
   console.log("LOGIN");
   console.log(userID);
@@ -326,7 +327,10 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
       });
     }
     // var red = "http://" + serverConfig.hostserver + ":50000/users"
-    res.redirect('/users');
+    // res.redirect('/users');
+    // res.redirect('http://localhost:8080/main');
+    res.json({success : true})
+
     // res.redirect(red)
   }
   else {
@@ -342,8 +346,8 @@ router.get('/', function(req, res, next) {
     console.log(req.cookies);
   }
 
-  // res.redirect('http://localhost:8080/main');
-  res.redirect('http://165.132.105.40:50000/main');
+  res.redirect('http://localhost:8080/main');
+  // res.redirect('http://165.132.105.40:50000/main');
 })
 router.get('/download/:fildid', function(req, res) {
   console.log("DoWnLoAd");

@@ -10,7 +10,7 @@
     <br><br><br>
     <div>
       <!-- <form action="http://localhost:3000/users/login" method="post" enctype="multipart/form-data"> -->
-      <form action="http://165.132.105.40:50000/users/login" method="post" enctype="multipart/form-data">
+      <!-- <form action="http://165.132.105.40:50000/users/login" method="post" enctype="multipart/form-data"> -->
         <table id="loginTable" style="margin:auto; width:430px;">
           <br>
           <tr>
@@ -22,11 +22,12 @@
           </tr>
           <br><br>
           <tr style="height:45px;">
-            <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" type="submit"> 로그인 </button> </td>
+            <!-- <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="func_test" type="submit"> 로그인 </button> </td> -->
+            <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="func_test"> 로그인 </button> </td>
           </tr>
           <br><br>
         </table>
-      </form>
+      <!-- </form> -->
       <br>
 
     </div>
@@ -50,6 +51,27 @@ export default {
   created() {
   },
   methods: {
+    async func_test() {
+      console.log("func tetst")
+      console.log("id : ", this.loginID)
+      console.log("pw : ", this.loginPW)
+
+      var params = {
+        userID : this.loginID,
+        userPW : this.loginPW
+      }
+      var api = "http://localhost:3000/users/login";
+
+      var success = (await axios.post(api, params)).data.success
+      console.log("suc : ", success)
+      if(success) {
+        location.href = "http://localhost:8080/main"
+      }
+      else {
+        location.href = "http://localhost:8080"
+      }
+
+    },
     dataTEST2() {
       // var url = `https://finance.daum.net/api/quotes/A${item}?summary=false&changeStatistics=true`;
       var url = `https://finance.daum.net/api/quotes/A008350?summary=false&changeStatistics=true`;
