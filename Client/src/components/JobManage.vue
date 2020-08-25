@@ -50,7 +50,8 @@
 
 <script>
 import axios from 'axios'
-import serverConfig from "../assets/data/server_config.json";
+// import serverConfig from "../assets/data/server_config.json";
+import serverConfig from '../../config/index'
 
 export default {
   data() {
@@ -63,12 +64,14 @@ export default {
       add_jobSchema : '',
       add_jobComment : '',
       openWin : '',
-      add_window : 0
+      add_window : 0,
+      api_addr : ''
     }
   },
   props:['currentuserid'],
   created() {
-    this.svrAddr = this.svrConfig.hostserver;
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
+    // this.svrAddr = this.svrConfig.hostserver;
     // this.loadJob();
     this.loadJobPost();
     // this.loadSchema();
@@ -107,7 +110,8 @@ export default {
         id : index
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/jobs/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs/delete";
+      var api = this.api_addr + "/users/jobs/delete"
 
       await axios.post(api, params)
       await this.loadJobPost(this.currentuserid)
@@ -122,7 +126,8 @@ export default {
         comment: this.add_jobComment,
         currentuserid: this.currentuserid
       }
-      var api = "http://" + this.svrAddr + ":3000/users/jobs/add";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs/add";
+      var api = this.api_addr + "/users/jobs/add"
 
       await axios.post(api, params)
       this.clearInput()
@@ -131,7 +136,8 @@ export default {
 
     loadJob() {
       // console.log("**** (4/5)LOAD JOB ****");
-      var api = "http://" + this.svrAddr + ":3000/users/jobs";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs";
+      var api = this.api_addr + "/users/jobs"
       axios
       .get(api)
       .then(response => {
@@ -142,7 +148,8 @@ export default {
 
     async loadJobPost() {
       // console.log("**** (4/5)LOAD JOB ****");
-      var api = "http://" + this.svrAddr + ":3000/users/jobs2";
+      // var api = "http://" + this.svrAddr + ":3000/users/jobs2";
+      var api = this.api_addr + "/users/jobs2"
       var params={currentuserid:this.currentuserid};
 
       this.jobArray = (await axios.post(api, params)).data

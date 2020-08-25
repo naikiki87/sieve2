@@ -92,26 +92,8 @@ export default {
 
   methods: {
     async loadSvr() {
-      // console.log("**** (1/5)LOAD SERVER ****", this.svrAddr);
-      // console.log("addr : " + this.svrAddr);
-      // var api = "http://"
-      // var api = "http://" + this.svrAddr + ":3000/users/engine_computer";
       var api = this.api_addr + "/users/engine_computer"
-      console.log("svr mng : ", api)
-      console.log("sss")
       this.pageArray = (await axios.get(api)).data
-      console.log("svr mng : ", this.pageArray)
-      
-      // axios
-      // .get(api)
-      // .then(response => {
-      //   // console.log(response);
-      //   this.pageArray = response.data;
-        
-      // })
-      // .catch(err => {
-      //   console.log(err);
-      // });
     },
     async addSvr() {
       var value_ip = this.add_ip && this.add_ip.trim();
@@ -128,18 +110,15 @@ export default {
         currentuserid : this.currentuserid
       }
 
-      // var api = "http://" + this.svrAddr + ":3000/users/engine_computer/add";
       var api = this.api_addr + "/users/engine_computer/add"
       this.clearInput()
       await axios.post(api, params)
       await this.loadSvr()
     },
     async removeSvr(index) {
-      // console.log("DELETE" + index);
       var params = {
         id : index
       }
-      // var api = "http://" + this.svrAddr + ":3000/users/engine_computer/delete";
       var api = this.api_addr + "/users/engine_computer/delete"
       await axios.post(api, params)
       await this.loadSvr()
