@@ -45,10 +45,11 @@ export default {
     return {
       loginID : '',
       loginPW : '',
-      last_volume :0
+      last_volume : 0
     }
   },
   created() {
+    //     expires: new Date(Date.now() + 3600000)
   },
   methods: {
     async func_test() {
@@ -60,18 +61,24 @@ export default {
         userID : this.loginID,
         userPW : this.loginPW
       }
-      var api = "http://localhost:3000/users/login";
+      // var api = "http://localhost:3000/users/login";
+      var api = "http://165.132.105.40:3000/users/login";
 
-      var success = (await axios.post(api, params)).data.success
-      console.log("suc : ", success)
+      var login_res = (await axios.post(api, params)).data
+      var success = login_res.success
+
+      this.$cookie.set("user0", login_res.userid, (new Date(Date.now() + 3600000)))
+
+      // var success = (await axios.post(api, params)).data.success
+      // console.log("suc : ", success)
       if(success) {
-        // location.href = "http://localhost:8080/main"
-        location.href = "http://165.132.105.40:50000/main"
+        location.href = "http://localhost:8080/main"
+        // location.href = "http://165.132.105.40:50000/main"
       }
-      else {
-        // location.href = "http://localhost:8080"
-        location.href = "http://165.132.105.40:50000"
-      }
+      // else {
+      //   // location.href = "http://localhost:8080"
+      //   location.href = "http://165.132.105.40:50000"
+      // }
 
     },
     dataTEST2() {

@@ -320,16 +320,16 @@ router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
   userPW = userPW.replace(/\n/g, "");//행바꿈제거
   if(userPW == result[0].password) {
     console.log("password correct");
-    for(var i=0; i<10; i++) {
-      res.cookie(`user${i}`, result[0].id , {
-        expires: new Date(Date.now() + 3600000)
-        // httpOnly: true
-      });
-    }
+    // for(var i=0; i<10; i++) {
+    //   res.cookie(`user${i}`, result[0].id , {
+    //     expires: new Date(Date.now() + 3600000)
+    //     // httpOnly: true
+    //   });
+    // }
     // var red = "http://" + serverConfig.hostserver + ":50000/users"
     // res.redirect('/users');
     // res.redirect('http://localhost:8080/main');
-    res.json({success : true})
+    res.json({success : true, userid : result[0].id})
 
     // res.redirect(red)
   }
