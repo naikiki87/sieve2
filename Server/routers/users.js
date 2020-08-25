@@ -336,7 +336,10 @@ router.get('/', function(req, res, next) {
     console.log(req.cookies);
   }
 
-  res.redirect('http://localhost:8080/main');
+  // res.redirect('http://localhost:8080/main');
+  var red = "http://" + serverConfig.hostserver + ":50000/main"
+  res.redirect(red);
+
 })
 router.get('/download/:fildid', function(req, res) {
   console.log("DoWnLoAd");
