@@ -109,7 +109,7 @@
               <tr v-for="(p, index) in task_params" :key="p.id">
                 <td>{{ index + 1 }}</td>
                 <td>{{ p.name }}</td>
-                <td>{{ p.comment }}</td>
+                <td>{{ p.description }}</td>
                 <td> <button class="shortBtn_DEL" v-on:click="remove_param(p.id)"> DEL </button> </td>
               </tr>
             </table>

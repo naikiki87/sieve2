@@ -4,7 +4,7 @@
     <img src="./title3.png" />
 
     <div align="right" style="font-size:18px; font-weight:700;">
-      <form action="http://localhost:3000/users/logout" method="get" enctype="multipart/form-data">
+      <!-- <form action="http://localhost:3000/users/logout" method="get" enctype="multipart/form-data"> -->
         <table>
           <tr>
             <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo3.jpg" width="28px" height="28px"> </td>
@@ -18,27 +18,30 @@
             </td>
           </tr>
         </table>
-      </form>
+      <!-- </form> -->
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import serverConfig from "../assets/data/server_config.json";
+// import serverConfig from "../assets/data/server_config.json";
+import serverConfig from '../../config/index'
 export default {
   data() {
     return {
       icon : '',
       svrConfig : serverConfig,
       svrAddr : '',
-      currentusername : ''
+      currentusername : '',
+      api_addr : ''
     }
   },
   props : ['currentuserid'],
-  created() {
+  async created() {
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
-    this.getUserName();
+    await this.getUserName();
     this.icon = Math.floor(Math.random() * 3); // 0 ~ (max - 1) 까지의 정수 값을 생성
   },
   updated() {
@@ -55,9 +58,10 @@ export default {
     },
     async getUserName() {
       try {
-        var api = "http://" + this.svrAddr + ":3000/users/get_username";
+        // var api = "http://" + this.svrAddr + ":3000/users/get_username";
+        var api = this.api_addr + "/users/get_username";
         var params = { id:this.currentuserid }
-        this.currentusername = (await axios.poat(api, params)).data
+        this.currentusername = (await axios.post(api, params)).data
       }
       catch(e) {}
     }

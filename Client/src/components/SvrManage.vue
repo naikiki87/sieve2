@@ -81,7 +81,6 @@ export default {
     }
   },
   created () {
-    console.log("svar mananananan")
     this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
     this.loadSvr()
