@@ -100,7 +100,8 @@
 
 <script>
 import axios from 'axios'
-import serverConfig from "../assets/data/server_config.json";
+// import serverConfig from "../assets/data/server_config.json";
+import serverConfig from '../../config/index'
 
 export default {
   name: 'SchemaManage',
@@ -118,13 +119,13 @@ export default {
       add_ColName : '',
       add_ColSchema : '',
       add_ColType : '',
-      add_window : 0
-
-
+      add_window : 0,
+      api_addr : ''
     }
   },
   created () {
     // console.log("this curr : ", this.currentuserid)
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
     // this.loadSchemaPost();
     this.loadSchema();
@@ -141,13 +142,15 @@ export default {
       var params = {
         schema_id: index
       }
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns";
+      var api = this.api_addr + "/users/cell_columns"
       this.columnArray = (await axios.post(api, params)).data
     },
     loadAllColumns() {
       // console.log("**** (3/5)LOAD SCH COLs ****" );
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+      var api = this.api_addr + "/users/cell_columns/all"
       axios.get(api)
       .then( response => {
         this.columnArray2 = response.data;
@@ -163,7 +166,8 @@ export default {
         type_id: this.add_ColType
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      var api = this.api_addr + "/users/cell_columns/add"
       axios.post(api, params)
       .then( response => {
         // console.log("1", response.data.success);
@@ -191,7 +195,8 @@ export default {
 
       // console.log("addcol3 : ", params)
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      var api = this.api_addr + "/users/cell_columns/add"
       await axios.post(api, params)
       this.clearInput()
       await this.loadSchemaColumn(schema_id)
@@ -206,15 +211,18 @@ export default {
         type_id: this.add_ColType
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/add";
+      var api = this.api_addr + "/users/cell_columns/add"
       axios.post(api, params)
       .then( response => {
         var params2 = {schema_id:colSchema};
-        var api2 = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        // var api2 = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        var api2 = this.api_addr + "/users/cell_columns"
         axios.post(api2, params2)
         .then(response=> {
           this.columnArray = response.data;
-          var api3 = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+          // var api3 = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+          var api3 = this.api_addr + "/users/cell_columns/all"
           axios.get(api3)
           .then(response => {
             this.columnArray2 = response.data;
@@ -222,7 +230,8 @@ export default {
               schemas:this.schemaArray,
               attrs:this.columnArray2
             }
-            var api4 = "http://" + this.svrAddr + ":3000/users/cell_schemas/xml2";
+            // var api4 = "http://" + this.svrAddr + ":3000/users/cell_schemas/xml2";
+            var api4 = this.api_addr + "/users/cell_schemas/xml2"
             axios.post(api4, params4)
             .then(r => {
             })
@@ -237,7 +246,8 @@ export default {
 
     async removeColumn3(index) {
       var params = { id : index }
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      var api = this.api_addr + "/users/cell_columns/delete"
       await axios.post(api, params)
       this.columnArray = []
       await this.loadSchemaColumn(this.add_ColSchema)
@@ -246,15 +256,18 @@ export default {
       var colSchema = schema_id;
       var params = { id : index }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      var api = this.api_addr + "/users/cell_columns/delete"
       axios.post(api, params)
       .then( response => {
         var params2 = {schema_id:colSchema};
-        var api2 = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        // var api2 = "http://" + this.svrAddr + ":3000/users/cell_columns";
+        var api2 = this.api_addr + "/users/cell_columns"
         axios.post(api2, params2)
         .then(response=> {
           this.columnArray = response.data;
-          var api3 = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+          // var api3 = "http://" + this.svrAddr + ":3000/users/cell_columns/all";
+          var api3 = this.api_addr + "/users/cell_columns/all"
           axios.get(api3)
           .then(response => {
             this.columnArray2 = response.data;
@@ -262,7 +275,8 @@ export default {
               schemas:this.schemaArray,
               attrs:this.columnArray2
             }
-            var api4 = "http://" + this.svrAddr + ":3000/users/cell_schemas/xml2";
+            // var api4 = "http://" + this.svrAddr + ":3000/users/cell_schemas/xml2";
+            var api4 = this.api_addr + "/users/cell_schemas/xml2"
             axios.post(api4, params4)
             .then(r => {
             })
@@ -281,7 +295,8 @@ export default {
         id : index
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_columns/delete";
+      var api = this.api_addr + "/users/cell_columns/delete"
 
       axios
       .post(api, params)
@@ -294,7 +309,8 @@ export default {
     },
     loadSchemaPost() {
       // console.log("**** (2/5)LOAD SCHEMA ****" + this.currentuserid);
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas2";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_schemas2";
+      var api = this.api_addr + "/users/cell_schemas2"
       var params = { currentuserid : this.currentuserid }
       axios
       .post(api, params)
@@ -308,7 +324,8 @@ export default {
     },
     loadSchema() {
       // console.log("**** (2/5)LOAD SCHEMA ****");
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_schemas";
+      var api = this.api_addr + "/users/cell_schemas"
       axios
       .get(api)
       .then(response => {
@@ -327,7 +344,8 @@ export default {
         currentuserid : this.currentuserid
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/add";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/add";
+      var api = this.api_addr + "/users/cell_schemas/add"
       this.clearInput();
       await axios.post(api, params)
       await this.loadSchema()
@@ -338,7 +356,8 @@ export default {
         id : index
       }
 
-      var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/cell_schemas/delete";
+      var api = this.api_addr + "/users/cell_schemas/delete"
       await axios.post(api, params)
       await this.loadSchema()
     },

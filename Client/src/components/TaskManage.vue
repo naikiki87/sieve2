@@ -137,7 +137,8 @@
 
 <script>
 import axios from 'axios'
-import serverConfig from "../assets/data/server_config.json";
+// import serverConfig from "../assets/data/server_config.json";
+import serverConfig from '../../config/index'
 import portinfo from "../../config/index";
 
 export default {
@@ -160,12 +161,13 @@ export default {
       table_add_param : 0,
       add_param_name : '',
       add_param_des : '',
-      temp_tid : ''
+      temp_tid : '',
+      api_addr : ''
     }
   },
   props : ['currentuserid'],
   created() {
-    console.log("port : ", this.temptest)
+    this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.svrAddr = this.svrConfig.hostserver;
     this.loadTaskPost();
     if(this.currentuserid != null) {
@@ -182,7 +184,8 @@ export default {
         task_id : this.temp_tid,
         currentuserid : this.currentuserid
       }
-      var api = "http://" + this.svrAddr + ":3000/users/tasks/add_param";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks/add_param";
+      var api = this.api_addr + "/users/tasks/add_param";
       await axios.post(api, params)
       await this.show_params(this.temp_tid)
     },
@@ -192,7 +195,9 @@ export default {
       }
 
       console.log("index : ", index)
-      var api = "http://" + this.svrAddr + ":3000/users/tasks/remove_param";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks/remove_param";
+      var api = this.api_addr + "/users/tasks/remove_param";
+      
       await axios.post(api, params)
       this.task_params = []
       await this.show_params(this.temp_tid)
@@ -215,7 +220,8 @@ export default {
       var params = {
         task_id : index
       }
-      var api = "http://" + this.svrAddr + ":3000/users/tasks/get_params";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks/get_params";
+      var api = this.api_addr + "/users/tasks/get_params";
 
       this.task_params = (await axios.post(api, params)).data
     },
@@ -255,7 +261,8 @@ export default {
 
     loadTask() {
       // console.log("**** (5/5)LOAD TASK ****");
-      var api = "http://" + this.svrAddr + ":3000/users/tasks";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks";
+      var api = this.api_addr + "/users/tasks";
       axios
       .get(api)
       .then(response => {
@@ -267,7 +274,8 @@ export default {
     },
     async loadTaskPost() {
       // console.log("**** (5/5)LOAD TASK ****");
-      var api = "http://" + this.svrAddr + ":3000/users/tasks2";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks2";
+      var api = this.api_addr + "/users/tasks2";
       var params = { currentuserid : this.currentuserid };
       this.taskArrayS1 = []
       this.taskArrayS2 = []
@@ -298,7 +306,8 @@ export default {
         var params = {
           t_name : this.addTName
         }
-        var api = "http://" + this.svrAddr + ":3000/users/tasks/name_check";
+        // var api = "http://" + this.svrAddr + ":3000/users/tasks/name_check";
+        var api = this.api_addr + "/users/tasks/name_check";
 
         var same = (await axios.post(api, params)).data.same
 
@@ -315,7 +324,8 @@ export default {
       var params = {
         id : index
       }
-      var api = "http://" + this.svrAddr + ":3000/users/tasks/delete";
+      // var api = "http://" + this.svrAddr + ":3000/users/tasks/delete";
+      var api = this.api_addr + "/users/tasks/delete";
       await axios.post(api, params)
       await this.loadTaskPost(this.currentuserid)
       this.task_params = []
