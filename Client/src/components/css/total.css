@@ -18,6 +18,7 @@ button { border-style: groove; }
 .midBtn_DEL{ width:75px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
 .shortBtn{ width:50px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
 .shortBtn_DEL{ width:50px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
+.regBtn{ background:#f6f6f8; cursor:pointer; border:0px;}
 
 .mainMngTable { border : 1px solid lightgrey; padding : 0px; background: white; margin:auto;}
 .mainMngTable tr { margin:0px; padding:0px; height : 33px; padding : 0px; border : 1px solid blue; background : ; }
@@ -115,6 +116,12 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 #loginTable input { height : 35px; padding : 0px; border : 1px solid #81BEF7; background : #fafafa; font-size:16px; }
 #loginTable th { font-size : 14px; height : 20px; padding : 0px; border : 0px solid #d8d8d8; background : lightgrey }
 #loginTable td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+
+#registerTable { border : 1px solid lightgrey; padding : 0px; background:#fafafa}
+#registerTable tr { height : 40px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
+#registerTable input { height : 35px; padding : 0px; border : 1px solid #81BEF7; background : #fafafa; font-size:16px; }
+#registerTable th { font-size : 14px; height : 20px; padding : 0px; border : 0px solid #d8d8d8; background : lightgrey }
+#registerTable td { font-size : 12px; padding : 0px; border : 0px solid #d8d8d8; background : #fafafa }
 
 #HJConfig_title { height:18px; background : black; color : white; font-size:14px; font-weight : 600; margin-bottom : 5px;}
 #HJConfig_table { border : 1px solid lightgrey; padding : 0px;}

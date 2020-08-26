@@ -370,6 +370,32 @@ router.get('/download/:fildid', function(req, res) {
   var filestream = fs.createReadStream(file);
   filestream.pipe(res);
 })
+router.post('/regID_check', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const regid = req.body.regid
+  const users =  await db.doQuery("select * from users_test")
+  var same = 0
+
+  console.log("users : ", users)
+  for(var i=0; i<users.length; i++) {
+    if(users[i].userID == regid) {
+      same = 1
+    }
+  }
+  res.json({same : same})
+}));
+router.post('/new_register', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const regid = req.body.regid
+  const regpw = req.body.regpw
+
+  console.log("new register : ", regid, regpw)
+  await db.doQuery(`INSERT INTO users_test (userID, password) 
+  SELECT * FROM (SELECT '${regid}', '${regpw}') AS tmp 
+  WHERE NOT EXISTS 
+  (SELECT * FROM users_test WHERE userID = '${regid}' AND password = '${regpw}') 
+  LIMIT 1`)
+
+  res.json({success : true})
+}));
 router.post('/healthcheck', wrapper.asyncMiddleware(async (req, res, next) =>{
   const task_id = req.body.task_id
   const db_info =  await db.doQuery("select * from db_info")

@@ -14,22 +14,51 @@
         <table id="loginTable" style="margin:auto; width:430px;">
           <br>
           <tr>
-            <td> <input placeholder="아이디" style="padding-left:10px; width:93%;" name="userID" type="text" v-model="loginID"/> </td>
+            <td> <input placeholder="ID" style="padding-left:10px; width:93%;" name="userID" type="text" v-model="loginID"/> </td>
           </tr>
           <br>
           <tr>
-            <td> <input placeholder="비밀번호" style="padding-left:10px; width:93%;" name="userPW" type="password" v-model="loginPW"/> </td>
+            <td> <input placeholder="Password" style="padding-left:10px; width:93%;" name="userPW" type="password" v-model="loginPW"/> </td>
           </tr>
           <br><br>
           <tr style="height:45px;">
-            <!-- <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="func_test" type="submit"> 로그인 </button> </td> -->
-            <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="func_test"> 로그인 </button> </td>
+            <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="sign_in"> Sign IN </button> </td>
           </tr>
           <br><br>
         </table>
       <!-- </form> -->
       <br>
+      <div> <button class="regBtn" v-on:click="new_membership"> New Membership </button> </div>
+      <br>
+      <div v-if="membership">
+        <table id="registerTable" style="margin:auto; width:430px; padding:5px;">
+          <tr>
+            <td> ID : </td>
+            <td> <input placeholder="ID" style="padding-left:10px; width:93%;" name="userID" type="text" v-model="registerID"/> </td>
+            <td> <button class="midBtn" v-on:click="name_check"> CHECK </button> </td>
+            <td> <a style="color:green" v-if="name_usable === 1"> OK </a> <a style="color:red" v-if="name_usable === 2"> Not OK </a></td>
+          </tr>
 
+          <tr>
+            <td> PW : </td>
+            <td> <input placeholder="Password" style="padding-left:10px; width:93%;" name="userID" type="password" v-model="registerPW"/> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+
+          <tr>
+            <td> retype PW : </td>
+            <td> <input v-on:click="check_regPW" placeholder="Check Password" style="padding-left:10px; width:93%;" name="userID" type="password" v-model="registerPW2"/> </td>
+            <td colspan="2"> <a style="color:green" v-if="regPW_check"> Same </a> </td>
+            
+          </tr>
+          <tr>
+            <td colspan="4"> <button class="longBtn" style="font-weight:700; height:28px; width:75%; background:; color:white; font-size:18px;" v-on:click="new_register"> Register </button> </td>
+          </tr>
+            
+        </table>
+
+      </div>
     </div>
   </div>
 </template>
@@ -47,11 +76,18 @@ export default {
       svrConfig : serverConfig,
       loginID : '',
       loginPW : '',
+      registerID : '',
+      registerPW : '',
+      registerPW2 : '',
       last_volume : 0,
       svrHost : '',
       f_port : '',
       b_port : '',
-      api_addr : ''
+      api_addr : '',
+      membership : 0,
+      name_usable : 0,
+      check_interval : '',
+      regPW_check : 0
     }
   },
   created() {
@@ -61,7 +97,63 @@ export default {
     this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
   },
   methods: {
-    async func_test() {
+    check() {
+      console.log("adasdf")
+      if(this.registerPW == this.registerPW2) {
+        this.regPW_check = 1
+        clearInterval(this.check_interval)
+      }
+    },
+    async check_regPW(){
+      this.check_interval = setInterval(this.check, 1000)
+
+    },
+    async new_register() {
+      console.log("new register")
+      console.log("status : ", this.name_usable, this.regPW_check)
+      if(this.name_usable != 1) {
+        console.log("ID is not acceptable")
+      }
+      if(this.regPW_check != 1) {
+        console.log("PW is not acceptable")
+      }
+
+      if(this.name_usable == 1 && this.regPW_check == 1) {
+        var params = {
+          regid : this.registerID,
+          regpw : this.registerPW
+        }
+        var api = this.api_addr + "/users/new_register"
+      }
+
+      var success = (await axios.post(api, params)).data.success
+      if(success) {
+        location.href = "http://" + this.svrHost + ':' + this.f_port
+      }
+    },
+    async name_check() {
+      if(this.registerID == "") {
+      }
+      else {
+        console.log(this.registerID)
+        var params = {
+          regid : this.registerID
+        }
+        var api = this.api_addr + "/users/regID_check"
+        var check = (await axios.post(api, params)).data.same
+        if(check == 0) {
+          this.name_usable = 1
+        }
+        else {
+          this.name_usable = 2
+        }
+      }
+
+    },
+    new_membership() {
+      this.membership = 1
+    },
+    async sign_in() {
       var params = {
         userID : this.loginID,
         userPW : this.loginPW
