@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import MainPage from '@/components/MainPage'
 // import TaskDetail from '@/components/Taskdetail'
 import JobDetail from '@/components/jobDetail'
+import modBS from '@/components/modpop/basestream'
+import task_modify from '@/components/modpop/task_modify'
 // import TaskModify from '@/components/taskModify'
 // import Test from '@/components/test'
 import Login from '@/components/Login'
@@ -38,6 +40,16 @@ export default new Router({
       path: '/jobDetail',
       name: 'JobDetail',
       component: JobDetail
+    },
+    {
+      path: '/modify/BS',
+      name: 'modBS',
+      component: modBS
+    },
+    {
+      path: '/modify',
+      name: 'modify',
+      component: task_modify
     },
     // {
     //   path: '/taskmodify',

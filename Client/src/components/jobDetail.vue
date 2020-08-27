@@ -56,7 +56,8 @@
       <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> TEST </button>
     </div>
     <div id="context-menus" class="context-menus">
-      <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p>
+      <!-- <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p> -->
+      <p class="cntxtmenuItem" v-on:click="openTaskModify2"> Task 수정2 </p>
       <p class="cntxtmenuItem" v-on:click="deleteTask_reload"> Task 삭제 </p>
     </div>
 
@@ -2329,6 +2330,28 @@ export default {
       var res = (await get_iteminfo(cntxtmenuID)).data[0]
       var op_type = res.task_id
       this.showModifyMenu(cntxtmenuID, op_type);
+    },
+    async openTaskModify2() {      // open task modify window
+      this.taskID = cntxtmenuID;
+      var res = (await get_iteminfo(cntxtmenuID)).data[0]
+      var tid = res.id
+      // console.log("res : ", res)
+      var t_type = res.task_id
+
+      window.name = "parentForm";
+      var winType = ''
+      switch(t_type) {
+        case 0:
+          winType = "BS"
+          break
+        default :
+          winType = "BS"
+          break
+      }
+      // var url = "modify/" + winType + "?task=" + tid
+      var url = "modify?task=" + tid
+
+      this.openWin = window.open(url, "modForm", "width=800, height=500, resizable=no, scrollbars=no, titlebar=no, location=no");
     },
     async modifyTask_reload() {
       console.log("modifyTask_reload : ", this.temptask_id)
