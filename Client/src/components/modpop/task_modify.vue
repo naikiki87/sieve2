@@ -87,7 +87,7 @@
     </div>
 
     <div style="background:; width:100%; height:50px; float:left;">
-      <button class="longBtn" v-on:click="modify_task"> SAVE </button>
+      <button class="longBtn" v-on:click="update_task"> SAVE </button>
       <button class="longBtn" v-on:click="func_test"> TEST </button>
     </div>
   </div>
@@ -107,7 +107,9 @@ export default {
       schemaArray : [],
 
       taskID : '',
+      task_type_ID : '',
       temptask_name : 'sadfsadf',
+      check_config : '',
       temptask_id : '',
       tempinput_schema : '',
       templistening_port : '',
@@ -131,29 +133,76 @@ export default {
     }
   },
   async created() {
-    this.taskID = await this.getParameterByName('task')
     this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
-    
+    this.taskID = await this.getParameterByName('task')
+    var type_and_check = await this.get_task_type(this.taskID)
+    this.task_type_ID = type_and_check[0]
+    this.check_config = type_and_check[1]
+
+    if(this.check_config == -1) {
+      await this.init_config(this.task_type_ID)
+    }
+    // await this.init_config(this.task_type_ID)
     await this.loadSvr()
     await this.loadSchema()
     await this.loadModData(this.taskID)
   },
   methods : {
+    async get_task_type(index) {
+      console.log("get task type : ", index)
+      var params = {
+        id : index
+      }
+      var api = this.api_addr + "/users/get_taskinfo";
+      var res = (await axios.post(api, params)).data[0]
+      console.log("res123 : ", res)
+      var res_arr = [res.task_id, res.config]
+      // return res.task_id, res.config
+      return res_arr
+    },
+    async init_config(index) {
+      console.log("init config : ", index)
+      var params = {
+        task_id : index
+      }
+      var api = this.api_addr + "/users/tasks/get_params";
+      var res = (await axios.post(api, params)).data
+
+      console.log("res : ", res)
+      var temp_config = []
+      for(var i=0; i<res.length; i++) {
+        var temp = new Object()
+        temp.name = res[i].name
+        temp.val = ''
+        temp_config.push(temp)
+      }
+
+      var params = {
+        id : this.taskID,
+        config : JSON.stringify(temp_config)
+      }
+      var api = this.api_addr + "/users/job_tasks/init_config";
+      await axios.post(api, params)
+    },
     func_test() {
       console.log("functest called")
-      this.make_parameter()
+      this.get_task_type(528)
     },
     set_out_schema() {
       var out;
-      if(this.temptask_id == 0) {
-        out = this.tempinput_schema
+      switch(this.temptask_id) {
+        case 0 :
+          out = this.tempinput_schema
+          break
+        default :
+          out = -1
+          break
       }
       return out
     },
     make_parameter() {
       var config = []
       for(var i=0; i<this.param_data.length; i++) {
-        console.log(i)
         var temp = new Object()
         temp.name = this.param_data[i].name
         temp.val = this.param_data[i].val
@@ -162,7 +211,7 @@ export default {
       console.log("pusdfsafd : ", config)
       return JSON.stringify(config)
     },
-    async modify_task() {
+    async update_task() {
       console.log("modi t r")
       var params = {
         id : this.taskID,
@@ -196,6 +245,8 @@ export default {
       var api = this.api_addr + "/users/get_taskinfo";
       var res = (await axios.post(api, params)).data[0]
 
+      // await this.init_config(res.task_id)
+
       this.temptask_name = res.name
       this.temptask_id = res.task_id
       this.tempinput_schema = res.input_schema_id
@@ -214,20 +265,17 @@ export default {
       this.tempdest_port = res.dest_port
 
       await this.loadSchemaColumn(res.input_schema_id)
-      console.log("resss : ", res.input_schema_id)
 
       // custom parameter
       this.param_data = JSON.parse(this.tempconfig)
       this.param_cnt = this.param_data.length
     },
     async loadSchemaColumn(index) {
-      console.log("load schema column : ", index)
       var params = {
         schema_id : index
       }
       var api = this.api_addr + "/users/cell_columns";
       this.task_cols = (await axios.post(api, params)).data
-      console.log("res:", this.task_cols)
     },
     async loadSvr() {
       var api = this.api_addr + "/users/engine_computer";
@@ -236,7 +284,6 @@ export default {
     async loadSchema() {
       var api = this.api_addr + "/users/cell_schemas";
       this.schemaArray = (await axios.get(api)).data
-      console.log("schema : ", this.schemaArray)
     },
     getParameterByName(name) {
       name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

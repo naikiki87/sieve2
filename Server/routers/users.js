@@ -899,6 +899,14 @@ router.post('/job_tasks', wrapper.asyncMiddleware(async (req, res, next) => {
   const job_tasks = await db.doQuery(`select jt.*, t.name, t.program_type FROM job_tasks jt join tasks t on t.id = jt.task_id where jt.job_id = ${job_id}`);
   res.json(job_tasks);
 }));
+router.post('/job_tasks/init_config', wrapper.asyncMiddleware(async (req, res, next) => {
+  const id = req.body.id
+  const config = req.body.config
+  console.log("config : ", id, config)
+
+  await db.doQuery(`UPDATE job_tasks SET config = '${config}' WHERE id=${id}`)
+  res.json({success : true})
+}));
 router.post('/job_tasks/update', wrapper.asyncMiddleware(async (req, res, next) =>{
 
   console.log(" ---------------- TASK UPDATe ------------------");
@@ -932,7 +940,7 @@ router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
   const task_id = req.body.task_id;
 
   // const input_schema_id = req.body.input_schema_id;
-  const input_schema_id = 1
+  const input_schema_id = -1
 
   const listening_port = req.body.listening_port;
   const ec_id = req.body.ec_id;
@@ -943,11 +951,11 @@ router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
   // const heartbeat_job_id = req.body.heartbeat_job_id;
   // const output_schema_id = req.body.output_schema_id;
 
-  const output_type = 1
-  const config = 1
-  const heartbeat_task_id = 1
-  const heartbeat_job_id = 1
-  const output_schema_id = 1
+  const output_type = -1
+  const config = -1
+  const heartbeat_task_id = -1
+  const heartbeat_job_id = -1
+  const output_schema_id = -1
 
   const position_x = req.body.position_x;
   const position_y = req.body.position_y;
