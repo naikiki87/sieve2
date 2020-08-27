@@ -6,7 +6,7 @@
     <div id="header">
       <table valign="middle" align="left" style="height:130px;margin:auto; width:250px; padding-top : 5px; background:;">
         <tr>
-          <td v-model="JOB_ID" style="font-size:22px; font-weight:700;"> JOB : {{ JOB_ID }} </td>
+          <td v-model="JOB_ID, JOB_NAME" style="font-size:22px; font-weight:700;"> JOB : {{ JOB_NAME }} (# {{ JOB_ID }}) </td>
         </tr>
       </table>
       <table id="TDHeader_table" style=" margin : auto; width:97%; border:0px">
@@ -1136,8 +1136,6 @@ async function create_line() {
   }
 }
 async function deleteLine(index) {
-  console.log("DEL LINE");
-
   var params = {
     id : index
   }
@@ -1428,6 +1426,15 @@ async function get_USER_ID() {
   
   return USER_ID
 }
+async function get_JOB_NAME(job_id) {
+  var params = {
+    job_id : job_id
+  }
+
+  var api = "http://" + serverADDR + ":3000/users/jobs"
+  var res = (await axios.post(api, params)).data[0].name
+  return res
+}
 $(function() {
   cntxtmenu = document.getElementById("context-menus");
   modify_BS = document.getElementById("modify_BS");
@@ -1591,6 +1598,7 @@ export default {
       columnArray : [],
 
       JOB_ID : '',
+      JOB_NAME : '',
       USER_ID : '',
       mode : "CREATE",
       task_id : '',
@@ -1687,6 +1695,7 @@ export default {
     this.svrAddr = this.svrConfig.hostserver;
     this.JOB_ID = await get_JOB_ID()
     this.USER_ID = await get_USER_ID()
+    this.JOB_NAME = await get_JOB_NAME(JOB_ID)
     await load_task_line(JOB_ID)
     await this.loadSvr();
     await this.loadSchema();

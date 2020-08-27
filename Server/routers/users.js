@@ -695,6 +695,14 @@ router.get('/jobs', wrapper.asyncMiddleware(async (req, res, next) => {
   const jobs = await db.doQuery('SELECT * FROM jobs');
   res.json(jobs);
 }));
+
+router.post('/jobs', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const job_id = req.body.job_id;
+
+  const job = await db.doQuery(`SELECT * FROM jobs where id= ${job_id}`);
+  res.json(job);
+}));
+
 router.post('/jobs2', wrapper.asyncMiddleware(async (req, res, next) =>{
   const currentuserid = req.body.currentuserid;
 
