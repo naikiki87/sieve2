@@ -10,13 +10,13 @@
         <div class="add_title"> BASE Parameter : </div>
         <table id="base_table" style="margin:auto; align:center;">
           <tr>
-            <td style="width : 80px;" class="add_title"> 연산자 </td>
+            <td style="width : 80px;" class="add_title"> Task Type </td>
             <td>
               <h3 v-model="temptask_name" class="modify_window_op_title"> {{ temptask_name }} </h3>
             </td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> 수행 서버 </td>
+            <td style="width : 80px;" class="add_title"> Edge Server </td>
             <td>
               <select style="width : 99%;" v-model="tempec_id" disabled>
                 <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
@@ -24,16 +24,16 @@
             </td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> 수행 포트 </td>
+            <td style="width : 80px;" class="add_title"> Run Port </td>
             <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> 목적 IP </td>
+            <td style="width : 80px;" class="add_title"> Dest IP </td>
             <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
           </tr>
 
           <tr>
-            <td style="width : 80px;" class="add_title"> 목적 Port </td>
+            <td style="width : 80px;" class="add_title"> Dest Port </td>
             <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
           </tr>
 
