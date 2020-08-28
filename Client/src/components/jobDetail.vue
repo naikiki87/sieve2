@@ -2339,19 +2339,19 @@ export default {
       var t_type = res.task_id
 
       window.name = "parentForm";
-      var winType = ''
-      switch(t_type) {
-        case 0:
-          winType = "BS"
-          break
-        default :
-          winType = "BS"
-          break
-      }
+      // var winType = ''
+      // switch(t_type) {
+      //   case 0:
+      //     winType = "BS"
+      //     break
+      //   default :
+      //     winType = "BS"
+      //     break
+      // }
       // var url = "modify/" + winType + "?task=" + tid
       var url = "modify?task=" + tid
 
-      this.openWin = window.open(url, "modForm", "width=800, height=500, resizable=no, scrollbars=no, titlebar=no, location=no");
+      this.openWin = window.open(url, "modForm", "width=1200, height=600, resizable=no, scrollbars=no, titlebar=no, location=no");
     },
     async modifyTask_reload() {
       console.log("modifyTask_reload : ", this.temptask_id)

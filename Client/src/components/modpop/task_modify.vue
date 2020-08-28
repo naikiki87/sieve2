@@ -5,47 +5,42 @@
     </div>
     <br>
 
-    <div style="background:; width:50%; height:380px; float:left;">
+    <div style="background:; width:50%; height:480px; float:left;">
       <div style="background:; width:100%; height:180px; float:left;">
         <div class="add_title"> BASE Parameter : </div>
+        <br>
         <table id="base_table" style="margin:auto; align:center;">
           <tr>
-            <td style="width : 80px;" class="add_title"> Task Type </td>
-            <td>
-              <h3 v-model="temptask_name" class="modify_window_op_title"> {{ temptask_name }} </h3>
-            </td>
+            <td> <input class="mod_base_title" disabled value="Task Type : "> </td>
+            <td> <input class="mod_base_value" type="text" v-model="temptask_name" disabled> </td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> Edge Server </td>
-            <td>
-              <select style="width : 99%;" v-model="tempec_id" disabled>
-                <option v-for="(item, index) in svrArray" :value="item.id"> ({{ item.id }}) {{item.ip_address}} </option>
-              </select>
-            </td>
+            <td> <input class="mod_base_title" disabled value="Running Server : "> </td>
+            <td> <input class="mod_base_value" type="text" v-model="running_edge" disabled></td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> Run Port </td>
-            <td> <input style="width : 95%;" type="text" v-model="templistening_port" disabled></td>
+            <td> <input class="mod_base_title" disabled value="Listening Port : "> </td>
+            <td> <input class="mod_base_value" type="text" v-model="templistening_port" disabled></td>
           </tr>
           <tr>
-            <td style="width : 80px;" class="add_title"> Dest IP </td>
-            <td> <input style="width : 95%;" type="text" v-model="tempdest_ip" disabled></td>
+            <td> <input class="mod_base_title" disabled value="Destination IP : "> </td>
+            <td> <input class="mod_base_value" type="text" v-model="tempdest_ip" disabled></td>
           </tr>
 
           <tr>
-            <td style="width : 80px;" class="add_title"> Dest Port </td>
-            <td> <input style="width : 95%;" type="text" v-model="tempdest_port" disabled></td>
+            <td> <input class="mod_base_title" disabled value="Destination Port : "> </td>
+            <td> <input class="mod_base_value" type="text" v-model="tempdest_port" disabled></td>
           </tr>
 
-          <!-- <tr>
-            <td style="width : 80px;" class="add_title"> IN Schema </td>
+          <tr v-if="mod_win == 0">
+            <td> <input class="mod_base_title" disabled value="IN Schema : "> </td>
             <td>
               <select style="width : 99%;" v-model="tempinput_schema">
                 <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
               </select>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td style="width : 80px;" class="add_title"> OUT Schema </td>
             <td> 
               <select style="width : 99%;" v-model="tempoutput_schema" disabled>
@@ -56,7 +51,7 @@
         </table>
       </div>
 
-      <div style="background:; width:100%; height:200px; float:left;">
+      <div style="background:; width:100%; height:300px; float:left;">
         <div v-model="tempinput_schema" class="add_title"> [ Input Schema : {{ tempinput_schema}} ] </div>
         <br>
         <table class="modify_schema_table" style="margin:auto; width:50%;">
@@ -66,22 +61,150 @@
             <th>type</th>
           </tr>
             
-          <tr v-for="n in task_cols.length">
-            <td> <input v-model="task_cols[n-1].id" style="width:80px; border:0px;" disabled> </td>
-            <td> <input v-model="task_cols[n-1].name" style="width:100px; border:0px;" disabled> </td>
-            <td> <input v-model="task_cols[n-1].type_name" style="width:100px; border:0px;" disabled> </td>
+          <tr v-for="n in colArray.length">
+            <td> <input v-model="colArray[n-1].id" style="width:80px; border:0px;" disabled> </td>
+            <td> <input v-model="colArray[n-1].name" style="width:100px; border:0px;" disabled> </td>
+            <td> <input v-model="colArray[n-1].type_name" style="width:100px; border:0px;" disabled> </td>
           </tr>
         </table>
       </div>
     </div>
 
-    <div style="background:; width:50%; height:380px; float:left;">
+    <div style="background:; width:50%; height:480px; float:left;">
       <div class="add_title" style="width:150px"> CUSTOM Parameter : </div>
-      <br><br>
+      <br>
       <table id="param_table" style="margin:auto; align:center;">
         <tr v-for="n in param_cnt">
-          <td> <input v-model="param_data[n-1].name" style="width:100px; border:0px;" disabled> </td>
-          <td> <input v-model="param_data[n-1].val" style="width:170px"> </td>
+          <td> <input class="mod_base_title" v-model="param_data[n-1].name" disabled> </td>
+          <td> <input class="mod_base_value" v-model="param_data[n-1].val"> </td>
+        </tr>
+        <tr> 
+          <td> <input class="mod_base_title" value="QUERY" disabled> </td>
+          <td> <input class="mod_base_value" v-model="temp_QUERY"> </td>
+        </tr>
+      </table>
+
+      <br><br>
+      <div v-if="mod_win == 4" class="add_title" style="width:100%"> MAKE Query </div>
+      <br>
+      <table v-if="mod_win == 4" class="make_query_table" style="margin:auto; width:100%;">
+        <tr>
+          <th colspan="2"> CATEGORY </th>
+          <th> VAL </th>
+          <th> ADD </th>
+          <th colspan="2"> LIST </th>
+        </tr>
+        <tr>
+          <td> <input class="make_query_title_1" disabled value="GROUP BY"> </td>
+          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_GB_attr">
+              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
+            </select>
+          </td>
+          <td> <button class="shortBtnQuery" v-on:click="add_agg_GB"> ADD </button> </td>
+          <td> <input class="make_query_list" v-model="agg_GB_list"> </td>
+          <td> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+        </tr>
+
+        <tr>
+          <td rowspan="2"> <input class="make_query_title_1" disabled value="SELECT"> </td>
+          <td> <input class="make_query_title_2" disabled value="Type"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_SEL_type">
+              <option value = "Group"> Group </option>
+              <option value = "MAX"> MAX </option>
+              <option value = "MIN"> MIN </option>
+              <option value = "SUM"> SUM </option>
+              <option value = "AVG"> AVG </option>
+              <option value = "Count"> Count </option>
+              <option value = "Renew"> Renew </option>
+            </select>
+          </td>
+          <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_SEL"> ADD </button> </td>
+          <td rowspan="2"> <input class="make_query_list" v-model="agg_SEL_list"> </td>
+          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+        </tr>
+
+        <tr>
+          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_SEL_attr">
+              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td rowspan="2"> <input class="make_query_title_1" disabled value="ORDER BY"> </td>
+          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_OB_attr">
+              <option v-for="item in agg_SEL_array" :value="item"> {{ item }} </option>
+            </select>
+          </td>
+          <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_OB"> ADD </button> </td>
+          <td rowspan="2"> <input class="make_query_list" v-model="agg_OB_list"> </td>
+          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+        </tr>
+
+        <tr>
+          <td> <input class="make_query_title_2" disabled value="Order"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_OB_order">
+              <option value = "ASC"> ASC </option>
+              <option value = "DESC"> DESC </option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td rowspan="4"> <input class="make_query_title_1" disabled value="HAVING"> </td>
+          <td> <input class="make_query_title_2" disabled value="Type"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_HAV_type">
+              <option value = "Group"> Group </option>
+              <option value = "MAX"> MAX </option>
+              <option value = "MIN"> MIN </option>
+              <option value = "SUM"> SUM </option>
+              <option value = "AVG"> AVG </option>
+              <option value = "Count"> Count </option>
+              <option value = "Renew"> Renew </option>
+            </select>
+          </td>
+          <td rowspan="4"> <button class="shortBtnQuery" v-on:click="add_agg_HAV"> ADD </button> </td>
+          <td rowspan="4"> <input class="make_query_list" v-model="agg_HAV_list"> </td>
+          <td rowspan="4"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+        </tr>
+
+        <tr>
+          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_HAV_attr">
+              <option v-for="item in agg_GB_array" :value="item"> {{ item }} </option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td> <input class="make_query_title_2" disabled value="Op"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_HAV_op">
+              <option value = "="> = </option>
+              <option value = "<"> < </option>
+              <option value = "<="> <= </option>
+              <option value = ">"> > </option>
+              <option value = ">="> >= </option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td> <input class="make_query_title_2" disabled value="Val"> </td>
+          <td> <input class="make_query_value" type="text" v-model="agg_HAV_val"> </td>
+        </tr>
+        <tr style="height:50px;">
+          <td colspan="6"> <button class="longBtnMakeQ" v-on:click="func_test1"> MAKE QUERY </button> </td>
         </tr>
       </table>
     </div>
@@ -105,6 +228,12 @@ export default {
 
       svrArray : '',
       schemaArray : [],
+      colArray : [],
+      agg_HAV_array : [],
+
+      temp_QUERY : '',
+
+      running_edge : '',
 
       taskID : '',
       task_type_ID : '',
@@ -128,8 +257,28 @@ export default {
       
       param_data : [],
       param_cnt : '',
-      task_cols : []
-      
+
+      mod_win : -1,
+
+      agg_GB_attr : '',
+      agg_SEL_type : '',
+      agg_SEL_attr : '',
+      agg_OB_attr : '',
+      agg_OB_order : '',
+      agg_HAV_type : '',
+      agg_HAV_attr : '',
+      agg_HAV_op : '',
+      agg_HAV_val : '',
+
+      agg_GB_list : '',
+      agg_SEL_list : '',
+      agg_OB_list : '',
+      agg_HAV_list : '',
+
+      agg_GB_array : [],
+      agg_SEL_array : [],
+      agg_OB_array : [],
+      agg_HAV_array : []
     }
   },
   async created() {
@@ -142,22 +291,87 @@ export default {
     if(this.check_config == -1) {
       await this.init_config(this.task_type_ID)
     }
-    // await this.init_config(this.task_type_ID)
     await this.loadSvr()
     await this.loadSchema()
     await this.loadModData(this.taskID)
+    this.running_edge = await this.get_edge_ip()
   },
   methods : {
+    func_test1() {
+      console.log("func test1")
+      var temp = "select "
+      if(this.agg_SEL_array.length == 0) {
+        temp = temp + "*"
+      }
+      else {
+        for(var i=0; i<this.agg_SEL_array.length; i++) {
+          if(i == 0) {
+            temp = temp + this.agg_SEL_array[i]
+          }
+          else {
+            temp = temp + ', ' + this.agg_SEL_array[i]
+          }
+        }
+      }
+
+      temp = temp + ' ' + "from " + this.tempinput_schema
+      temp = temp + ' '
+
+
+      console.log("ddd : ", temp)
+    },
+    add_agg_HAV() {
+      console.log("func test1 : ", this.agg_HAV_type, this.agg_HAV_attr, this.agg_HAV_op, this.agg_HAV_val)
+      if(this.agg_HAV_type != "" && this.agg_HAV_attr != "" && this.agg_HAV_op != "" && this.agg_HAV_val != "") {
+        var temp = this.agg_HAV_type + ' ' + this.agg_HAV_attr + ' ' + this.agg_HAV_op + ' ' + this.agg_HAV_val
+        this.agg_HAV_array.push(temp)
+        this.agg_HAV_list = JSON.stringify(this.agg_HAV_array) 
+      }
+    },
+    add_agg_OB() {
+      console.log("func test1")
+      console.log("this : ", this.agg_OB_attr, this.agg_OB_order)
+      if(this.agg_OB_attr != "" && this.agg_OB_order != "") {
+        var temp = this.agg_OB_attr + ' ' + this.agg_OB_order
+        this.agg_OB_array.push(temp)
+        this.agg_OB_list = JSON.stringify(this.agg_OB_array) 
+      }
+    },
+    add_agg_SEL() {
+      console.log("this : ", this.agg_SEL_type, this.agg_SEL_attr)
+      if(this.agg_SEL_type != "" && this.agg_SEL_attr != "") {
+        var temp = this.agg_SEL_type + '(' + this.agg_SEL_attr + ')'
+        this.agg_SEL_array.push(temp)
+        this.agg_SEL_list = JSON.stringify(this.agg_SEL_array) 
+      }
+    },
+    add_agg_GB() {
+      console.log("functest1")
+      console.log("this. : ", this.agg_GB_attr)
+
+      if(this.agg_GB_attr != "") {
+        this.agg_GB_array.push(this.agg_GB_attr)
+        this.agg_GB_list = JSON.stringify(this.agg_GB_array)
+      }
+    },
+    async get_edge_ip() {
+      var out;
+      for(var i=0; i<this.svrArray.length; i++) {
+        if(this.svrArray[i].id == this.tempec_id) {
+          out = this.svrArray[i].ip_address
+          break
+        }
+      }
+      return out
+    },
     async get_task_type(index) {
-      console.log("get task type : ", index)
       var params = {
         id : index
       }
       var api = this.api_addr + "/users/get_taskinfo";
       var res = (await axios.post(api, params)).data[0]
-      console.log("res123 : ", res)
       var res_arr = [res.task_id, res.config]
-      // return res.task_id, res.config
+
       return res_arr
     },
     async init_config(index) {
@@ -186,7 +400,6 @@ export default {
     },
     func_test() {
       console.log("functest called")
-      this.get_task_type(528)
     },
     set_out_schema() {
       var out;
@@ -208,7 +421,6 @@ export default {
         temp.val = this.param_data[i].val
         config.push(temp)
       }
-      console.log("pusdfsafd : ", config)
       return JSON.stringify(config)
     },
     async update_task() {
@@ -220,11 +432,9 @@ export default {
         listening_port : this.templistening_port,
         ec_id : this.tempec_id,
         output_type : this.tempoutput_type,
-        // config : this.tempconfig,
         config : await this.make_parameter(),
         heartbeat_task_id : this.tempheartbeat_task,
         heartbeat_job_id : this.tempheartbeat_job,
-        // output_schema_id : this.tempoutput_schema,
         output_schema_id : await this.set_out_schema(),
         position_x : this.tempposition_x,
         position_y : this.tempposition_y,
@@ -237,6 +447,8 @@ export default {
       console.log('update : ', params)
       var api = this.api_addr + "/users/job_tasks/update";
       await axios.post(api, params)
+
+      await this.loadModData(this.taskID)
     },
     async loadModData(tid) {
       var params = {
@@ -245,7 +457,7 @@ export default {
       var api = this.api_addr + "/users/get_taskinfo";
       var res = (await axios.post(api, params)).data[0]
 
-      // await this.init_config(res.task_id)
+      this.mod_win = res.task_id
 
       this.temptask_name = res.name
       this.temptask_id = res.task_id
@@ -275,7 +487,7 @@ export default {
         schema_id : index
       }
       var api = this.api_addr + "/users/cell_columns";
-      this.task_cols = (await axios.post(api, params)).data
+      this.colArray = (await axios.post(api, params)).data
     },
     async loadSvr() {
       var api = this.api_addr + "/users/engine_computer";
@@ -290,7 +502,23 @@ export default {
       var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
       results = regex.exec(location.search);
       return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    },
+    tabChange(index, tab_content) {
+      var x = document.getElementsByClassName("aggtabcontent");
+      var i;
+      for (i = 0; i < x.length; i++) {
+          x[i].style.display = 'none';
+      }
+      document.getElementById(tab_content).style.display = 'block';
+      var x = document.getElementsByClassName("tabmenu");
+      var i;
+      for (i = 0; i < x.length; i++) {
+          x[i].className = 'tabmenu';
+      }
+      document.getElementById(index).className = 'tabmenu active';
     }
+  },
+  components: {
   }
 }
 
