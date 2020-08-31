@@ -31,9 +31,9 @@ button { border-style: groove; }
 /* #d8d8d8 */
 
 .modify_schema_table { border : 0px solid lightgrey; padding : 0px; background: white; margin:auto;}
-.modify_schema_table tr { margin:0px; padding:0px; height : 15px; padding : 0px; border : 0px solid blue; background : ; font-weight:100;}
-.modify_schema_table th { margin:0px; padding:0px; font-size : 15px; padding : 0px; border : 0px solid #d8d8d8; background : #00a2ff; color:white}
-.modify_schema_table td { margin:0px; padding:0px; font-size : 15px; font-style:italic; border-top : 0px solid #d8d8d8; background : #fafafa }
+.modify_schema_table tr { margin:0px; padding:0px; height : 22px; padding : 0px; border : 0px solid blue; background : ; font-weight:100;}
+.modify_schema_table th { margin:0px; padding:0px; font-size : 13px; padding : 0px; border : 0px solid #d8d8d8; background : #00a2ff; color:white}
+.modify_schema_table td { margin:0px; padding:0px; font-size : 12px; font-style:italic; border-top : 0px solid #d8d8d8; background : #fafafa }
 
 .make_query_table { border : 0px solid lightgrey; padding : 0px; background: white; margin:auto;}
 .make_query_table tr { margin:0px; padding:0px; height : 22px; padding : 0px; border : 1px solid blue; background : ; font-weight:100;}
@@ -177,6 +177,6 @@ div { padding : 0px; margin : 0px; font-size: 12px; }
 .mod_base_title{width:100px; border:0px;}
 .mod_base_value{width : 95%; border:1px solid #727272;}
 .make_query_title_1{width:80px; border:0px;}
-.make_query_title_2{width:40px; border:0px;}
+.make_query_title_2{width:50px; border:0px;}
 .make_query_value{width:100px; border:1px solid #727272;}
 .make_query_list{width:150px; border:1px solid #727272;}

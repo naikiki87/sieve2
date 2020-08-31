@@ -212,7 +212,10 @@ function runModules(user, db_info)
     });
   });
 }
-function runModules2(user, db_info, user_name) {
+async function runModules2(user, db_info, user_name) {
+  var s_id = user.input_schema_id
+  var tempa = await db.doQuery(`SELECT cc.*, dt.name AS type FROM cell_columns cc, data_types dt WHERE cc.schema_id=${s_id} AND cc.type_id=dt.id`)
+
   return new Promise((resolve) => {
     console.log("RUN MODULE 2");
     connectUser(user, (user, userSSH) =>
@@ -237,10 +240,30 @@ function runModules2(user, db_info, user_name) {
             execarr.push(user.dest_ip)            // args[3]
             execarr.push(user.dest_port)          // args[4]
             execarr.push(user.input_schema_id)    // args[5]
+
+            if(user.task_id == 4) {               // Aggregation
+              // var schema = []
+              var schema = ""
+              for(var i=0; i<tempa.length; i++) {
+                if(i == tempa.length -1) {
+                  schema = schema + tempa[i].name + ','
+                  schema = schema + tempa[i].type
+                }
+                else {
+                  schema = schema + tempa[i].name + ','
+                  schema = schema + tempa[i].type + '/'
+                }
+              }
+              execarr.push(user_name)
+              execarr.push(schema)
+            }
           }
         }
 
-        userSSH.execCommand(execarr.join(" ") + " & ")
+        var exe = execarr.join(" ") + " & "
+        console.log("exe : ", exe)
+
+        // userSSH.execCommand(execarr.join(" ") + " & ")
         resolve(100)
       })
     });

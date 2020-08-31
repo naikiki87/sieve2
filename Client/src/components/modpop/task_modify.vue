@@ -95,21 +95,8 @@
           <th colspan="2"> LIST </th>
         </tr>
         <tr>
-          <td> <input class="make_query_title_1" disabled value="GROUP BY"> </td>
-          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_GB_attr">
-              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
-            </select>
-          </td>
-          <td> <button class="shortBtnQuery" v-on:click="add_agg_GB"> ADD </button> </td>
-          <td> <input class="make_query_list" v-model="agg_GB_list"> </td>
-          <td> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
-        </tr>
-
-        <tr>
           <td rowspan="2"> <input class="make_query_title_1" disabled value="SELECT"> </td>
-          <td> <input class="make_query_title_2" disabled value="Type"> </td>
+          <td> <input class="make_query_title_2" disabled value="TYPE"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_SEL_type">
               <option value = "Group"> Group </option>
@@ -127,7 +114,7 @@
         </tr>
 
         <tr>
-          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_SEL_attr">
               <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
@@ -136,8 +123,21 @@
         </tr>
 
         <tr>
+          <td> <input class="make_query_title_1" disabled value="GROUP BY"> </td>
+          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
+          <td> 
+            <select class="make_query_value" v-model="agg_GB_attr">
+              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
+            </select>
+          </td>
+          <td> <button class="shortBtnQuery" v-on:click="add_agg_GB"> ADD </button> </td>
+          <td> <input class="make_query_list" v-model="agg_GB_list"> </td>
+          <td> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+        </tr>
+
+        <tr>
           <td rowspan="2"> <input class="make_query_title_1" disabled value="ORDER BY"> </td>
-          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_OB_attr">
               <option v-for="item in agg_SEL_array" :value="item"> {{ item }} </option>
@@ -149,7 +149,7 @@
         </tr>
 
         <tr>
-          <td> <input class="make_query_title_2" disabled value="Order"> </td>
+          <td> <input class="make_query_title_2" disabled value="ORDER"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_OB_order">
               <option value = "ASC"> ASC </option>
@@ -160,7 +160,7 @@
 
         <tr>
           <td rowspan="4"> <input class="make_query_title_1" disabled value="HAVING"> </td>
-          <td> <input class="make_query_title_2" disabled value="Type"> </td>
+          <td> <input class="make_query_title_2" disabled value="TYPE"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_HAV_type">
               <option value = "Group"> Group </option>
@@ -178,7 +178,7 @@
         </tr>
 
         <tr>
-          <td> <input class="make_query_title_2" disabled value="Attr"> </td>
+          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_HAV_attr">
               <option v-for="item in agg_GB_array" :value="item"> {{ item }} </option>
@@ -187,7 +187,7 @@
         </tr>
 
         <tr>
-          <td> <input class="make_query_title_2" disabled value="Op"> </td>
+          <td> <input class="make_query_title_2" disabled value="OP"> </td>
           <td> 
             <select class="make_query_value" v-model="agg_HAV_op">
               <option value = "="> = </option>
@@ -200,11 +200,11 @@
         </tr>
 
         <tr>
-          <td> <input class="make_query_title_2" disabled value="Val"> </td>
+          <td> <input class="make_query_title_2" disabled value="VAL"> </td>
           <td> <input class="make_query_value" type="text" v-model="agg_HAV_val"> </td>
         </tr>
         <tr style="height:50px;">
-          <td colspan="6"> <button class="longBtnMakeQ" v-on:click="func_test1"> MAKE QUERY </button> </td>
+          <td colspan="6"> <button class="longBtnMakeQ" v-on:click="make_total_query"> MAKE QUERY </button> </td>
         </tr>
       </table>
     </div>
@@ -297,9 +297,11 @@ export default {
     this.running_edge = await this.get_edge_ip()
   },
   methods : {
-    func_test1() {
+    make_total_query() {
       console.log("func test1")
       var temp = "select "
+
+      ///// Select clause
       if(this.agg_SEL_array.length == 0) {
         temp = temp + "*"
       }
@@ -317,13 +319,51 @@ export default {
       temp = temp + ' ' + "from " + this.tempinput_schema
       temp = temp + ' '
 
+      ///// group by clause
+      if(this.agg_GB_array.length != 0) {
+        temp = temp + "GROUP BY "
+        for(var i=0; i<this.agg_GB_array.length; i++) {
+          if(i == 0) {
+            temp = temp + this.agg_GB_array[i]
+          }
+          else {
+            temp = temp + ', ' + this.agg_GB_array[i]
+          }
+        }
+      }
+
+      ///// order by clause
+      if(this.agg_OB_array.length != 0) {
+        temp = temp + "ORDER BY "
+        for(var i=0; i<this.agg_OB_array.length; i++) {
+          if(i == 0) {
+            temp = temp + this.agg_OB_array[i]
+          }
+          else {
+            temp = temp + ', ' + this.agg_OB_array[i]
+          }
+        }
+      }
+
+      ///// order by clause
+      if(this.agg_HAV_array.length != 0) {
+        temp = temp + "HAVING "
+        for(var i=0; i<this.agg_HAV_array.length; i++) {
+          if(i == 0) {
+            temp = temp + this.agg_HAV_array[i]
+          }
+          else {
+            temp = temp + ', ' + this.agg_HAV_array[i]
+          }
+        }
+      }
 
       console.log("ddd : ", temp)
     },
     add_agg_HAV() {
       console.log("func test1 : ", this.agg_HAV_type, this.agg_HAV_attr, this.agg_HAV_op, this.agg_HAV_val)
       if(this.agg_HAV_type != "" && this.agg_HAV_attr != "" && this.agg_HAV_op != "" && this.agg_HAV_val != "") {
-        var temp = this.agg_HAV_type + ' ' + this.agg_HAV_attr + ' ' + this.agg_HAV_op + ' ' + this.agg_HAV_val
+        var temp = this.agg_HAV_type + ' ' + this.agg_HAV_attr + this.agg_HAV_op + this.agg_HAV_val
         this.agg_HAV_array.push(temp)
         this.agg_HAV_list = JSON.stringify(this.agg_HAV_array) 
       }
