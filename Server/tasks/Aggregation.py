@@ -3,14 +3,36 @@ import pandas as pd
 import pickle
 import sys
 import sqlite3
-import json
+import time
 
+HOST = ''
+PORT = int(sys.argv[2])
+HOST_NEXT = sys.argv[3]
+PORT_NEXT = int(sys.argv[4])
+INPUT_SCHEMA = int(sys.argv[5])
 DB = "./db/temp.db"
-U_NAME = sys.argv[1]
-TEST = sys.argv[2]
-SCHE = TEST.split('/')
+U_NAME = sys.argv[6]
+# TEST = sys.argv[7]
+SCHE = sys.argv[7].split('/')
+AGG_TYPE = int(sys.argv[8])
+AGG_UNIT = int(sys.argv[9])
+QUERY = sys.argv[10]
 
-def db_SetTable() :
+BUFSIZE = 1024
+ADDR = (HOST, PORT)
+
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(ADDR)
+serverSocket.listen(100)
+print('listen : ', PORT)
+clientSocket, addr_info = serverSocket.accept()
+print('connected')
+
+# client_next = socket(AF_INET, SOCK_STREAM)
+# client_next.connect((HOST_NEXT, PORT_NEXT))
+
+def create_Table(con) :
+    cur = con.cursor()
     struct = ''
     for i in range(len(SCHE)) :
         temp = SCHE[i].split(',')
@@ -22,60 +44,42 @@ def db_SetTable() :
             struct = struct + s_name + ' ' + s_type + ', '
 
     sql = "create table if not exists " + U_NAME + ' (' + struct + ')'
-    print("sql : ", sql)
-
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
-    # sql = "create table if not exists STATUS (code text, step integer, ordered integer, orderType integer, trAmount integer)"
     cur.execute(sql)
-    conn.commit()
-    conn.close()
 
-def db_INSERT(code, step, ordered, orderType, trAmount):
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
-    sql = "insert into STATUS (code, step, ordered, orderType, trAmount) values(:CODE, :STEP, :ORDERED, :ORDERTYPE, :TRAMOUNT)"
-    cur.execute(sql, {"CODE" : code, "STEP" : step, "ORDERED" : ordered, "ORDERTYPE" : orderType, "TRAMOUNT" : trAmount})
-    conn.commit()
-    conn.close()
-    print(now, "[MAIN]", "data INSERTED")
+def insert_data(con, data) :
+    cur = con.cursor()
+    insert = ''
+    for i in range(len(data)) :
+        if i == (len(data)-1) :
+            insert = insert + data[i]
+        else :
+            insert = insert + data[i] + ', '
+    
+    sql = "insert into " + U_NAME + " values (" + insert + ")"
+    cur.execute(sql)
 
-def db_DELETE(code):
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
-    sql = "delete from STATUS where code = :CODE"
-    cur.execute(sql, {"CODE" : code})
-    conn.commit()
-    conn.close()
-    print(now, "[MAIN]", "data DELETED")
+def delete_all(con) :
+    cur = con.cursor()
+    cur.execute("delete from " + U_NAME)
 
-db_SetTable()
+con = sqlite3.connect(':memory:')
+cur = con.cursor()
+create_Table(con)
 
-# HOST = ''
-# PORT = int(sys.argv[2])
-# HOST_NEXT = sys.argv[3]
-# PORT_NEXT = int(sys.argv[4])
-# INPUT_SCHEMA = int(sys.argv[5])
-
-# BUFSIZE = 1024
-# ADDR = (HOST, PORT)
-
-# serverSocket = socket(AF_INET, SOCK_STREAM)
-# serverSocket.bind(ADDR)
-# serverSocket.listen(100)
-# print('listen : ', PORT)
-# clientSocket, addr_info = serverSocket.accept()
-# print('connected')
-
-# client_next = socket(AF_INET, SOCK_STREAM)
-# client_next.connect((HOST_NEXT, PORT_NEXT))
-
-# while True :
-#     data = clientSocket.recv(65535)
-#     if data != "" :
-#         data = pickle.loads(data)
-#         print(type(data))
-#         print("receive : ", data)
+while True :
+    data = clientSocket.recv(65535)
+    if data != "" :
+        data = pickle.loads(data)
+        insert_data(con, data)
+        row_cnt = len(cur.execute("select * from " + U_NAME).fetchall())
+        print("cnt : ", row_cnt)
+        if AGG_TYPE == 0 :      # tuple 단위 집계
+            if row_cnt%AGG_UNIT == 0 :
+                res = cur.execute(QUERY)
+                for row in res :
+                    print(row)
+                
+                delete_all(con)
 
         # try :
         #     send = pickle.dumps(data)

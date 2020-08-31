@@ -256,6 +256,8 @@ async function runModules2(user, db_info, user_name) {
               }
               execarr.push(user_name)
               execarr.push(schema)
+              var query = `"select s1, count(s1) from st3 group by s1"`
+              execarr.push(query)
             }
           }
         }
