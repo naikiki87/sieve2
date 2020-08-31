@@ -66,6 +66,9 @@ con = sqlite3.connect(':memory:')
 cur = con.cursor()
 create_Table(con)
 
+first = 1
+start_time = 0
+
 while True :
     data = clientSocket.recv(65535)
     if data != "" :
@@ -74,12 +77,25 @@ while True :
         row_cnt = len(cur.execute("select * from " + U_NAME).fetchall())
         print("cnt : ", row_cnt)
         if AGG_TYPE == 0 :      # tuple 단위 집계
-            if row_cnt%AGG_UNIT == 0 :
+            if row_cnt % AGG_UNIT == 0 :
                 res = cur.execute(QUERY)
                 for row in res :
                     print(row)
                 
                 delete_all(con)
+
+        elif AGG_TYPE == 1 :     # time 단위 집계
+            if first == 1 :
+                first = 0
+                start_time = time.time()
+            else :
+                if (time.time() - start_time) > AGG_UNIT :
+                    res = cur.execute(QUERY)
+                    for row in res :
+                        print(row)
+
+                    delete_all(con)
+                    first = 1
 
         # try :
         #     send = pickle.dumps(data)
