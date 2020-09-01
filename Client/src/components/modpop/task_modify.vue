@@ -78,10 +78,6 @@
           <td> <input class="mod_base_title" v-model="param_data[n-1].name" disabled> </td>
           <td> <input class="mod_base_value" v-model="param_data[n-1].val"> </td>
         </tr>
-        <tr> 
-          <td> <input class="mod_base_title" value="QUERY" disabled> </td>
-          <td> <input class="mod_base_value" v-model="temp_QUERY"> </td>
-        </tr>
       </table>
 
       <br><br>
@@ -110,7 +106,7 @@
           </td>
           <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_SEL"> ADD </button> </td>
           <td rowspan="2"> <input class="make_query_list" v-model="agg_SEL_list"> </td>
-          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_SEL"> FLUSH </button> </td>
         </tr>
 
         <tr>
@@ -132,7 +128,7 @@
           </td>
           <td> <button class="shortBtnQuery" v-on:click="add_agg_GB"> ADD </button> </td>
           <td> <input class="make_query_list" v-model="agg_GB_list"> </td>
-          <td> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+          <td> <button class="shortBtnQueryFlush" v-on:click="flush_agg_GB"> FLUSH </button> </td>
         </tr>
 
         <tr>
@@ -145,7 +141,7 @@
           </td>
           <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_OB"> ADD </button> </td>
           <td rowspan="2"> <input class="make_query_list" v-model="agg_OB_list"> </td>
-          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_OB"> FLUSH </button> </td>
         </tr>
 
         <tr>
@@ -174,7 +170,7 @@
           </td>
           <td rowspan="4"> <button class="shortBtnQuery" v-on:click="add_agg_HAV"> ADD </button> </td>
           <td rowspan="4"> <input class="make_query_list" v-model="agg_HAV_list"> </td>
-          <td rowspan="4"> <button class="shortBtnQueryFlush" v-on:click="func_test"> FLUSH </button> </td>
+          <td rowspan="4"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_HAV"> FLUSH </button> </td>
         </tr>
 
         <tr>
@@ -203,8 +199,12 @@
           <td> <input class="make_query_title_2" disabled value="VAL"> </td>
           <td> <input class="make_query_value" type="text" v-model="agg_HAV_val"> </td>
         </tr>
-        <tr style="height:50px;">
+        <tr style="height:40px;">
           <td colspan="6"> <button class="longBtnMakeQ" v-on:click="make_total_query"> MAKE QUERY </button> </td>
+        </tr>
+        <tr> 
+          <td> <input class="mod_base_title" value="QUERY" disabled> </td>
+          <td colspan="5"> <input class="mod_base_value" style="height:30px;" v-model="temp_QUERY"> </td>
         </tr>
       </table>
     </div>
@@ -297,6 +297,30 @@ export default {
     this.running_edge = await this.get_edge_ip()
   },
   methods : {
+    flush_agg_SEL() {
+      this.agg_SEL_list = ''
+      for(var i=0; i<this.agg_SEL_array.length; i++) {
+        this.agg_SEL_array.pop()
+      }
+    },
+    flush_agg_GB() {
+      this.agg_GB_list = ''
+      for(var i=0; i<this.agg_GB_array.length; i++) {
+        this.agg_GB_array.pop()
+      }
+    },
+    flush_agg_OB() {
+      this.agg_OB_list = ''
+      for(var i=0; i<this.agg_OB_array.length; i++) {
+        this.agg_OB_array.pop()
+      }
+    },
+    flush_agg_HAV() {
+      this.agg_HAV_list = ''
+      for(var i=0; i<this.agg_HAV_array.length; i++) {
+        this.agg_HAV_array.pop()
+      }
+    },
     make_total_query() {
       console.log("func test1")
       var temp = "select "
@@ -359,6 +383,7 @@ export default {
       }
 
       console.log("ddd : ", temp)
+      this.temp_QUERY = temp
     },
     add_agg_HAV() {
       console.log("func test1 : ", this.agg_HAV_type, this.agg_HAV_attr, this.agg_HAV_op, this.agg_HAV_val)
@@ -439,7 +464,7 @@ export default {
       await axios.post(api, params)
     },
     func_test() {
-      console.log("functest called")
+      console.log("flush called")
     },
     set_out_schema() {
       var out;
@@ -459,6 +484,13 @@ export default {
         var temp = new Object()
         temp.name = this.param_data[i].name
         temp.val = this.param_data[i].val
+        config.push(temp)
+      }
+
+      if(this.temptask_id == 4) {     // Aggregation
+        var temp = new Object()
+        temp.name = "QUERY"
+        temp.val = this.temp_QUERY
         config.push(temp)
       }
       return JSON.stringify(config)

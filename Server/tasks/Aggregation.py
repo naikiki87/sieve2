@@ -10,14 +10,15 @@ PORT = int(sys.argv[2])
 HOST_NEXT = sys.argv[3]
 PORT_NEXT = int(sys.argv[4])
 INPUT_SCHEMA = int(sys.argv[5])
-DB = "./db/temp.db"
 U_NAME = sys.argv[6]
-# TEST = sys.argv[7]
 SCHE = sys.argv[7].split('/')
 AGG_TYPE = int(sys.argv[8])
 AGG_UNIT = int(sys.argv[9])
-QUERY = sys.argv[10]
+PANE = int(sys.argv[10])
+SLD_SIZE = int(sys.argv[11])
+QUERY = sys.argv[12]
 
+DB = "./db/temp.db"
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 
@@ -85,9 +86,11 @@ while True :
                 delete_all(con)
 
         elif AGG_TYPE == 1 :     # time 단위 집계
+            print("time : ", time.time())
             if first == 1 :
                 first = 0
                 start_time = time.time()
+                
             else :
                 if (time.time() - start_time) > AGG_UNIT :
                     res = cur.execute(QUERY)

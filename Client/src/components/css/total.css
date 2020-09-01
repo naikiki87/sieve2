@@ -15,7 +15,7 @@ button { border-style: groove; }
 
 .longBtn{ width:100px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
 .longBtn_DEL{ width:100px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
-.longBtnMakeQ{ width:200px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
+.longBtnMakeQ{ width:130px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 30px; border-radius : 8px; color:white}
 .midBtn{ width : 75px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}
 .midBtn_DEL{ width:75px; cursor:pointer; border : 0px; background : rgb(0, 111, 175); height : 25px; border-radius : 8px; color:white}
 .shortBtn{ width:50px; cursor:pointer; border : 0px; background : rgb(27, 170, 253); height : 25px; border-radius : 8px; color:white}

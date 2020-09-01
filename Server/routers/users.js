@@ -242,7 +242,6 @@ async function runModules2(user, db_info, user_name) {
             execarr.push(user.input_schema_id)    // args[5]
 
             if(user.task_id == 4) {               // Aggregation
-              // var schema = []
               var schema = ""
               for(var i=0; i<tempa.length; i++) {
                 if(i == tempa.length -1) {
@@ -254,10 +253,17 @@ async function runModules2(user, db_info, user_name) {
                   schema = schema + tempa[i].type + '/'
                 }
               }
-              execarr.push(user_name)
-              execarr.push(schema)
-              var query = `"select s1, count(s1) from st3 group by s1"`
-              execarr.push(query)
+              execarr.push(user_name)             // args[6]
+              execarr.push(schema)                // args[7]
+              var param = JSON.parse(user.config)
+              console.log("params : ", param)
+              execarr.push(param[0].val)          // args[8] - Agg Type
+              execarr.push(param[1].val)          // args[9] - Agg Unit
+              execarr.push(param[2].val)          // args[10] - Pane
+              execarr.push(param[3].val)          // args[11] - Sliding Size
+              var query = param[4].val
+              query = "\"" + query + "\""
+              execarr.push(query)                 // args[12] - QUERY
             }
           }
         }
@@ -329,41 +335,18 @@ router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) =>{
 }));
 router.post('/login', up, wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("LOGIN")
-  console.log("AAAAAA : ", serverConfig.hostserver)
-  console.log("AAAAAA : ", serverport.dev.port)
   var userID = req.body.userID;
   var userPW = req.body.userPW;
-
-  console.log("");
-  console.log("LOGIN");
-  console.log(userID);
-  console.log(userPW);
-  console.log("");
-
   var result =  (await db.doQuery(`select * FROM users_test where userID = "${userID}"`));
   console.log("result", result[0].id);
-  userPW = userPW.replace(/\n/g, "");//행바꿈제거
-  if(userPW == result[0].password) {
-    console.log("password correct");
-    // for(var i=0; i<10; i++) {
-    //   res.cookie(`user${i}`, result[0].id , {
-    //     expires: new Date(Date.now() + 3600000)
-    //     // httpOnly: true
-    //   });
-    // }
-    // var red = "http://" + serverConfig.hostserver + ":50000/users"
-    // res.redirect('/users');
-    // res.redirect('http://localhost:8080/main');
+  userPW = userPW.replace(/\n/g, "");       // 행바꿈제거
+  if(userPW == result[0].password) {        // password correct
     res.json({success : true, userid : result[0].id})
-
-    // res.redirect(red)
   }
-  else {
+  else {                                    // password incorrect
     res.json({success : false})
-    // res.redirect('http://localhost:8080/');
   }
 }));
-// var cookiecount = 0;
 router.get('/', function(req, res, next) {
   console.log("RES USR");
 
