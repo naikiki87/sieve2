@@ -1,13 +1,23 @@
 <template>
   <div>
-    <div class="modify_window_title">
-      <h2 v-model="taskID"> Task ID : {{ taskID }} </h2>
-    </div>
+    <table>
+      <tr style="height:40px;">
+        <td style="background:navy; width:2000px; color:white">
+          MODIFY / Task ID : <input type="text" v-model="taskID" value="ssss" style="background:navy; border:0px solid; color:white; font-size:20px; font-weight:600;">
+        </td>
+        <td style="background:; width:250px;">
+          <button class="longBtnSAVE" v-on:click="update_task"> SAVE </button>
+        </td>
+        <!-- <td>
+          <button class="longBtn" v-on:click="func_test"> TEST </button>
+        </td> -->
+      </tr>
+    </table>
     <br>
 
-    <div style="background:; width:50%; height:480px; float:left;">
+    <div style="background:; width:35%; height:480px; float:left;">
       <div style="background:; width:100%; height:180px; float:left;">
-        <div class="add_title"> BASE Parameter : </div>
+        <div class="add_title" style="color:blue;"> BASE Parameter : </div>
         <br>
         <table id="base_table" style="margin:auto; align:center;">
           <tr>
@@ -70,8 +80,8 @@
       </div>
     </div>
 
-    <div style="background:; width:50%; height:480px; float:left;">
-      <div class="add_title" style="width:150px"> CUSTOM Parameter : </div>
+    <div style="background:; width:63%; height:480px; float:left;">
+      <div class="add_title" style="width:150px; color:blue"> CUSTOM Parameter : </div>
       <br>
       <table id="param_table" style="margin:auto; align:center;">
         <tr v-for="n in param_cnt">
@@ -207,11 +217,6 @@
           <td colspan="5"> <input class="mod_base_value" style="height:30px;" v-model="temp_QUERY"> </td>
         </tr>
       </table>
-    </div>
-
-    <div style="background:; width:100%; height:50px; float:left;">
-      <button class="longBtn" v-on:click="update_task"> SAVE </button>
-      <button class="longBtn" v-on:click="func_test"> TEST </button>
     </div>
   </div>
 </template>
