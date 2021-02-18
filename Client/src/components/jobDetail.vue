@@ -53,11 +53,13 @@
       <br>
       <br>
       <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="addTask_reload"> ADD </button>
-      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test"> TEST </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_offload"> OFFLOAD </button>
+      <button style="height:40px; width:200px; font-size:14px;" class="JobDetailHeaderbutton" v-on:click="func_test2"> HEALTH CHK </button>
     </div>
     <div id="context-menus" class="context-menus">
       <!-- <p class="cntxtmenuItem" v-on:click="openTaskModify"> Task 수정 </p> -->
-      <p class="cntxtmenuItem" v-on:click="openTaskModify2"> Task 수정2 </p>
+      <p class="cntxtmenuItem" v-on:click="openDataView"> Data View </p>
+      <p class="cntxtmenuItem" v-on:click="openTaskModify2"> Task 수정 </p>
       <p class="cntxtmenuItem" v-on:click="deleteTask_reload"> Task 삭제 </p>
     </div>
 
@@ -1044,6 +1046,7 @@ async function deleteTask(index) {
   await axios.post(api, params)
 }
 async function loadLine(index) {
+  
   var params = { job_id: index }
   var api = "http://" + serverADDR + ":3000/users/task_lines";
 
@@ -1701,25 +1704,77 @@ export default {
     await this.loadSvr();
     await this.loadSchema();
     await this.loadTaskList();
-    // this.RT_health_check()
+    this.health_check()
+    // this.task_watchdog()
   },
   computed: {
   },
   watch: {
   },
   methods : {
-    async func_test() {
-      console.log("func test")
-      console.log("user id : ", USER_ID, this.USER_ID)
-      var showtime = new Date()
-      var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
-      console.log("test : ", curtime)
+    async func_offload() {
+      var id = JOB_ID;
 
+      for(var i=0; i<taskArray.length; i++) {
+        this.ec_id = 8
+        this.listening_port = 41000 + i
+        this.task_id = taskArray[i].task_id
+
+        var port_using = await this.port_using_check(this.ec_id, this.listening_port)
+        while(port_using == 1) {
+          console.log("port Duplicate : ", this.listening_port)
+          this.listening_port = this.listening_port + 1
+          port_using = await this.port_using_check(this.ec_id, this.listening_port)
+        }
+        var task = {
+          job_id: JOB_ID,
+          task_id : taskArray[i].task_id,
+          listening_port : this.listening_port,
+          ec_id : this.ec_id,                                        // auto finding을 통해 대상 ec 찾기
+          position_x : taskArray[i].position_x + 100,
+          position_y : taskArray[i].position_y,
+          linkto : null,
+          linkfrom : null,
+          dest_ip : 0,
+          dest_port : 0
+        }
+        await addTask(task)
+      }
+      await clearBG()
+
+      // line 추가
+
+      await load_task_line(id)
+      await this.clearInput()
     },
+
+    async func_test2() {
+      console.log("func test2")
+
+      for(var i=0; i<taskArray.length; i++) {
+        console.log(taskArray)
+        var cur_edge = taskArray[i].dest_ip
+        console.log(i, cur_edge)
+        var params = {
+          task_id : taskArray[i].id,
+          ec_id : taskArray[i].ec_id
+        }
+        var api = this.api_addr + "/users/healthcheck_RT"
+        var res = (await axios.post(api, params)).data    // 현재 edge의 status
+        console.log(cur_edge, ' : ', res[0].cpu_usage, res[0].mem_usage)
+      }
+    },
+
+
     RT_health_check() {
       console.log("RT_health_check")
       // var repeat = setInterval(this.health_check, 5000)
-      rt_check = setInterval(this.health_check, 5000)
+      // rt_check = setInterval(this.health_check, 5000)
+
+    },
+    task_watchdog: function() {
+      console.log("watchdog start")
+      this.timer = setInterval(() => this.health_check(), 3000);
     },
     async health_check() {
       var ret = 0
@@ -1727,13 +1782,11 @@ export default {
         var params = {
           task_id : taskArray[i].id
         }
-        // var api = "http://" + this.svrAddr + ":3000/users/healthcheck";
         var api = this.api_addr + "/users/healthcheck"
         var res = await axios.post(api, params)
-        // console.log(taskArray[i].id, ' : ', res.data.alive)
         var target = document.getElementById(taskArray[i].id)
+        console.log(i, "res alive : ", res.data.alive)
         if(res.data.alive == 1) {
-          // target.style.background = "#11fe2e"
           target.style.background = "#3af42c"
           ret = ret + 1
         }
@@ -1742,7 +1795,6 @@ export default {
         }
       }
 
-      // ret = 1
       return ret
     },
     async jobDistTotal2() {
@@ -1856,11 +1908,14 @@ export default {
       var api = this.api_addr + "/users/jobs/run";
       
       var success = (await axios.post(api, params)).data.success
+      console.log("success : ", success)
+      console.log("taskarray length : ", taskArray.length)
       if(success == true) {
         if((await this.health_check()) == taskArray.length) {
         // if((await this.health_check()) == 1) {
           // alert("***** JOB 실행 완료 *****");
-          console.log("JOB RUN COMPLETE")
+          // console.log("JOB RUN COMPLETE")
+          // this.task_watchdog()
         }
       }
     },
@@ -2057,7 +2112,7 @@ export default {
       }
     },
     async addTask_reload(){
-      console.log("add task reload")
+      console.log("add task reload : ", this.ec_id)
       var id = JOB_ID;
       var port_using = await this.port_using_check(this.ec_id, this.listening_port)
       if(port_using == 1) {
@@ -2331,11 +2386,29 @@ export default {
       var op_type = res.task_id
       this.showModifyMenu(cntxtmenuID, op_type);
     },
+
+    async openDataView() {      // open task modify window
+      console.log("open data view")
+      console.log("Userid : ", USER_ID)
+      this.taskID = cntxtmenuID;
+      var res = (await get_iteminfo(cntxtmenuID)).data[0]
+      console.log("res : ", res)
+      var tid = res.id
+      var jid = res.job_id
+      var ec_id = res.ec_id
+
+      window.name = "parentForm";
+      var url = "data_view?task=" + tid + '&user_id=' + USER_ID + '&job_id=' + jid + '&ec_id=' + ec_id
+
+      this.openWin = window.open(url, "modForm", "width=500, height=600, resizable=no, scrollbars=no, titlebar=no, location=no");
+    },
+
+
     async openTaskModify2() {      // open task modify window
       this.taskID = cntxtmenuID;
       var res = (await get_iteminfo(cntxtmenuID)).data[0]
       var tid = res.id
-      // console.log("res : ", res)
+
       var t_type = res.task_id
 
       window.name = "parentForm";

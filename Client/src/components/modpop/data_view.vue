@@ -3,221 +3,23 @@
     <table>
       <tr style="height:40px;">
         <td style="background:navy; width:2000px; color:white">
-          MODIFY / Task ID : <input type="text" v-model="taskID" value="ssss" style="background:navy; border:0px solid; color:white; font-size:20px; font-weight:600;">
+          DATA_VIEW / Task ID : <input type="text" v-model="taskID" value="ssss" style="background:navy; border:0px solid; color:white; font-size:20px; font-weight:600;">
         </td>
-        <td style="background:; width:250px;">
-          <button class="longBtnSAVE" v-on:click="update_task"> SAVE </button>
-        </td>
-        <!-- <td>
-          <button class="longBtn" v-on:click="func_test"> TEST </button>
-        </td> -->
       </tr>
+      
+      <tr>
+        <button class="longBtnSAVE" v-on:click="func_test"> VIEW </button>
+      </tr>
+
+      <tr style="height:40px;">
+        <td style="border:1px solid; width:2000px; height:500px;">
+          <input type="text" v-model="view_data" style="height:500px; width:450px; border:0px solid; font-size:15px; font-weight:600;">
+        </td>
+      </tr>
+
+
     </table>
     <br>
-
-    <div style="background:; width:35%; height:480px; float:left;">
-      <div style="background:; width:100%; height:180px; float:left;">
-        <div class="add_title" style="color:blue;"> BASE Parameter : </div>
-        <br>
-        <table id="base_table" style="margin:auto; align:center;">
-          <tr>
-            <td> <input class="mod_base_title" disabled value="Task Type : "> </td>
-            <td> <input class="mod_base_value" type="text" v-model="temptask_name" disabled> </td>
-          </tr>
-          <tr>
-            <td> <input class="mod_base_title" disabled value="Running Server : "> </td>
-            <td> <input class="mod_base_value" type="text" v-model="running_edge" disabled></td>
-          </tr>
-          <tr>
-            <td> <input class="mod_base_title" disabled value="Listening Port : "> </td>
-            <td> <input class="mod_base_value" type="text" v-model="templistening_port" disabled></td>
-          </tr>
-          <tr>
-            <td> <input class="mod_base_title" disabled value="Destination IP : "> </td>
-            <td> <input class="mod_base_value" type="text" v-model="tempdest_ip"></td>
-          </tr>
-
-          <tr>
-            <td> <input class="mod_base_title" disabled value="Destination Port : "> </td>
-            <td> <input class="mod_base_value" type="text" v-model="tempdest_port"></td>
-          </tr>
-
-          <tr v-if="mod_win == 0">
-            <td> <input class="mod_base_title" disabled value="IN Schema : "> </td>
-            <td>
-              <select style="width : 99%;" v-model="tempinput_schema">
-                <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
-              </select>
-            </td>
-          </tr>
-          <!-- <tr>
-            <td style="width : 80px;" class="add_title"> OUT Schema </td>
-            <td> 
-              <select style="width : 99%;" v-model="tempoutput_schema" disabled>
-                <option v-for="(item, index) in schemaArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
-              </select>
-            </td>
-          </tr> -->
-        </table>
-      </div>
-
-      <div style="background:; width:100%; height:300px; float:left;">
-        <div v-model="tempinput_schema" class="add_title"> [ Input Schema : {{ tempinput_schema}} ] </div>
-        <br>
-        <table class="modify_schema_table" style="margin:auto; width:50%;">
-          <tr>
-            <th>ID</th>
-            <th>NAME</th>
-            <th>TYPE</th>
-          </tr>
-            
-          <tr v-for="n in colArray.length">
-            <td> <input v-model="colArray[n-1].id" style="width:80px; border:0px;" disabled> </td>
-            <td> <input v-model="colArray[n-1].name" style="width:100px; border:0px;" disabled> </td>
-            <td> <input v-model="colArray[n-1].type_name" style="width:100px; border:0px;" disabled> </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
-    <div style="background:; width:63%; height:480px; float:left;">
-      <div class="add_title" style="width:150px; color:blue"> CUSTOM Parameter : </div>
-      <br>
-      <table id="param_table" style="margin:auto; align:center;">
-        <tr v-for="n in param_cnt">
-          <td> <input class="mod_base_title" v-model="param_data[n-1].name" disabled> </td>
-          <td> <input class="mod_base_value" v-model="param_data[n-1].val"> </td>
-        </tr>
-      </table>
-
-      <br><br>
-      <div v-if="mod_win == 4" class="add_title" style="width:100%"> MAKE Query </div>
-      <br>
-      <table v-if="mod_win == 4" class="make_query_table" style="margin:auto; width:100%;">
-        <tr>
-          <th colspan="2"> CATEGORY </th>
-          <th> VAL </th>
-          <th> ADD </th>
-          <th colspan="2"> LIST </th>
-        </tr>
-        <tr>
-          <td rowspan="2"> <input class="make_query_title_1" disabled value="SELECT"> </td>
-          <td> <input class="make_query_title_2" disabled value="TYPE"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_SEL_type">
-              <option value = "Group"> Group </option>
-              <option value = "MAX"> MAX </option>
-              <option value = "MIN"> MIN </option>
-              <option value = "SUM"> SUM </option>
-              <option value = "AVG"> AVG </option>
-              <option value = "Count"> Count </option>
-              <option value = "Renew"> Renew </option>
-            </select>
-          </td>
-          <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_SEL"> ADD </button> </td>
-          <td rowspan="2"> <input class="make_query_list" v-model="agg_SEL_list"> </td>
-          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_SEL"> FLUSH </button> </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_SEL_attr">
-              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_1" disabled value="GROUP BY"> </td>
-          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_GB_attr">
-              <option v-for="(item, index) in colArray" :value="item.name"> {{ item.name }} </option>
-            </select>
-          </td>
-          <td> <button class="shortBtnQuery" v-on:click="add_agg_GB"> ADD </button> </td>
-          <td> <input class="make_query_list" v-model="agg_GB_list"> </td>
-          <td> <button class="shortBtnQueryFlush" v-on:click="flush_agg_GB"> FLUSH </button> </td>
-        </tr>
-
-        <tr>
-          <td rowspan="2"> <input class="make_query_title_1" disabled value="ORDER BY"> </td>
-          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_OB_attr">
-              <option v-for="item in agg_SEL_array" :value="item"> {{ item }} </option>
-            </select>
-          </td>
-          <td rowspan="2"> <button class="shortBtnQuery" v-on:click="add_agg_OB"> ADD </button> </td>
-          <td rowspan="2"> <input class="make_query_list" v-model="agg_OB_list"> </td>
-          <td rowspan="2"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_OB"> FLUSH </button> </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_2" disabled value="ORDER"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_OB_order">
-              <option value = "ASC"> ASC </option>
-              <option value = "DESC"> DESC </option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td rowspan="4"> <input class="make_query_title_1" disabled value="HAVING"> </td>
-          <td> <input class="make_query_title_2" disabled value="TYPE"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_HAV_type">
-              <option value = "Group"> Group </option>
-              <option value = "MAX"> MAX </option>
-              <option value = "MIN"> MIN </option>
-              <option value = "SUM"> SUM </option>
-              <option value = "AVG"> AVG </option>
-              <option value = "Count"> Count </option>
-              <option value = "Renew"> Renew </option>
-            </select>
-          </td>
-          <td rowspan="4"> <button class="shortBtnQuery" v-on:click="add_agg_HAV"> ADD </button> </td>
-          <td rowspan="4"> <input class="make_query_list" v-model="agg_HAV_list"> </td>
-          <td rowspan="4"> <button class="shortBtnQueryFlush" v-on:click="flush_agg_HAV"> FLUSH </button> </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_2" disabled value="ATTR"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_HAV_attr">
-              <option v-for="item in agg_GB_array" :value="item"> {{ item }} </option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_2" disabled value="OP"> </td>
-          <td> 
-            <select class="make_query_value" v-model="agg_HAV_op">
-              <option value = "="> = </option>
-              <option value = "<"> < </option>
-              <option value = "<="> <= </option>
-              <option value = ">"> > </option>
-              <option value = ">="> >= </option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td> <input class="make_query_title_2" disabled value="VAL"> </td>
-          <td> <input class="make_query_value" type="text" v-model="agg_HAV_val"> </td>
-        </tr>
-        <tr style="height:40px;">
-          <td colspan="6"> <button class="longBtnMakeQ" v-on:click="make_total_query"> MAKE QUERY </button> </td>
-        </tr>
-        <tr> 
-          <td> <input class="mod_base_title" value="QUERY" disabled> </td>
-          <td colspan="5"> <input class="mod_base_value" style="height:30px;" v-model="temp_QUERY"> </td>
-        </tr>
-      </table>
-    </div>
   </div>
 </template>
 
@@ -283,12 +85,16 @@ export default {
       agg_GB_array : [],
       agg_SEL_array : [],
       agg_OB_array : [],
-      agg_HAV_array : []
+      agg_HAV_array : [],
+      view_data : "data"
     }
   },
   async created() {
     this.api_addr = "http://" + this.svrConfig.dev.host + ':' + this.svrConfig.dev.sport;
     this.taskID = await this.getParameterByName('task')
+    this.user_id = await this.getParameterByName('user_id')
+    this.job_id = await this.getParameterByName('job_id')
+    this.ec_id = await this.getParameterByName('ec_id')
     var type_and_check = await this.get_task_type(this.taskID)
     this.task_type_ID = type_and_check[0]
     this.check_config = type_and_check[1]
@@ -302,6 +108,37 @@ export default {
     this.running_edge = await this.get_edge_ip()
   },
   methods : {
+    sleep(ms) {
+      console.log("sleep")
+      var ts1 = new Date().getTime() + ms;
+      var ts2 = new Date().getTime(); 
+      while (ts2<ts1) {
+        ts2 = new Date().getTime(); 
+      }
+    },
+    async func_test() {
+      var params = {
+        user_id : this.user_id,
+        ec_id : this.ec_id,
+        lis_port : this.templistening_port
+      }
+      var api = this.api_addr + "/users/dataview";
+      
+      var data = (await axios.post(api, params)).data
+      this.view_data = data.split('/')
+
+      console.log(typeof(this.view_data))
+      console.log(this.view_data.length)
+
+      // // console.log("success : ", this.view_data)
+
+      // this.view_data = "0 0"
+      // console.log(this.view_data)
+      // // }, 1000)
+      // this.sleep(1000)
+      // this.view_data = "1 1"
+
+    },
     flush_agg_SEL() {
       this.agg_SEL_list = ''
       for(var i=0; i<this.agg_SEL_array.length; i++) {
@@ -467,9 +304,6 @@ export default {
       }
       var api = this.api_addr + "/users/job_tasks/init_config";
       await axios.post(api, params)
-    },
-    func_test() {
-      console.log("flush called")
     },
     set_out_schema() {
       var out;

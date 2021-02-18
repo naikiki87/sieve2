@@ -23,6 +23,7 @@
           <br><br>
           <tr style="height:45px;">
             <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="sign_in"> Sign IN </button> </td>
+            <!-- <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="watchdog"> TEST </button> </td> -->
           </tr>
           <br><br>
         </table>
@@ -148,6 +149,14 @@ export default {
           this.name_usable = 2
         }
       }
+
+    },
+    async watchdog() {
+      console.log("watch dog")
+      var api = this.api_addr + "/users/watchdog"
+      
+      var check = (await axios.get(api)).data
+      console.log("check : ", check)
 
     },
     new_membership() {

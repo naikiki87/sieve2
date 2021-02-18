@@ -51,22 +51,28 @@ var upload = multer({storage: storage});
 const up = upload.fields([{name: 'myFile', maxCount: 1}]);
 
 function connectUser (user, callback) {
-  var userSSH = new node_ssh();
+  console.log("connect user")
+  try {
+    var userSSH = new node_ssh();
   // 해당 연산서버의 유저에 접속
-  userSSH.connect({
-    host : user.ip_address,
-    username : user.root_id,
-    password : user.root_passwd,
-    tryKeyboard: true,
-    onKeyboardInteractive: (name, instructions, instructionsLang, prompts, finish) => {
-      if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
-        finish([user.root_passwd]);
+    userSSH.connect({
+      host : user.ip_address,
+      username : user.root_id,
+      password : user.root_passwd,
+      tryKeyboard: true,
+      onKeyboardInteractive: (name, instructions, instructionsLang, prompts, finish) => {
+        if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
+          finish([user.root_passwd]);
+        }
       }
-    }
-  })
-  .then((result) => {
-    callback(user, userSSH);
-  });
+    })
+    .then((result) => {
+      callback(user, userSSH);
+    });
+  }
+  catch (e) {
+    console.log("connect user error")
+  }
 }
 function del_work_folder(user, userSSH, user_name, callback) {
   console.log("del pro fol : ", user_name)
@@ -221,13 +227,14 @@ async function runModules2(user, db_info, user_name) {
     connectUser(user, (user, userSSH) =>
     {
       const dest_folder = "/home/workspace/" + user_name +"/" + user.listening_port
-
       userSSH.execCommand('pkill -f ' + dest_folder)
       .then((res) => {
+        console.log("res : ", res)
         console.log("pkill -f ", dest_folder, "complete")
+
         if(user.program_type == 0) {
           var execarr = [];
-          var filename = "python3.6 " + dest_folder + '/' + user.program_name + '.py'
+          var filename = "python3 " + dest_folder + '/' + user.program_name + '.py'
           execarr.push(filename)
 
           if(user.task_id == 37) {          // receive test 인 경우
@@ -269,34 +276,12 @@ async function runModules2(user, db_info, user_name) {
         }
 
         var exe = execarr.join(" ") + " & "
-        console.log("exe : ", exe)
+        console.log("exe22222 : ", exe)
 
-        // userSSH.execCommand(execarr.join(" ") + " & ")
+        userSSH.execCommand(execarr.join(" ") + " & ")
         resolve(100)
       })
     });
-  });
-}
-async function healthcheck(user, db_info, callback) {
-  var res = 2;
-  connectUser(user, (user, userSSH) =>
-  {
-    var name = user.name
-    var lis_port = user.listening_port
-    var dest_port = user.dest_port
-    var exe = `ps -ef | grep ${name} | grep ${lis_port} | grep ${dest_port}`
-
-    userSSH.execCommand(exe)
-    .then((result) => {
-      var text = `${name}.py`
-      if(result.stdout.indexOf(text) != -1) {
-        res = 1
-      }
-      else {
-        res = 0
-      }
-      callback(res)
-    })
   });
 }
 
@@ -391,6 +376,8 @@ router.post('/regID_check', wrapper.asyncMiddleware(async (req, res, next) =>{
   }
   res.json({same : same})
 }));
+
+
 router.post('/new_register', wrapper.asyncMiddleware(async (req, res, next) =>{
   const regid = req.body.regid
   const regpw = req.body.regpw
@@ -404,17 +391,80 @@ router.post('/new_register', wrapper.asyncMiddleware(async (req, res, next) =>{
 
   res.json({success : true})
 }));
+
+async function healthcheck(user, db_info, callback) {
+  console.log("func healthcheck 1")
+  var res = 2;
+  try {
+    connectUser(user, (user, userSSH) =>
+    {
+      console.log("func healthcheck 2")
+      var name = user.name
+      var lis_port = user.listening_port
+      var dest_port = user.dest_port
+      var exe = `ps -ef | grep ${name} | grep ${lis_port} | grep ${dest_port}`
+
+      userSSH.execCommand(exe)
+      .then((result) => {
+        console.log("result : ", result)
+        var text = `${name}.py`
+        if(result.stdout.indexOf(text) != -1) {
+          res = 1
+        }
+        else {
+          res = 0
+        }
+        console.log("server func healthcheck : ",name, res)
+        callback(res)
+      })
+    });
+  }
+  catch(e) {
+    console.log("func healthcheck 2-2 error")
+    callback(0)
+  }
+  
+}
+
 router.post('/healthcheck', wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("server healthcheck")
   const task_id = req.body.task_id
   const db_info =  await db.doQuery("select * from db_info")
 
   const user = (await db.doQuery(`SELECT jt.*, ec.*, t.name FROM job_tasks jt, engine_computer ec, tasks t
   WHERE jt.id = ${task_id} AND jt.ec_id = ec.id AND jt.task_id = t.id`))[0]
 
-  healthcheck(user, db_info, function(response) {
-    res.json({alive : response})
-  })
+  console.log("server healthcheck 2 : ")
+  
+  try {
+    healthcheck(user, db_info, function(response) {
+      res.json({alive : response})
+    })
+  }
+  catch(e) {
+    console.log("errorroro")
+  }
 }));
+
+router.post('/healthcheck_RT', wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("server healthcheck RT")
+  const task_id = req.body.task_id
+  const ec_id = req.body.ec_id
+
+  const ip_addr = (await db.doQuery(`SELECT ip_address FROM engine_computer where id=${ec_id}`))[0].ip_address
+  const watchdog = await db.doQuery(`SELECT * FROM watchdog where ip_addr='${ip_addr}'`);
+  
+  try {
+    console.log("healthcheck RT RRRR")
+    res.json(watchdog)
+  }
+  catch(e) {
+    console.log("errorroro")
+  }
+}));
+
+
+
 router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>{
   const ec_id = req.body.ec_id
   const lis_port = req.body.lis_port
@@ -440,6 +490,10 @@ router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   const user =  (await db.doQuery(`select * FROM users_test where id = ${id}`));
   res.json(user[0].userID);
 }));
+
+
+
+
 router.get('/engine_computer', wrapper.asyncMiddleware(async (req, res, next) => {
   console.log("engine Computer")
   const engine_computer = await db.doQuery('SELECT * FROM engine_computer');
@@ -759,6 +813,39 @@ router.post('/jobs/distribute', wrapper.asyncMiddleware(async (req, res, next) =
     });
 	};
 }));
+
+router.post('/dataview', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const user_id = req.body.user_id
+  const ec_id = req.body.ec_id
+  const lis_port = req.body.lis_port
+
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+  const engine_computer = await db.doQuery(`select * from engine_computer where id = ${ec_id}`);
+
+  console.log("server")
+  console.log("user name : ", user_name)
+  console.log("ec : ", engine_computer)
+
+  console.log("-------------- Data Read -----------------")
+  var user = engine_computer[0]
+  var content = await read_data(user, user_name, lis_port)
+  res.json(content);
+}));
+
+async function read_data(user, user_name, lis_port) {
+  console.log("func read_data")
+  return new Promise((resolve) => {
+    connectUser(user, (user, userSSH) =>
+    {
+      var exe = "awk '{print $0}' /home/workspace/" + user_name + "/" + lis_port + "/logs.txt"
+      userSSH.execCommand(exe)
+      .then((res) => {
+        resolve(res.stdout)
+      })
+    });
+  });
+}
+
 router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
   const id = req.body.id;
   const user_id = req.body.user_id
@@ -771,16 +858,60 @@ router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
     join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id}`);
 
   console.log("-------------- RUN -----------------")
-  console.log("en com : ", engine_computer)
+  // console.log("en com : ", engine_computer)
   for (var i =0; i<engine_computer.length; i++){
     var user = engine_computer[i]
-    var showtime = new Date()
-    var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
-    console.log(curtime, i, "runmodule2 call")
+    console.log("user : ", user)
+    // var showtime = new Date()
+    // var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
+    // console.log(curtime, i, "runmodule2 call")
     await runModules2(user, db_info, user_name)
   };
   res.json({success: true});
 }));
+
+router.get('/watchdog', wrapper.asyncMiddleware(async (req, res, next) => {
+  // console.log("server : watchdog")
+  // const db_info =  await db.doQuery("select * from db_info")
+  const watchdog = await db.doQuery('SELECT * FROM watchdog');
+  // console.log(watchdog)
+  // // for (var i =0; i<engine_computer.length; i++){
+  // for (var i =0; i<1; i++){
+  //   var user = engine_computer[i]
+  //   console.log(i, "func_watchdog call")
+  //   await func_watchdog(user, db_info, i)
+  // };
+  // res.json({success: true});
+  res.json(watchdog);
+}));
+
+async function func_watchdog(user, db_info, index) {
+  return new Promise((resolve) => {
+    console.log("FUNC WATCHDOG");
+    connectUser(user, (user, userSSH) =>
+    {
+      const dest_folder = "/home/watchdog/"
+
+      userSSH.execCommand('pkill -f ' + dest_folder)
+      .then((res) => {
+        console.log("pkill -f ", dest_folder, "complete")
+        var execarr = [];
+        var filename = "python3.6 " + dest_folder + 'ReceiveTest.py 0.0.0.0'
+        execarr.push(filename)
+        var port = 40001 + index
+        execarr.push(port)
+
+        var exe = execarr.join(" ") + " & "
+        console.log("exe2sadfsad2222 : ", exe)
+        // userSSH.execCommand(execarr.join(" ") + " & ")
+        userSSH.execCommand(exe)
+        resolve(100)
+      })
+    });
+  });
+}
+
+
 router.post('/jobs/kill', wrapper.asyncMiddleware(async (req, res, next) =>{
 const id = req.body.id;
 
@@ -906,6 +1037,13 @@ router.post('/job_tasks', wrapper.asyncMiddleware(async (req, res, next) => {
   // const job_tasks = await db.doQuery(`select jt.*, t.name FROM job_tasks jt join tasks t on t.id = jt.task_id where jt.job_id = ${job_id}`);
   const job_tasks = await db.doQuery(`select jt.*, t.name, t.program_type FROM job_tasks jt join tasks t on t.id = jt.task_id where jt.job_id = ${job_id}`);
   res.json(job_tasks);
+}));
+router.post('/get_task_list', wrapper.asyncMiddleware(async (req, res, next) => {
+  console.log("server get task list")
+  const ip_address = req.body.ip_address;
+  const ec_id = (await db.doQuery(`select id FROM engine_computer where ip_address = "${ip_address}"`))[0].id;
+  const task_list = await db.doQuery(`SELECT * FROM job_tasks WHERE ec_id=${ec_id}`);
+  res.json(task_list)
 }));
 router.post('/job_tasks/init_config', wrapper.asyncMiddleware(async (req, res, next) => {
   const id = req.body.id

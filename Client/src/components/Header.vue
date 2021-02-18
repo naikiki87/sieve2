@@ -6,6 +6,8 @@
     <div align="right" style="font-size:18px; font-weight:700;">
       <table>
         <tr>
+          <!-- <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="watchdog"> TE </button> -->
+          <!-- <td> <button style="font-weight:700; height:48px; width:96%; background:darkblue; color:white; font-size:18px;" v-on:click="watchdog_start"> W_DOG </button> -->
           <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo3.jpg" width="28px" height="28px"> </td>
           <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo.jpg" width="28px" height="28px"> </td>
           <td class="usericon" style="width:35px; display:none;"> <img src="./pengsoo2.jpg" width="28px" height="28px"> </td>
@@ -34,7 +36,8 @@ export default {
       api_addr : '',
       svrHost : '',
       f_port : '',
-      b_port : ''
+      b_port : '',
+      timer: null
     }
   },
   props : ['currentuserid'],
@@ -49,6 +52,17 @@ export default {
     this.b_port = this.svrConfig.dev.sport;
   },
   methods : {
+    watchdog_start: function() {
+      this.timer = setInterval(() => this.watchdog(), 1000);
+      console.log(this.timer)
+    },
+    async watchdog() {
+      console.log("watch dog")
+      var api = this.api_addr + "/users/watchdog"
+      var check = (await axios.get(api)).data
+      console.log("check : ", check)
+      return check
+    },
     to_login() {
       console.log("to login")
       this.$cookie.delete("user0")

@@ -3,13 +3,17 @@ import pandas as pd
 import pickle
 import sys
 import time
+from time import sleep
 
 HOST_NEXT = sys.argv[1]
 PORT_NEXT = int(sys.argv[2])
 INTERVAL = int(sys.argv[3])
 
+interval = 1/INTERVAL
+
 next_client = socket(AF_INET, SOCK_STREAM)
 next_client.connect((HOST_NEXT, PORT_NEXT))
+
 
 file = open('2d_int_int.txt', 'r')
 s = file.read()
@@ -29,5 +33,5 @@ while True :
     except :
         next_client.close()
 
-    time.sleep(INTERVAL)
+    sleep(interval)
     i = i + 1

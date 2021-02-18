@@ -5,6 +5,7 @@ import MainPage from '@/components/MainPage'
 import JobDetail from '@/components/jobDetail'
 import modBS from '@/components/modpop/basestream'
 import task_modify from '@/components/modpop/task_modify'
+import data_view from '@/components/modpop/data_view'
 // import TaskModify from '@/components/taskModify'
 // import Test from '@/components/test'
 import Login from '@/components/Login'
@@ -45,6 +46,11 @@ export default new Router({
       path: '/modify/BS',
       name: 'modBS',
       component: modBS
+    },
+    {
+      path: '/data_view',
+      name: 'data_view',
+      component: data_view
     },
     {
       path: '/modify',

@@ -35,6 +35,7 @@ print('connected')
 def create_Table(con) :
     cur = con.cursor()
     struct = ''
+    struct = struct + "timestamp double, "
     for i in range(len(SCHE)) :
         temp = SCHE[i].split(',')
         s_name = temp[0]
@@ -49,7 +50,8 @@ def create_Table(con) :
 
 def insert_data(con, data) :
     cur = con.cursor()
-    insert = ''
+    timestamp = int(time.time())
+    insert = str(timestamp) + ', '
     for i in range(len(data)) :
         if i == (len(data)-1) :
             insert = insert + data[i]
@@ -76,7 +78,7 @@ while True :
         data = pickle.loads(data)
         insert_data(con, data)
         row_cnt = len(cur.execute("select * from " + U_NAME).fetchall())
-        print("cnt : ", row_cnt)
+        # print("cnt : ", row_cnt)
         if AGG_TYPE == 0 :      # tuple 단위 집계
             if row_cnt % AGG_UNIT == 0 :
                 res = cur.execute(QUERY)
@@ -86,7 +88,7 @@ while True :
                 delete_all(con)
 
         elif AGG_TYPE == 1 :     # time 단위 집계
-            print("time : ", time.time())
+            print("time : ", int(time.time()))
             if first == 1 :
                 first = 0
                 start_time = time.time()
