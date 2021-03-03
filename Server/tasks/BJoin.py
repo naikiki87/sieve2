@@ -1,6 +1,6 @@
 from socket import *
 import logging
-# import pandas as pd
+import pandas as pd
 import time
 import pickle
 import sys
@@ -21,6 +21,12 @@ HOST = sys.argv[1]
 PORT = int(sys.argv[2])
 # HOST = "165.132.145.57"
 # PORT = 40001
+TYPE = sys.argv[6]
+UNIT = sys.argv[7]
+COND1 = sys.argv[8]
+COND2  = sys.argv[9]
+
+print("param : ", TYPE, UNIT, COND1, COND2)
 
 BUFSIZE = 1024
 ADDR = (HOST, PORT)

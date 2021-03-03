@@ -115,14 +115,11 @@ export default {
       this.timer = setInterval(() => this.watchdog(), 1000);
     },
     async watchdog() {
-      console.log("watchdog : ", this.pageArray[0].warning_cnt)
-      var api = this.api_addr + "/users/watchdog"
+      var api = this.api_addr + "/users/engine_computer"
       var check = (await axios.get(api)).data
-      // console.log(check)
-      // this.pageArray[0].abc = 100
       for(var i=0; i<this.pageArray.length; i++) {
         for(var j=0; j<check.length; j++) {
-          if(check[j].ip_addr == this.pageArray[i].ip_address) {
+          if(check[j].ip_address == this.pageArray[i].ip_address) {
             if(this.prev_timestamp[i] == check[j].timestamp) {
               if(this.dead_cnt[i] == 3) {
                 this.dead_cnt[i] = 0
@@ -166,6 +163,58 @@ export default {
         }
       }
     },
+    // async watchdog() {
+    //   // console.log("watchdog : ", this.pageArray[0].warning_cnt)
+    //   var api = this.api_addr + "/users/watchdog"
+    //   var check = (await axios.get(api)).data
+    //   // console.log(check)
+    //   // this.pageArray[0].abc = 100
+    //   for(var i=0; i<this.pageArray.length; i++) {
+    //     for(var j=0; j<check.length; j++) {
+    //       if(check[j].ip_addr == this.pageArray[i].ip_address) {
+    //         if(this.prev_timestamp[i] == check[j].timestamp) {
+    //           if(this.dead_cnt[i] == 3) {
+    //             this.dead_cnt[i] = 0
+    //             this.pageArray[i].cpu_usage = 0
+    //             this.pageArray[i].mem_usage = 0
+    //             this.pageArray[i].alive = 0
+    //           }
+    //           else {
+    //             this.dead_cnt[i] = this.dead_cnt[i] + 1
+    //           }
+    //         }
+    //         else {
+    //           this.pageArray[i].alive = 1
+    //           this.dead_cnt[i] = 0
+    //           var myDate = new Date(check[j].timestamp * 1000)
+    //           this.pageArray[i].timestamp = myDate.getHours() + ':' + myDate.getMinutes() + ':' + myDate.getSeconds()
+    //           this.prev_timestamp[i] = check[j].timestamp
+    //           this.pageArray[i].cpu_usage = check[j].cpu_usage
+    //           this.pageArray[i].mem_usage = check[j].mem_usage
+
+    //           if(check[j].cpu_usage >= 20) {
+    //             // console.log("Warning : ", this.pageArray[i].ip_address)
+    //             this.pageArray[i].warning_cnt = this.pageArray[i].warning_cnt + 1
+
+    //             if(this.pageArray[i].warning_cnt == 5) {
+    //               console.log("prepare to scaling")
+    //               var api2 = this.api_addr + "/users/get_task_list"
+    //               var params = {
+    //                 ip_address : this.pageArray[i].ip_address
+    //               }
+    //               var task_list = (await axios.post(api2, params)).data
+    //               console.log(task_list)
+    //             }
+    //           }
+    //           else {
+    //             this.pageArray[i].warning_cnt = 0
+    //           }
+
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
     async loadSvr() {
       var api = this.api_addr + "/users/engine_computer"
       this.pageArray = (await axios.get(api)).data

@@ -61,7 +61,7 @@
         </table>
       </div>
 
-      <div style="background:; width:100%; height:300px; float:left;">
+      <div style="background:; width:100%; height:200px; float:left;">
         <div v-model="tempinput_schema" class="add_title"> [ Input Schema : {{ tempinput_schema}} ] </div>
         <br>
         <table class="modify_schema_table" style="margin:auto; width:50%;">
@@ -78,6 +78,26 @@
           </tr>
         </table>
       </div>
+
+      <div style="background:; width:100%; height:200px; float:left;">
+        <div v-model="tempinput_schema2" class="add_title"> [ Input Schema : {{ tempinput_schema2}} ] </div>
+        <br>
+        <table class="modify_schema_table" style="margin:auto; width:50%;">
+          <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>TYPE</th>
+          </tr>
+            
+          <tr v-for="n in colArray2.length">
+            <td> <input v-model="colArray2[n-1].id" style="width:80px; border:0px;" disabled> </td>
+            <td> <input v-model="colArray2[n-1].name" style="width:100px; border:0px;" disabled> </td>
+            <td> <input v-model="colArray2[n-1].type_name" style="width:100px; border:0px;" disabled> </td>
+          </tr>
+          <button class="longBtnSAVE" v-on:click="func_test"> TEST </button>
+        </table>
+      </div>
+      
     </div>
 
     <div style="background:; width:63%; height:480px; float:left;">
@@ -91,6 +111,73 @@
       </table>
 
       <br><br>
+      <table v-if="mod_win == 2">
+        <tr>
+          <td> <input class="mod_base_title" disabled value="COL : "> </td>
+          <td>
+            <select style="width : 99%;" v-model="proj_col">
+              <option v-for="(item, index) in colArray" :value="index"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+        <button class="longBtnSAVE" v-on:click="func_test3"> TEST2 </button>
+      </table>
+      <table v-if="mod_win == 5">
+        <tr>
+          <td> <input class="mod_base_title" disabled value="COL : "> </td>
+          <td>
+            <select style="width : 99%;" v-model="sel_col">
+              <option v-for="(item, index) in colArray" :value="index"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> <input class="mod_base_title" disabled value="OP : "> </td>
+          <td> 
+            <select style="width : 99%;" v-model="sel_op">
+              <option value = "0"> = </option>
+              <option value = "1"> > </option>
+              <option value = "2"> >= </option>
+              <option value = "3"> < </option>
+              <option value = "4"> <= </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> <input class="mod_base_title" disabled value="VAL : "> </td>
+          <td> <input class="mod_base_value" type="text" v-model="sel_val"></td>
+        </tr>
+        <button class="longBtnSAVE" v-on:click="func_test2"> TEST2 </button>
+      </table>
+
+      <table v-if="mod_win == 12">
+        <tr>
+          <td> <input class="mod_base_title" disabled value="type(0 : time, 1 : typle) : "> </td>
+          <td> <input class="mod_base_value" type="text" v-model="bjoin_type"></td>
+        </tr>
+        <tr>
+          <td> <input class="mod_base_title" disabled value="unit : "> </td>
+          <td> <input class="mod_base_value" type="text" v-model="bjoin_unit"></td>
+        </tr>
+        <tr>
+          <td> <input class="mod_base_title" disabled value="condition : "> </td>
+          <td>
+            <select style="width : 99%;" v-model="bjoin_cond_1">
+              <option v-for="(item, index) in colArray" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+          <td> = </td>
+
+          <td>
+            <select style="width : 99%;" v-model="bjoin_cond_2">
+              <option v-for="(item, index) in colArray2" :value="item.id"> {{ item.id }} - {{ item.name }} </option>
+            </select>
+          </td>
+        </tr>
+        <button class="longBtnSAVE" v-on:click="func_test"> TEST </button>
+      </table>
+
+      
       <div v-if="mod_win == 4" class="add_title" style="width:100%"> MAKE Query </div>
       <br>
       <table v-if="mod_win == 4" class="make_query_table" style="margin:auto; width:100%;">
@@ -234,6 +321,7 @@ export default {
       svrArray : '',
       schemaArray : [],
       colArray : [],
+      colArray2 : [],
       agg_HAV_array : [],
 
       temp_QUERY : '',
@@ -246,6 +334,7 @@ export default {
       check_config : '',
       temptask_id : '',
       tempinput_schema : '',
+      tempinput_schema2 : '',
       templistening_port : '',
       tempec_id : '',
       tempoutput_type : '',
@@ -283,7 +372,17 @@ export default {
       agg_GB_array : [],
       agg_SEL_array : [],
       agg_OB_array : [],
-      agg_HAV_array : []
+      agg_HAV_array : [],
+      bjoin_type : '',
+      bjoin_unit : '',
+      bjoin_cond_1 : '',
+      bjoin_cond_2 : '',
+
+      sel_col : '',
+      sel_op : '',
+      sel_val : '',
+
+      proj_col : ''
     }
   },
   async created() {
@@ -292,6 +391,7 @@ export default {
     var type_and_check = await this.get_task_type(this.taskID)
     this.task_type_ID = type_and_check[0]
     this.check_config = type_and_check[1]
+    console.log("task id : ", this.taskID, this.task_type_ID)
 
     if(this.check_config == -1) {
       await this.init_config(this.task_type_ID)
@@ -468,9 +568,53 @@ export default {
       var api = this.api_addr + "/users/job_tasks/init_config";
       await axios.post(api, params)
     },
-    func_test() {
-      console.log("flush called")
+    async func_test3() {
+      console.log("func test3")
+      const param = {}
+      param['proj_col'] = this.proj_col
+
+      var parString = JSON.stringify(param)
+      var params = {
+        task_id : this.taskID,
+        param : parString
+      }
+      var api = this.api_addr + "/users/update_parameter";
+      await axios.post(api, params)
+
     },
+    async func_test2() {
+      console.log("func test2")
+      const param = {}
+      param['sel_col'] = this.sel_col
+      param['sel_op'] = this.sel_op
+      param['sel_val'] = this.sel_val
+
+      var parString = JSON.stringify(param)
+      var params = {
+        task_id : this.taskID,
+        param : parString
+      }
+      var api = this.api_addr + "/users/update_parameter";
+      await axios.post(api, params)
+
+    },
+    async func_test() {
+      const param = {}
+      param['type'] = this.bjoin_type
+      param['unit'] = this.bjoin_unit
+      param['cond1'] = this.bjoin_cond_1
+      param['cond2'] = this.bjoin_cond_2
+
+      var parString = JSON.stringify(param)
+      var params = {
+        task_id : this.taskID,
+        param : parString
+      }
+
+      var api = this.api_addr + "/users/update_parameter";
+      await axios.post(api, params)
+    },
+
     set_out_schema() {
       var out;
       switch(this.temptask_id) {
@@ -509,7 +653,7 @@ export default {
         listening_port : this.templistening_port,
         ec_id : this.tempec_id,
         output_type : this.tempoutput_type,
-        config : await this.make_parameter(),
+        // config : await this.make_parameter(),
         heartbeat_task_id : this.tempheartbeat_task,
         heartbeat_job_id : this.tempheartbeat_job,
         output_schema_id : await this.set_out_schema(),
@@ -535,10 +679,12 @@ export default {
       var res = (await axios.post(api, params)).data[0]
 
       this.mod_win = res.task_id
+      console.log("this : ", this.mod_win)
 
       this.temptask_name = res.name
       this.temptask_id = res.task_id
       this.tempinput_schema = res.input_schema_id
+      this.tempinput_schema2 = res.input_schema_id2
       this.templistening_port = res.listening_port
       this.tempec_id = res.ec_id
       this.tempoutput_type = res.output_type
@@ -555,6 +701,11 @@ export default {
 
       await this.loadSchemaColumn(res.input_schema_id)
 
+      if(this.task_type_ID == 12) {   // binary join 인 경우
+        await this.loadSchemaColumn2(res.input_schema_id2)
+      }
+
+
       // custom parameter
       this.param_data = JSON.parse(this.tempconfig)
       this.param_cnt = this.param_data.length
@@ -565,6 +716,15 @@ export default {
       }
       var api = this.api_addr + "/users/cell_columns";
       this.colArray = (await axios.post(api, params)).data
+    },
+
+    async loadSchemaColumn2(index) {
+      var params = {
+        schema_id : index
+      }
+      var api = this.api_addr + "/users/cell_columns";
+      this.colArray2 = (await axios.post(api, params)).data
+      console.log("load 2 : ", this.colArray2)
     },
     async loadSvr() {
       var api = this.api_addr + "/users/engine_computer";

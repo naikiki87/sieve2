@@ -20,16 +20,45 @@ s = file.read()
 data = s.split('\n')
 
 i = 0
+# interval = 0.5
+cnt = 0
+iid = 0
 
 while True :
     if i == len(data) :
         i = 0
-    row = data[i].split('\t')
+        # cnt = cnt + 1
+
+        # if cnt < 2 :
+        #     interval = 0.5
+        
+        # else :
+        #     interval = 0.05
+        #     if cnt == 10 :
+        #         cnt = 0
+        
+    # row = str(iid) + ' : ' + str(data[i].split('\t'))
+
+    row = data[i]
+    # row = str(iid)
+    # iid = iid + 1
 
     try :
-        print("send : ", row)
-        send_data = pickle.dumps(row)
-        next_client.sendall(send_data)
+        # if iid == 10 :
+        #     interval = 0.1
+        
+        # if iid == 50 :
+        #     interval = 0.01
+
+        if iid == 101 :
+            break
+        # elif iid % 100 == 0 :
+            # print("send : ", iid)
+        else :
+            print("send : ", row)
+
+            send_data = pickle.dumps(row)
+            next_client.sendall(send_data)
     except :
         next_client.close()
 

@@ -11,6 +11,10 @@ HOST = sys.argv[1]
 PORT = int(sys.argv[2])
 HOST_NEXT = sys.argv[3]
 PORT_NEXT = int(sys.argv[4])
+IN_SCHEMA = int(sys.argv[5])
+COL = int(sys.argv[6])
+OP = int(sys.argv[7])
+VAL = int(sys.argv[8])
 
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
@@ -27,6 +31,7 @@ def db_con() :
 
 # conn = db_con()
 # cursor = conn.cursor(pymysql.cursors.DictCursor)
+# # sql = 'select id from engine_computer where ip_address="' + HOST + '"'
 # sql = 'select id from engine_computer where ip_address="165.132.105.40"'
 # cursor.execute(sql)
 # result = cursor.fetchall()
@@ -37,19 +42,17 @@ split_cnt = 1
 
 next_client = []
 
-
 def monitoring_split() :
     print("monitoring start")
     while True :
         try :
-            # print("AAAA")
             conn = db_con()
             cursor = conn.cursor(pymysql.cursors.DictCursor)
             sql = 'SELECT split FROM job_tasks where ec_id=' + str(ec_id) + ' and listening_port=' + str(PORT)
-            # sql = 'SELECT split FROM job_tasks where ec_id=' + str(1) + ' and listening_port=40001'
             cursor.execute(sql)
             result = cursor.fetchall()
             split = result[0]['split']
+            conn.close()
 
             if split == 1 :
                 print("split : ", split)
@@ -72,6 +75,7 @@ def receive_append() :
     sql = 'SELECT sec_dest_ip, sec_dest_port FROM job_tasks where ec_id=' + str(ec_id) + ' and listening_port=' + str(PORT)
     cursor.execute(sql)
     result = cursor.fetchall()
+    conn.close()
     next_host = result[0]['sec_dest_ip']
     next_port = result[0]['sec_dest_port']
 
@@ -98,17 +102,34 @@ while True :
         data = pickle.loads(data)
 
     try :
-        # print("send ; ", data)
-        # for i in range(int(data)) :
-        for i in range(1000) :
-            for j in range(1000) :
-                temp = i * j
-                    # print("temp : ", temp)
-                
-        # print("send : ",split_cnt, data)
-        send_data = pickle.dumps(data)
+        tempdata = data.split('\t')
+        senddata = ''
+        print(tempdata[COL])
 
-        for j in range(split_cnt) :
-            next_client[j].sendall(send_data)
+        if OP == 0 :    # =
+            if int(tempdata[COL]) == VAL :
+                senddata = data
+
+        if OP == 1 :    # >
+            if int(tempdata[COL]) > VAL :
+                senddata = data
+
+        if OP == 2 :    # >=
+            if int(tempdata[COL]) >= VAL :
+                senddata = data
+        
+        if OP == 3 :    # <
+            if int(tempdata[COL]) < VAL :
+                senddata = data
+
+        if OP == 4 :
+            if int(tempdata[COL]) <= VAL :
+                senddata = data
+
+        if senddata != '' :
+            send_data = pickle.dumps(senddata)
+
+            for j in range(split_cnt) :
+                next_client[j].sendall(send_data)
     except :
         pass

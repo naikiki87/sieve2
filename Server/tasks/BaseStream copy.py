@@ -7,6 +7,7 @@ HOST = ''
 PORT = int(sys.argv[2])
 HOST_NEXT = sys.argv[3]
 PORT_NEXT = int(sys.argv[4])
+INPUT_SCHEMA = int(sys.argv[5])
 
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
@@ -23,11 +24,9 @@ client_next.connect((HOST_NEXT, PORT_NEXT))
 
 while True :
     data = clientSocket.recv(65535)
-    # data = data.decode()        ## bytes -> string
     if data != "" :
-        # print("data : ", data)
         data = pickle.loads(data)
-        print("before : ", data)
+        print("receive : ", data)
 
         try :
             send = pickle.dumps(data)

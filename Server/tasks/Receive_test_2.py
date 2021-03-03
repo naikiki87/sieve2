@@ -17,10 +17,10 @@ file_handler = logging.FileHandler('logs.txt')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-HOST = sys.argv[1]
-PORT = int(sys.argv[2])
-# HOST = "165.132.145.57"
-# PORT = 40001
+# HOST = sys.argv[1]
+# PORT = int(sys.argv[2])
+HOST = "165.132.145.57"
+PORT = 40001
 
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
@@ -58,11 +58,11 @@ while True :
         t = threading.Thread(target=Recv, args=(conn, addr, count))
         t.start()
 
-# while True :
-#     if show == 3 :
-#         show = 0
-#         print("A : ", queue_a)
-#         print("B : ", queue_b)
-#     else :
-#         show = show + 1
-#     time.sleep(1)
+while True :
+    if show == 3 :
+        show = 0
+        print("A : ", queue_a)
+        print("B : ", queue_b)
+    else :
+        show = show + 1
+    time.sleep(1)

@@ -51,7 +51,7 @@ var upload = multer({storage: storage});
 const up = upload.fields([{name: 'myFile', maxCount: 1}]);
 
 function connectUser (user, callback) {
-  console.log("connect user")
+  // console.log("connect user")
   try {
     var userSSH = new node_ssh();
   // 해당 연산서버의 유저에 접속
@@ -235,6 +235,7 @@ async function runModules2(user, db_info, user_name) {
         if(user.program_type == 0) {
           var execarr = [];
           var filename = "python3 " + dest_folder + '/' + user.program_name + '.py'
+
           execarr.push(filename)
 
           if(user.task_id == 37) {          // receive test 인 경우
@@ -247,6 +248,27 @@ async function runModules2(user, db_info, user_name) {
             execarr.push(user.dest_ip)            // args[3]
             execarr.push(user.dest_port)          // args[4]
             execarr.push(user.input_schema_id)    // args[5]
+
+            if(user.task_id == 2) {               // projection
+              var param = JSON.parse(user.config)
+              execarr.push(param['proj_col'])          // args[8] - Agg Type
+            }
+
+            if(user.task_id == 5) {               // selection
+              var param = JSON.parse(user.config)
+              console.log("AAAAAAAAAAAAAAAA : ", param)
+              execarr.push(param['sel_col'])          // args[8] - Agg Type
+              execarr.push(param['sel_op'])          // args[8] - Agg Type
+              execarr.push(param['sel_val'])          // args[8] - Agg Type
+            }
+
+            if(user.task_id == 12) {              // BJoin
+              var param = JSON.parse(user.config)
+              execarr.push(param['type'])          // args[8] - Agg Type
+              execarr.push(param['unit'])          // args[8] - Agg Type
+              execarr.push(param['cond1'])          // args[8] - Agg Type
+              execarr.push(param['cond2'])          // args[8] - Agg Type
+            }
 
             if(user.task_id == 4) {               // Aggregation
               var schema = ""
@@ -393,12 +415,12 @@ router.post('/new_register', wrapper.asyncMiddleware(async (req, res, next) =>{
 }));
 
 async function healthcheck(user, db_info, callback) {
-  console.log("func healthcheck 1")
+  // console.log("func healthcheck 1")
   var res = 2;
   try {
     connectUser(user, (user, userSSH) =>
     {
-      console.log("func healthcheck 2")
+      // console.log("func healthcheck 2")
       var name = user.name
       var lis_port = user.listening_port
       var dest_port = user.dest_port
@@ -406,7 +428,7 @@ async function healthcheck(user, db_info, callback) {
 
       userSSH.execCommand(exe)
       .then((result) => {
-        console.log("result : ", result)
+        // console.log("result : ", result)
         var text = `${name}.py`
         if(result.stdout.indexOf(text) != -1) {
           res = 1
@@ -414,7 +436,7 @@ async function healthcheck(user, db_info, callback) {
         else {
           res = 0
         }
-        console.log("server func healthcheck : ",name, res)
+        // console.log("server func healthcheck : ",name, res)
         callback(res)
       })
     });
@@ -427,14 +449,14 @@ async function healthcheck(user, db_info, callback) {
 }
 
 router.post('/healthcheck', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("server healthcheck")
+  // console.log("server healthcheck")
   const task_id = req.body.task_id
   const db_info =  await db.doQuery("select * from db_info")
 
   const user = (await db.doQuery(`SELECT jt.*, ec.*, t.name FROM job_tasks jt, engine_computer ec, tasks t
   WHERE jt.id = ${task_id} AND jt.ec_id = ec.id AND jt.task_id = t.id`))[0]
 
-  console.log("server healthcheck 2 : ")
+  // console.log("server healthcheck 2 : ")
   
   try {
     healthcheck(user, db_info, function(response) {
@@ -469,7 +491,7 @@ router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>
   const ec_id = req.body.ec_id
   const lis_port = req.body.lis_port
 
-  console.log("use port : ", ec_id, lis_port)
+  // console.log("use port : ", ec_id, lis_port)
 
   const tasks = (await db.doQuery(`SELECT jt.*, ec.*  FROM job_tasks jt, engine_computer ec
   WHERE ec.id = ${ec_id} AND jt.ec_id = ec.id`))
@@ -481,7 +503,7 @@ router.post('/port_use_check', wrapper.asyncMiddleware(async (req, res, next) =>
       break
     }
   }
-  console.log("check result : ", check)
+  // console.log("check result : ", check)
 
   res.json({use : check})
 }));
@@ -491,16 +513,21 @@ router.post('/get_username', wrapper.asyncMiddleware(async (req, res, next) =>{
   res.json(user[0].userID);
 }));
 
+router.post('/engine_computer/get_ip', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const id = req.body.ec_id;
+
+  const engine_computer =  (await db.doQuery(`select ip_address FROM engine_computer where id = ${id}`));
+  res.json(engine_computer);
+}));
 
 
 
 router.get('/engine_computer', wrapper.asyncMiddleware(async (req, res, next) => {
-  console.log("engine Computer")
   const engine_computer = await db.doQuery('SELECT * FROM engine_computer');
   res.json(engine_computer);
 }));
 router.post('/engine_computer/get_by_id', wrapper.asyncMiddleware(async (req, res, next) =>{
-	console.log(req.body)
+	// console.log(req.body)
   const id = req.body.id;
 
   const engine_computer =  (await db.doQuery(`select * FROM engine_computer where id = ${id}`));
@@ -535,8 +562,6 @@ router.post('/engine_computer/delete_all', wrapper.asyncMiddleware(async (req, r
 }));
 router.get('/cell_schemas', wrapper.asyncMiddleware(async (req, res, next) => {
   const cell_schemas = await db.doQuery('SELECT * FROM cell_schemas');
-  console.log("cell schemas ::::::")
-  console.log(cell_schemas)
   res.json(cell_schemas);
 }));
 router.post('/cell_schemas2', wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -783,6 +808,7 @@ router.post('/jobs/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log(await db.doQuery(`DELETE FROM task_lines where job_id = ${id}`));
   res.json({success: true});
 }));
+
 router.post('/jobs/distribute', wrapper.asyncMiddleware(async (req, res, next) =>{
   var result = 0;
   const id = req.body.id;
@@ -805,6 +831,33 @@ router.post('/jobs/distribute', wrapper.asyncMiddleware(async (req, res, next) =
 		var user = engine_computer[i]
 		connectUser(user, (user, userSSH) => {
       console.log(result);
+			console.log("sieve_input_" + user.listening_port + " connected!")
+			copyPasteModules(user, userSSH, user_name, () => {
+        console.log("sieve_input_" + user.listening_port + " move modules done!")
+        res.json({success: 1});
+			});
+    });
+	};
+}));
+
+router.post('/tasks/distribute', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const tasks = req.body.tasks;
+  const user_id = req.body.user_id
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+
+  const engine_computer = []
+  for(var i=0; i<tasks.length; i++) {
+    var task_id = tasks[i]
+    var temp = await db.doQuery(`select * from job_tasks jt
+    join jobs j on j.id = jt.job_id
+    join tasks t on t.id = jt.task_id
+    join engine_computer ec on ec.id = jt.ec_id where jt.id = ${task_id}`);
+    engine_computer.push(temp[0])
+  }
+
+	for (var i =0; i <engine_computer.length; i++){
+		var user = engine_computer[i]
+		connectUser(user, (user, userSSH) => {
 			console.log("sieve_input_" + user.listening_port + " connected!")
 			copyPasteModules(user, userSSH, user_name, () => {
         console.log("sieve_input_" + user.listening_port + " move modules done!")
@@ -857,6 +910,8 @@ router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
     join tasks t on t.id = jt.task_id
     join engine_computer ec on ec.id = jt.ec_id where jt.job_id = ${id}`);
 
+  console.log("engine_computer : ", engine_computer)
+
   console.log("-------------- RUN -----------------")
   // console.log("en com : ", engine_computer)
   for (var i =0; i<engine_computer.length; i++){
@@ -865,6 +920,33 @@ router.post('/jobs/run', wrapper.asyncMiddleware(async (req, res, next) =>{
     // var showtime = new Date()
     // var curtime = showtime.getSeconds() + ':' + showtime.getMilliseconds()
     // console.log(curtime, i, "runmodule2 call")
+    await runModules2(user, db_info, user_name)
+  };
+  res.json({success: true});
+}));
+
+router.post('/tasks/run', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const user_id = req.body.user_id
+  const tasks = req.body.tasks
+
+  const user_name = (await db.doQuery(`select userID from users_test where id = ${user_id}`))[0].userID
+  const db_info =  await db.doQuery("select * from db_info")
+  const engine_computer = []
+
+  for(var i=0; i<tasks.length; i++) {
+    var task_id = tasks[i]
+    console.log("task id : ", task_id)
+    var temp = await db.doQuery(`select *, t.name as program_name from job_tasks jt
+    join jobs j on j.id = jt.job_id
+    join tasks t on t.id = jt.task_id
+    join engine_computer ec on ec.id = jt.ec_id where jt.id = ${task_id}`);
+    engine_computer.push(temp[0])
+  }
+
+  console.log("-------------- RUN -----------------")
+  for (var i =0; i<engine_computer.length; i++){
+    var user = engine_computer[i]
+    console.log("user : ", user)
     await runModules2(user, db_info, user_name)
   };
   res.json({success: true});
@@ -912,6 +994,7 @@ async function func_watchdog(user, db_info, index) {
 }
 
 
+
 router.post('/jobs/kill', wrapper.asyncMiddleware(async (req, res, next) =>{
 const id = req.body.id;
 
@@ -941,22 +1024,44 @@ join program_types pt on t.program_type = pt.id where userid=0 or userid= ${curr
   res.json(tasks);
 }));
 router.post('/get_taskinfo', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("/get_taskinfo")
   const id = req.body.id;
   const taskinfo = await db.doQuery(`SELECT jt.*, t.name FROM job_tasks jt, tasks t WHERE jt.id = ${id} AND jt.task_id = t.id`);
-  console.log("result : ", taskinfo)
   res.json(taskinfo);
 }));
+
+router.post('/update_parameter', wrapper.asyncMiddleware(async (req, res, next) =>{
+  const task_id = req.body.task_id
+  const param = req.body.param
+
+  console.log("update parameter : ", task_id, param, typeof(param))
+  // const id = req.body.id;
+  await db.doQuery(`update job_tasks set config='${param}' where id=${task_id}`);
+  res.json({success : 1});
+}));
+
 router.post('/update_dest_info', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("update dest info")
   const from_id = req.body.from_id;
   const to_id = req.body.to_id;
   const start_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
   WHERE jt.id = ${from_id} AND ec.id = jt.ec_id `)
 
   const prev_out_schema = start_info[0].output_schema_id
-  console.log("start out chema : ", prev_out_schema)
-  await db.doQuery(`UPDATE job_tasks SET input_schema_id = ${prev_out_schema} WHERE id = ${to_id}`)
+  // console.log("start out chema : ", prev_out_schema)
+
+  const end_type = (await db.doQuery(`SELECT * from job_tasks where id=${to_id}`))[0].task_id
+  if(end_type == 12) {  // binary join 인 경우
+    const in_schema_1 = (await db.doQuery(`SELECT input_schema_id from job_tasks where id=${to_id}`))[0].input_schema_id
+    console.log("in 1 : ", in_schema_1)
+    if(in_schema_1 == -1) {
+      await db.doQuery(`UPDATE job_tasks SET input_schema_id = ${prev_out_schema} WHERE id = ${to_id}`)
+    }
+    else {
+      await db.doQuery(`UPDATE job_tasks SET input_schema_id2 = ${prev_out_schema} WHERE id = ${to_id}`)
+    }
+  }
+  else {
+    await db.doQuery(`UPDATE job_tasks SET input_schema_id = ${prev_out_schema} WHERE id = ${to_id}`)
+  }
   
   const dest_info = await db.doQuery(`SELECT * FROM engine_computer ec, job_tasks jt
   WHERE jt.id = ${to_id} AND ec.id = jt.ec_id `);
@@ -1038,6 +1143,14 @@ router.post('/job_tasks', wrapper.asyncMiddleware(async (req, res, next) => {
   const job_tasks = await db.doQuery(`select jt.*, t.name, t.program_type FROM job_tasks jt join tasks t on t.id = jt.task_id where jt.job_id = ${job_id}`);
   res.json(job_tasks);
 }));
+
+router.post('/get_task_list/by_job_id', wrapper.asyncMiddleware(async (req, res, next) => {
+  console.log("server get task list")
+  const job_id = req.body.job_id
+  const task_list = await db.doQuery(`SELECT * FROM job_tasks WHERE job_id=${job_id}`);
+  res.json(task_list)
+}));
+
 router.post('/get_task_list', wrapper.asyncMiddleware(async (req, res, next) => {
   console.log("server get task list")
   const ip_address = req.body.ip_address;
@@ -1107,7 +1220,9 @@ router.post('/job_tasks/add', wrapper.asyncMiddleware(async (req, res, next) =>{
   const position_y = req.body.position_y;
   const dest_ip = req.body.dest_ip;
   const dest_port = req.body.dest_port;
-  console.log(await db.doQuery(`INSERT INTO job_tasks (job_id, task_id, input_schema_id, listening_port, ec_id, output_type, config, heartbeat_task_id, heartbeat_job_id, output_schema_id, position_x, position_y, dest_ip, dest_port) values ('${job_id}','${task_id}','${input_schema_id}','${listening_port}','${ec_id}','${output_type}','${config}','${heartbeat_task_id}','${heartbeat_job_id}','${output_schema_id}','${position_x}','${position_y}', '${dest_ip}', '${dest_port}')`));
+  await db.doQuery(`INSERT INTO job_tasks (job_id, task_id, input_schema_id, listening_port, ec_id, output_type, config, heartbeat_task_id, heartbeat_job_id, output_schema_id, position_x, position_y, dest_ip, dest_port) values ('${job_id}','${task_id}','${input_schema_id}','${listening_port}','${ec_id}','${output_type}','${config}','${heartbeat_task_id}','${heartbeat_job_id}','${output_schema_id}','${position_x}','${position_y}', '${dest_ip}', '${dest_port}')`)
+  // console.log(res)
+  // console.log(await db.doQuery(`INSERT INTO job_tasks (job_id, task_id, input_schema_id, listening_port, ec_id, output_type, config, heartbeat_task_id, heartbeat_job_id, output_schema_id, position_x, position_y, dest_ip, dest_port) values ('${job_id}','${task_id}','${input_schema_id}','${listening_port}','${ec_id}','${output_type}','${config}','${heartbeat_task_id}','${heartbeat_job_id}','${output_schema_id}','${position_x}','${position_y}', '${dest_ip}', '${dest_port}')`));
   res.json({success: true});
 }));
 router.post('/job_tasks/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
@@ -1125,6 +1240,16 @@ router.post('/job_tasks/delete', wrapper.asyncMiddleware(async (req, res, next) 
   });
   await db.doQuery(`DELETE FROM job_tasks where id = ${id}`)
   res.json({success: true});
+}));
+router.post('/job_tasks/get_id', wrapper.asyncMiddleware(async (req, res, next) =>{
+  console.log("job tasks get id");
+  const job_id = req.body.job_id;
+  const ec_id = req.body.ec_id;
+  const listening_port = req.body.listening_port
+  
+  var data = await db.doQuery(`select id, listening_port from job_tasks where job_id = ${job_id} and listening_port = ${listening_port} and ec_id=${ec_id}`)
+  
+  res.json(data);
 }));
 router.post('/job_tasks/delete_all', wrapper.asyncMiddleware(async (req, res, next) =>{
   console.log("DELETE TASKS");
@@ -1635,6 +1760,95 @@ router.post('/task_lines', wrapper.asyncMiddleware(async (req, res, next) => {
   const task_lines = await db.doQuery(`SELECT * FROM task_lines where job_id = ${job_id}`);
   res.json(task_lines);
 }));
+
+router.post('/taskcopy_dest_info', wrapper.asyncMiddleware(async (req, res, next) => {
+  const original_task = req.body.original_task;
+  const new_task = req.body.new_task;
+
+  console.log("333333333333333 INFO : ", original_task, new_task)
+
+  var dest_info = await db.doQuery(`SELECT * FROM job_tasks where id = ${original_task}`);
+  var dest_ip = dest_info[0].dest_ip
+  var dest_port = dest_info[0].dest_port
+
+  console.log("task copy : ", original_task, new_task, dest_ip, dest_port)
+  await db.doQuery(`UPDATE job_tasks SET dest_ip = "${dest_ip}", dest_port = ${dest_port} WHERE id = ${new_task}`)
+  res.json({success:1})
+}));
+
+router.post('/task_new_dest_info', wrapper.asyncMiddleware(async (req, res, next) => {
+  const new_child = req.body.new_child;
+  const new_task = req.body.new_task;
+
+  console.log("1111111111111111 INFO : ", new_child, new_task)
+
+  var dest_info = await db.doQuery(`SELECT * FROM job_tasks where id = ${new_child}`);
+  var dest_ec = dest_info[0].ec_id
+  var dest_ip = (await db.doQuery(`SELECT ip_address FROM engine_computer where id = ${dest_ec}`))[0].ip_address;
+  var dest_port = dest_info[0].listening_port
+
+  await db.doQuery(`UPDATE job_tasks SET dest_ip = "${dest_ip}", dest_port = ${dest_port} WHERE id = ${new_task}`)
+  res.json({success:1})
+}));
+
+router.post('/task_dest_split', wrapper.asyncMiddleware(async (req, res, next) => {
+  const target_task = req.body.target_task;
+  const new_task = req.body.new_task;
+
+  console.log("22222222222222 INFO : ", target_task, new_task)
+
+  var dest_info = await db.doQuery(`SELECT * FROM job_tasks where id = ${new_task}`);
+  var dest_ec = dest_info[0].ec_id
+  var dest_ip = (await db.doQuery(`SELECT ip_address FROM engine_computer where id = ${dest_ec}`))[0].ip_address;
+  var dest_port = dest_info[0].listening_port
+
+  console.log("values : ", dest_ip, dest_port)
+  await db.doQuery(`UPDATE job_tasks SET sec_dest_ip = "${dest_ip}", sec_dest_port = ${dest_port} WHERE id = ${target_task}`)
+  // await db.doQuery(`UPDATE job_tasks SET split_ip = "1235", split_port = 12345 WHERE id = ${target_task}`)
+  res.json({success : 1});
+}));
+
+router.post('/task_split_input', wrapper.asyncMiddleware(async (req, res, next) => {
+  const target_task = req.body.target_task;
+
+  for(var i=0; i<target_task.length; i++) {
+    var target_id = target_task[i]
+    await db.doQuery(`UPDATE job_tasks SET split = 1 WHERE id = ${target_id}`)
+  }
+  res.json({success : 1});
+}));
+
+router.post('/task_update', wrapper.asyncMiddleware(async (req, res, next) => {
+  const is_end = req.body.is_end
+  const split = req.body.split
+  const task_id = req.body.task_id
+  const dest_id = req.body.dest_id
+
+  console.log("task_update : ", split)
+
+  if(is_end == 0) {
+    console.log("server is end 000000000000000")
+    var dest_info = await db.doQuery(`SELECT * FROM job_tasks where id = ${dest_id}`);
+    var dest_ec = dest_info[0].ec_id
+    var dest_ip = (await db.doQuery(`SELECT ip_address FROM engine_computer where id = ${dest_ec}`))[0].ip_address;
+    var dest_port = dest_info[0].listening_port
+
+    console.log("values : ", dest_ip, dest_port)
+    await db.doQuery(`UPDATE job_tasks SET split = 1, sec_dest_ip = "${dest_ip}", sec_dest_port = ${dest_port} WHERE id = ${task_id}`)
+    res.json({success : 1});
+  }
+  else {
+    var dest_info = await db.doQuery(`SELECT * FROM job_tasks where id = ${dest_id}`);
+    var dest_ip = dest_info[0].dest_ip
+    var dest_port = dest_info[0].dest_port
+    console.log("**************** dest info : ", dest_ip, dest_info[0].listening_port)
+    await db.doQuery(`UPDATE job_tasks SET split = 1, sec_dest_ip = "${dest_ip}", sec_dest_port = ${dest_port} WHERE id = ${task_id}`)
+    res.json({success : 1});
+
+  }
+
+  
+}));
 router.post('/get_prev_attrs', wrapper.asyncMiddleware(async (req, res, next) => {
   const id = req.body.id;
   const attrs = await db.doQuery(`SELECT cs.*, cc.* FROM job_tasks jt, cell_schemas cs, cell_columns cc
@@ -1642,7 +1856,6 @@ router.post('/get_prev_attrs', wrapper.asyncMiddleware(async (req, res, next) =>
   res.json(attrs);
 }));
 router.post('/rel_lines', wrapper.asyncMiddleware(async (req, res, next) => {
-  console.log("rel lines")
   const id = req.body.id;
   const rel_lines = await db.doQuery(`SELECT * FROM task_lines where from_id = ${id} or to_id = ${id}`);
   res.json(rel_lines);
@@ -1668,9 +1881,8 @@ router.post('/task_lines/add', wrapper.asyncMiddleware(async (req, res, next) =>
   res.json({success: true});
 }));
 router.post('/task_lines/delete', wrapper.asyncMiddleware(async (req, res, next) =>{
-  console.log("DELETE LINES");
   const id = req.body.id;
-  console.log(await db.doQuery(`DELETE FROM task_lines where id = ${id}`));
+  await db.doQuery(`DELETE FROM task_lines where id = ${id}`)
   res.json({success: true});
 }));
 router.post('/task_lines/delete_joblines', wrapper.asyncMiddleware(async (req, res, next) =>{

@@ -955,6 +955,20 @@ var rel_lines;
 var rel_tasks;
 var selected_box;
 var t_pos_x, t_pos_y
+var total_asm = []
+
+function combination(arr, num) {
+  let result = [];
+  if(num == 1) return arr.map(e => [e]);
+  
+  arr.forEach((e,i,array) => {
+    let rest = array.slice(i+1);
+    let combinations = combination(rest,num-1);
+    let combiArr = combinations.map(x => [e, ...x])
+    result.push(...combiArr);
+  }) 
+  return result;
+}
 
 function get_iteminfo(index) {
   var res;
@@ -991,6 +1005,18 @@ async function load_task_line(index) {
   var api = "http://" + serverADDR + ":3000/users/job_tasks";
 
   taskArray = (await axios.post(api, params)).data
+
+  var temp_arr = []
+  for(var i=0; i<taskArray.length; i++) {
+    temp_arr.push(i)
+  }
+
+  for(var i=0; i<temp_arr.length; i++) {
+    var r = i + 1
+    var comb = combination(temp_arr, r)
+    total_asm.push(comb)
+  }
+
   taskcnt = taskArray.length
   await initDIV()
   await loadLine(index)
@@ -1026,8 +1052,6 @@ function createDIV(index) {      // box 생성
   obj.appendChild(newDIV);
 }
 async function deleteTask(index) {
-  console.log("DEL TASK");
-
   for(var i=0; i<lineArray.length; i++) {
     if(lineArray[i].from_id == index || lineArray[i].to_id == index) {
       console.log(i + " : " + lineArray[i].id);
@@ -1103,8 +1127,20 @@ async function clear_rel_line(lines) {    // canvas의 related line 만 지우�
   }
 }
 async function addLine(start, end) {    // line 정보를 db에 저장
-  console.log("ADD LINE");
+  var params = {
+    job_id : JOB_ID,
+    from_id : start,
+    to_id : end
+  }
 
+  console.log("start : ", start, "end : ", end)
+
+  var api = "http://" + serverADDR + ":3000/users/task_lines/add";
+  await axios.post(api, params)
+  api = "http://" + serverADDR + ":3000/users/update_dest_info";
+  await axios.post(api, params)
+}
+async function addLine_split(start, end) {    // line 정보를 db에 저장
   var params = {
     job_id : JOB_ID,
     from_id : start,
@@ -1112,9 +1148,6 @@ async function addLine(start, end) {    // line 정보를 db에 저장
   }
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/add";
-  await axios.post(api, params)
-  console.log("addline 2")
-  api = "http://" + serverADDR + ":3000/users/update_dest_info";
   await axios.post(api, params)
 }
 async function create_line() {
@@ -1146,7 +1179,6 @@ async function deleteLine(index) {
 
   var api = "http://" + serverADDR + ":3000/users/task_lines/delete"
   await axios.post(api, params)
-  console.log("delete line from db complete")
 }
 function drawLine(start_x, start_y, dest_x, dest_y, w1, h1, w2, h2, lineID) {  // drawing line
   //console.log("Draw Line222");
@@ -1454,17 +1486,17 @@ $(function() {
   modify_RT = document.getElementById("modify_RT");
 
   $(document).on("click",".linkline", async function(){
-    console.log("delete line");
+    // console.log("delete line");
     var line = $(event.target)
     var id = $(event.target).attr('id');
-    console.log("line : ", line, id)
+    // console.log("line : ", line, id)
 
     await deleteLine(id);         // db에서 해당 line 정보 삭제
     var p = this.parentElement;
-    console.log("p : ", p)
-    console.log("this : ", this)
+    // console.log("p : ", p)
+    // console.log("this : ", this)
     await p.removeChild(this);
-    console.log("after : ", p)
+    // console.log("after : ", p)
   })
   $('div').bind({
     contextmenu : function(event) {
@@ -1595,6 +1627,7 @@ export default {
 
       test : [],
       schemaArray : [],
+      tasklist : [],
       taskListArray : [],
       svrArray : [],
       svrConfig : serverConfig,
@@ -1691,7 +1724,11 @@ export default {
       sieve1OP : [],
       sieve2OP : [],
 
-      api_addr : ''
+      api_addr : '',
+      using_ec : '',
+      using_ec_ip : '',
+      prev_tasks : [],
+      split_tasks : []
     }
   },
   async created() {
@@ -1704,14 +1741,448 @@ export default {
     await this.loadSvr();
     await this.loadSchema();
     await this.loadTaskList();
-    this.health_check()
+    this.health_check_first()
     // this.task_watchdog()
+    // this.using_ec = 1
+    // this.using_ec_ip = "165.132.105.40"
+    // this.task_watchdog_start()
   },
   computed: {
   },
   watch: {
   },
   methods : {
+    task_watchdog_start: function() {
+      console.log("watchdog start")
+      
+      this.timer = setInterval(() => this.task_watchdog(), 2000);
+      // this.task_watchdog()
+    },
+    async task_watchdog() {
+      // for(var i=0; i<this.svrArray.length; i++) {
+      //   if(this.svrArray[i].id == this.using_ec) {
+      //     console.log("ec warning : ", this.svrArray[i].warning_cnt)
+      //   }
+      // }
+      var params = {
+        id : this.using_ec
+      }
+      var api = this.api_addr + "/users/engine_computer/get_by_id"
+      var cpu_usage = (await axios.post(api, params)).data[0].cpu_usage
+
+      console.log("cpu usage : " , cpu_usage)
+      // console.log(this.using_ec)
+
+      if(cpu_usage >= 70) {
+        for(var i=0; i<this.svrArray.length; i++) {
+          if(this.svrArray[i].ip_address == this.using_ec_ip) {
+            this.svrArray[i].warning_cnt = this.svrArray[i].warning_cnt + 1
+            console.log("here : ", this.svrArray[i].warning_cnt)
+            if(this.svrArray[i].warning_cnt == 2) {
+              this.prev_tasks = taskArray
+              var params ={ job_id : JOB_ID }
+              var api = this.api_addr + "/users/get_task_list/by_job_id"
+              var task_cpu = (await axios.post(api, params)).data
+              console.log("task cpu : ", task_cpu)
+              var target_task = []
+              var max_cpu = 0
+              var target = -1
+
+              for(var j=0; j<task_cpu.length; j++) {
+                if(task_cpu[j].cpu_usage > max_cpu) {
+                  max_cpu = task_cpu[j].cpu_usage
+                  target = j
+                }
+              }
+              // target_task.push(task_cpu[0])
+              // target_task.push(task_cpu[1])
+              // target_task.push(task_cpu[2])
+              // console.log("target : ", task_cpu[target])
+              console.log("target : ", target)
+              target_task.push(task_cpu[target])
+
+              // this.auto_scaling()
+              this.auto_scaling_2(target_task)
+            }
+          }
+        }
+      }
+      else {
+        for(var i=0; i<this.svrArray.length; i++) {
+          if(this.svrArray[i].ip_address == this.using_ec_ip) {
+            this.svrArray[i].warning_cnt = 0
+          }
+        }
+      }
+    },
+
+    async auto_scaling_2(target_task) {
+      if(target_task.length == taskArray.length) {
+        var id = JOB_ID;
+        var new_tasks = {}
+        var new_line = []
+
+        // 현재 가장 여유있는 engine computer를 탐색
+        var api = this.api_addr + "/users/engine_computer"
+        var result = (await axios.get(api)).data
+        var min_ec = 0
+        var min_usage = 100
+        for(var i=0; i<result.length; i++) {
+          if(result[i].id != this.using_ec) {
+            if(result[i].cpu_usage < min_usage) {
+              min_usage = result[i].cpu_usage
+              min_ec = result[i].id
+            }
+          }
+        }
+
+        for(var i=0; i<target_task.length; i++) {
+          this.ec_id = min_ec
+          this.listening_port = target_task[i].listening_port + i
+          this.task_id = target_task[i].task_id
+
+          var port_using = await this.port_using_check(this.ec_id, this.listening_port)
+          while(port_using == 1) {
+            console.log("port Duplicate : ", this.listening_port)
+            this.listening_port = this.listening_port + 1
+            port_using = await this.port_using_check(this.ec_id, this.listening_port)
+          }
+          var task = {
+            job_id: JOB_ID,
+            task_id : target_task[i].task_id,
+            listening_port : this.listening_port,
+            ec_id : this.ec_id,                                        // auto finding을 통해 대상 ec 찾기
+            position_x : target_task[i].position_x + 100,
+            position_y : target_task[i].position_y,
+            linkto : null,
+            linkfrom : null,
+            dest_ip : 0,
+            dest_port : 0
+          }
+          await addTask(task)
+
+          var params = {
+            job_id : JOB_ID,
+            ec_id : this.ec_id,
+            listening_port : this.listening_port
+          }
+          var api = this.api_addr + "/users/job_tasks/get_id"
+          var task_id = (await axios.post(api, params)).data[0].id
+          new_tasks[target_task[i].id] = task_id
+          new_line.push(task_id)
+        }
+        console.log(new_tasks)
+
+        var params = { job_id : JOB_ID }
+        var api = this.api_addr + "/users/task_lines"
+        var task_lines = (await axios.post(api, params)).data
+        console.log("lines : ", task_lines)
+
+        for(var i=0; i<target_task.length; i++) {
+          for(var j=0; j<task_lines.length; j++) {
+            if(task_lines[j].from_id == target_task[i].id) {
+              var to_id = task_lines[j].to_id
+              var start = new_tasks[target_task[i].id]
+              var end = new_tasks[to_id]
+              await addLine(start, end)
+            }
+          }
+        }
+        await clearBG()
+        await load_task_line(id)
+        await this.clearInput()
+      }
+      else {
+        var id = JOB_ID;
+        var task_pair_axis_original = {}
+        var task_pair_axis_new = {}
+        var created_tasks = []
+
+        // 현재 가장 여유있는 engine computer를 탐색
+        var api = this.api_addr + "/users/engine_computer"
+        var result = (await axios.get(api)).data
+        var min_ec = 0
+        var min_usage = 100
+        for(var i=0; i<result.length; i++) {
+          if(result[i].id != this.using_ec) {
+            if(result[i].cpu_usage < min_usage) {
+              min_usage = result[i].cpu_usage
+              min_ec = result[i].id
+            }
+          }
+        }
+
+        for(var i=0; i<target_task.length; i++) {
+          var lis_port = target_task[i].listening_port + i
+          this.task_id = target_task[i].task_id
+
+          var port_using = await this.port_using_check(min_ec, lis_port)
+          while(port_using == 1) {
+            console.log("port Duplicate : ", lis_port)
+            lis_port = lis_port + 1
+            port_using = await this.port_using_check(min_ec, lis_port)
+          }
+          var task = {
+            job_id: JOB_ID,
+            task_id : target_task[i].task_id,
+            listening_port : lis_port,
+            ec_id : min_ec,                                        // auto finding을 통해 대상 ec 찾기
+            position_x : target_task[i].position_x + 100,
+            position_y : target_task[i].position_y,
+            linkto : null,
+            linkfrom : null,
+            dest_ip : 0,
+            dest_port : 0
+          }
+          await addTask(task)
+
+          var params = {
+            job_id : JOB_ID,
+            ec_id : min_ec,
+            listening_port : lis_port
+          }
+          // 새로 생성된 연산자의 연산자ID를 가져옴
+          var api = this.api_addr + "/users/job_tasks/get_id"
+          var task_res = (await axios.post(api, params)).data[0]
+          var task_id = task_res.id
+
+          created_tasks.push(task_id)
+          task_pair_axis_original[target_task[i].id] = task_id
+          task_pair_axis_new[task_id] = target_task[i].id
+        }
+
+        // console.log("axis ori : ", task_pair_axis_original)
+        // console.log("axis new : ", task_pair_axis_new)
+        // console.log("created tasks : ", created_tasks)
+
+        var params = { job_id : JOB_ID }
+        var api = this.api_addr + "/users/task_lines"
+        var task_lines = (await axios.post(api, params)).data
+
+        for(var i=0; i<created_tasks.length; i++) {
+          var is_end = 1
+          var is_start = 1
+          var original_task = task_pair_axis_new[created_tasks[i]]
+          var parent_task = -1
+          var child_task = -1
+
+          for(var j=0; j<task_lines.length; j++) {
+            if(task_lines[j].to_id == original_task) {
+              parent_task = task_lines[j].from_id
+              is_start = 0
+            }
+            if(task_lines[j].from_id == original_task) {
+              child_task = task_lines[j].to_id
+              is_end = 0
+            }
+          }
+
+          if(is_end == 0) {
+            console.log("not end point")
+            if(is_start == 1) {
+              console.log("start point")
+              var child_copy = task_pair_axis_original[child_task]
+
+              if(child_copy == null) {
+                console.log("child not copied")
+                var params = {
+                  original_task : original_task,
+                  new_task : created_tasks[i]
+                }
+                var api = this.api_addr + "/users/taskcopy_dest_info"
+                await axios.post(api, params)
+                await addLine(created_tasks[i], child_task)
+              }
+              else {
+                console.log("child copied")
+                var params = {
+                  new_child : child_copy,
+                  new_task : created_tasks[i]
+                }
+                var api = this.api_addr + "/users/task_new_dest_info"
+                await axios.post(api, params)
+                await addLine(created_tasks[i], child_copy)
+              }
+              
+            }
+            else {
+              console.log("mid point")
+              var parent_copy = task_pair_axis_original[parent_task]
+              if(parent_copy == null) {
+                console.log("parent not copied : split")
+                this.split_tasks.push(parent_task)
+                var params = {
+                  target_task : parent_task,
+                  new_task : created_tasks[i]
+                }
+                var api = this.api_addr + "/users/task_dest_split"
+                await axios.post(api, params)
+                await addLine_split(parent_task, created_tasks[i])
+              }
+              else {
+                console.log("parent copied : do nothing")
+                await addLine(parent_copy, created_tasks[i])
+              }
+
+              var child_copy = task_pair_axis_original[child_task]
+              if(child_copy == null) {
+                console.log("child not copied")
+                var params = {
+                  original_task : original_task,
+                  new_task : created_tasks[i]
+                }
+                var api = this.api_addr + "/users/taskcopy_dest_info"
+                await axios.post(api, params)
+                await addLine(created_tasks[i], child_task)
+              }
+              else {
+                console.log("child copied")
+                var params = {
+                  new_child : child_copy,
+                  new_task : created_tasks[i]
+                }
+                var api = this.api_addr + "/users/task_new_dest_info"
+                await axios.post(api, params)
+                await addLine(created_tasks[i], child_copy)
+              }
+            }
+            
+          }
+          else {
+            console.log("it is end point")
+            // 복사된 연산자의 정보 입력 : taskcopy_dest_info
+            var params = {
+              original_task : original_task,
+              new_task : created_tasks[i]
+            }
+            var api = this.api_addr + "/users/taskcopy_dest_info"
+            await axios.post(api, params)
+            
+            var parent_copy = task_pair_axis_original[parent_task]
+            // 부모 연산자가 복사 안된 경우 -> 기존 부모연산자를 split
+            if(parent_copy == null) {
+              console.log("parent not copied")
+              this.split_tasks.push(parent_task)
+              var params = {
+                target_task : parent_task,
+                new_task : created_tasks[i]
+              }
+              var api = this.api_addr + "/users/task_dest_split"
+              await axios.post(api, params)
+              await addLine_split(parent_task, created_tasks[i])
+            }
+            // 부모 연산자가 복사된 경우
+            else {
+              console.log("parent copied")
+              await addLine(parent_copy, created_tasks[i])
+            }
+          }
+        }
+        await clearBG()
+        await load_task_line(id)
+        await this.clearInput()
+
+        // for(var i=0; i<this.prev_tasks.length; i++) {
+        //   var target = document.getElementById(this.prev_tasks[i].id)
+        //   target.style.background = "#3af42c"
+        // }
+
+        await this.taskDistribute(created_tasks)
+        await this.taskRUN(created_tasks)
+        await this.health_check_second()
+
+        console.log("split tasks : ", this.split_tasks)
+        var params = {
+          target_task : this.split_tasks
+        }
+        var api = this.api_addr + "/users/task_split_input"
+        var res = await axios.post(api, params)
+        console.log("res split : ", res)
+      }
+    },
+
+    async auto_scaling() {
+      console.log("auto scaling start")
+      var id = JOB_ID;
+      var new_tasks = {}
+      var new_line = []
+
+      console.log(taskArray)
+
+      var api = this.api_addr + "/users/engine_computer"
+      var result = (await axios.get(api)).data
+      console.log("engine : ", result, result.length)
+
+      var min_ec = 0
+      var min_usage = 100
+
+      for(var i=0; i<result.length; i++) {
+        if(result[i].id != this.using_ec) {
+          if(result[i].cpu_usage < min_usage) {
+            min_usage = result[i].cpu_usage
+            min_ec = result[i].id
+          }
+        }
+      }
+
+      for(var i=0; i<taskArray.length; i++) {
+        this.ec_id = min_ec
+        this.listening_port = 41000 + i
+        this.task_id = taskArray[i].task_id
+
+        var port_using = await this.port_using_check(this.ec_id, this.listening_port)
+        while(port_using == 1) {
+          console.log("port Duplicate : ", this.listening_port)
+          this.listening_port = this.listening_port + 1
+          port_using = await this.port_using_check(this.ec_id, this.listening_port)
+        }
+        var task = {
+          job_id: JOB_ID,
+          task_id : taskArray[i].task_id,
+          listening_port : this.listening_port,
+          ec_id : this.ec_id,                                        // auto finding을 통해 대상 ec 찾기
+          position_x : taskArray[i].position_x + 100,
+          position_y : taskArray[i].position_y,
+          linkto : null,
+          linkfrom : null,
+          dest_ip : 0,
+          dest_port : 0
+        }
+        await addTask(task)
+
+        var params = {
+          job_id : JOB_ID,
+          listening_port : this.listening_port
+        }
+        var api = this.api_addr + "/users/job_tasks/get_id"
+        var task_id = (await axios.post(api, params)).data[0].id
+        new_tasks[taskArray[i].id] = task_id
+        new_line.push(task_id)
+      }
+      console.log(new_tasks)
+
+      var params = { job_id : JOB_ID }
+      var api = this.api_addr + "/users/task_lines"
+      var task_lines = (await axios.post(api, params)).data
+      console.log("lines : ", task_lines)
+
+      for(var i=0; i<taskArray.length; i++) {
+        for(var j=0; j<task_lines.length; j++) {
+          if(task_lines[j].from_id == taskArray[i].id) {
+            var to_id = task_lines[j].to_id
+            var start = new_tasks[taskArray[i].id]
+            var end = new_tasks[to_id]
+            await addLine(start, end)
+          }
+        }
+
+      }
+      await clearBG()
+      await load_task_line(id)
+      await this.clearInput()
+      
+    },
+    
     async func_offload() {
       var id = JOB_ID;
 
@@ -1772,10 +2243,71 @@ export default {
       // rt_check = setInterval(this.health_check, 5000)
 
     },
-    task_watchdog: function() {
-      console.log("watchdog start")
-      this.timer = setInterval(() => this.health_check(), 3000);
+
+    async health_check_second() {
+      console.log("health check first : ", taskArray)
+      var ret = 0
+      for(var i=0; i<taskArray.length; i++) {
+        var params = {
+          task_id : taskArray[i].id
+        }
+        var api = this.api_addr + "/users/healthcheck"
+        var res = await axios.post(api, params)
+        var target = document.getElementById(taskArray[i].id)
+        console.log(i, "res alive : ", res.data.alive)
+        if(res.data.alive == 1) {
+          target.style.background = "#3af42c"
+          ret = ret + 1
+        }
+        else if(res.data.alive == 0) {
+          target.style.background = "#ffffff"
+        }
+      }
+
+      var params = { job_id: this.JOB_ID }
+      var api = this.api_addr + "/users/job_tasks"
+      this.tasklist = (await axios.post(api, params)).data
+      this.using_ec = this.tasklist[0].ec_id
+
+      var params = { ec_id: this.using_ec }
+      var api = this.api_addr + "/users/engine_computer/get_ip"
+      this.using_ec_ip = (await axios.post(api, params)).data[0].ip_address
     },
+
+    async health_check_first() {
+      console.log("health check first : ", taskArray)
+      var ret = 0
+      for(var i=0; i<taskArray.length; i++) {
+        var params = {
+          task_id : taskArray[i].id
+        }
+        var api = this.api_addr + "/users/healthcheck"
+        var res = await axios.post(api, params)
+        var target = document.getElementById(taskArray[i].id)
+        console.log(i, "res alive : ", res.data.alive)
+        if(res.data.alive == 1) {
+          target.style.background = "#3af42c"
+          ret = ret + 1
+        }
+        else if(res.data.alive == 0) {
+          target.style.background = "#ffffff"
+        }
+      }
+
+      var params = { job_id: this.JOB_ID }
+      var api = this.api_addr + "/users/job_tasks"
+      this.tasklist = (await axios.post(api, params)).data
+      this.using_ec = this.tasklist[0].ec_id
+
+      var params = { ec_id: this.using_ec }
+      var api = this.api_addr + "/users/engine_computer/get_ip"
+      this.using_ec_ip = (await axios.post(api, params)).data[0].ip_address
+      // console.log("tasks : ", this.tasklist)
+      // console.log("using ec : ", this.using_ec)
+
+      this.task_watchdog_start()
+    },
+    
     async health_check() {
       var ret = 0
       for(var i=0; i<taskArray.length; i++) {
@@ -1801,7 +2333,6 @@ export default {
       console.log("jobDistTotal : ", JOB_ID);
 
       var params = { job_id : JOB_ID }
-      // var api = "http://" + this.svrAddr + ":3000/users/job_tasks";
       var api = this.api_addr + "/users/job_tasks"
       this.dist_tasks = (await axios.post(api, params)).data
 
@@ -1898,13 +2429,23 @@ export default {
       this.TRData = message;
       console.log(this.TRData);
     },
+    async taskRUN(tasks) {
+      console.log("task RUN : ", tasks);
+      var params = {
+        tasks : tasks,
+        user_id : USER_ID
+      }
+      var api = this.api_addr + "/users/tasks/run";
+      var success = (await axios.post(api, params)).data.success
+
+      return success
+    },
     async jobRUN() {
       console.log("jobRUN : ", JOB_ID);
       var params = {
         id : JOB_ID,
         user_id : USER_ID
       }
-      // var api = "http://" + this.svrAddr + ":3000/users/jobs/run";
       var api = this.api_addr + "/users/jobs/run";
       
       var success = (await axios.post(api, params)).data.success
@@ -1912,12 +2453,18 @@ export default {
       console.log("taskarray length : ", taskArray.length)
       if(success == true) {
         if((await this.health_check()) == taskArray.length) {
-        // if((await this.health_check()) == 1) {
-          // alert("***** JOB 실행 완료 *****");
-          // console.log("JOB RUN COMPLETE")
-          // this.task_watchdog()
         }
       }
+    },
+    async taskDistribute(tasks) {
+      console.log("taskdist : ", tasks)
+      var params = {
+        user_id : USER_ID,
+        tasks : tasks
+      }
+      var api = this.api_addr + "/users/tasks/distribute";
+      var res = await axios.post(api, params)
+      console.log("res : ", res)
     },
     jobDistribute() {
       console.log(JOB_ID);
@@ -2138,7 +2685,7 @@ export default {
       }
     },
     async port_using_check(ec_id, lis_port) {
-      console.log("port using check : ", ec_id, lis_port)
+      // console.log("port using check : ", ec_id, lis_port)
       var res;
       var params = {
         ec_id : ec_id,
@@ -2153,6 +2700,7 @@ export default {
       await deleteTask(cntxtmenuID)
       await clearBG()
       await load_task_line(JOB_ID)
+      // await this.health_check_second()
     },
     make_parameter(index) {               // data update를 위한 parameter 데이터 세팅
       console.log("make parameter  : ", index);
